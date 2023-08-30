@@ -1,0 +1,24 @@
+DELETE FROM `user_pos` WHERE `user_id` IN (SELECT id FROM users WHERE `role_fk` = 6);
+DELETE FROM `users` WHERE `role_fk` = 6; 
+UPDATE `users` SET `role_fk` = 16 WHERE `role_fk` = 1;
+INSERT INTO `role_menu` VALUES (16, 36);
+UPDATE `maazoun_profile` SET `maazoun_type` = 'مأذون' WHERE `maazoun_type` = 'مأذونيه';
+UPDATE `maazoun_profile` SET `maazoun_type` = 'موثق' WHERE `maazoun_type` = 'كنيسه';
+-- RESET TESTING DATABASE----------------------------------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE `maazoun_book_warehouse`;
+TRUNCATE `maazoun_book_supply_order`;
+TRUNCATE `maazoun_book_request_info`;
+TRUNCATE `maazoun_book_collection_info`;
+TRUNCATE `maazoun_book_validation`;
+TRUNCATE `maazoun_book_deliver_info`;
+TRUNCATE `transaction`;
+TRUNCATE `transaction_item`;
+TRUNCATE `transaction_mids`;
+TRUNCATE `transactionecr`;
+TRUNCATE `financial_deficit`;
+TRUNCATE `pull_account`;
+SET FOREIGN_KEY_CHECKS = 1;
+UPDATE `insurance_number` SET `sequance_number` = 0;
+UPDATE `maazoun_inventory_number` SET `inventory_sequance` = 0;
+ALTER TABLE `maazoun_book_warehouse` DROP INDEX idx_maazoun_book_warehouse_serialNumber_contractNumber;

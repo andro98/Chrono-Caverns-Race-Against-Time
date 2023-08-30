@@ -1,0 +1,206 @@
+package com.aman.payment.auth.management;
+
+import java.util.List;
+import java.util.Set;
+
+import com.aman.payment.auth.model.Role;
+import com.aman.payment.auth.model.dto.CityDTO;
+import com.aman.payment.auth.model.dto.JwtAuthSectorDTO;
+import com.aman.payment.auth.model.dto.LocationDTO;
+import com.aman.payment.auth.model.dto.LocationPagingDTO;
+import com.aman.payment.auth.model.dto.MaazouniaChurchDTO;
+import com.aman.payment.auth.model.dto.MaazouniaChurchsPagingDTO;
+import com.aman.payment.auth.model.dto.MenuDTO;
+import com.aman.payment.auth.model.dto.MerchantDTO;
+import com.aman.payment.auth.model.dto.MerchantPagingDTO;
+import com.aman.payment.auth.model.dto.PosDTO;
+import com.aman.payment.auth.model.dto.PosPagingDTO;
+import com.aman.payment.auth.model.dto.PosWithUserAgentDTO;
+import com.aman.payment.auth.model.dto.RoleDTO;
+import com.aman.payment.auth.model.dto.SectorDTO;
+import com.aman.payment.auth.model.dto.SectorPagingDTO;
+import com.aman.payment.auth.model.dto.ServiceDTO;
+import com.aman.payment.auth.model.dto.SettingDTO;
+import com.aman.payment.auth.model.dto.SettingPagingDTO;
+import com.aman.payment.auth.model.dto.SubServiceDTO;
+import com.aman.payment.auth.model.dto.SubServiceQuotaDTO;
+import com.aman.payment.auth.model.payload.AddEditLocationRequest;
+import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
+import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
+import com.aman.payment.auth.model.payload.AddEditPosRequest;
+import com.aman.payment.auth.model.payload.AddEditRoleRequest;
+import com.aman.payment.auth.model.payload.AddEditSectorRequest;
+import com.aman.payment.auth.model.payload.AddEditServiceRequest;
+import com.aman.payment.auth.model.payload.AddEditSettingRequest;
+import com.aman.payment.auth.model.payload.AddEditSubServiceQuotaRequest;
+import com.aman.payment.auth.model.payload.MerchantByIdRequest;
+import com.aman.payment.auth.model.payload.PagingRequest;
+import com.aman.payment.auth.model.payload.PagingSearchRequest;
+import com.aman.payment.auth.model.payload.PosByIDRequest;
+import com.aman.payment.auth.model.payload.PosByLocationRequest;
+import com.aman.payment.auth.model.payload.PosByUserRequest;
+import com.aman.payment.auth.model.payload.ServiceMenuRequest;
+import com.aman.payment.auth.model.payload.SubServiceByIDRequest;
+import com.aman.payment.auth.model.payload.SubServiceByServiceIDRequest;
+import com.aman.payment.auth.model.payload.SupplyOrderReferenceNumberRequest;
+
+public interface LookupManagement {
+	
+	public String getCode(String key);
+	/*
+	 * ====================================Service CRUD=============================================
+	 */
+	public List<ServiceDTO> getAllService();
+	public List<ServiceDTO> getAllSubService();
+	
+	public List<ServiceDTO> getAllMainServices();
+	
+	public List<ServiceDTO> getSubServicesByParent(SubServiceByServiceIDRequest subServiceByServiceIDRequest);
+	
+	public ServiceDTO addService(String username, AddEditServiceRequest addEditServiceRequest);
+	
+	public ServiceDTO editService(String username, AddEditServiceRequest addEditServiceRequest);
+	
+	public SubServiceDTO getSubServiceById(SubServiceByIDRequest subServiceByIDRequest);
+	
+	public SubServiceDTO getSubServiceById(long id);
+	
+	public ServiceDTO getParentServiceById(String serviceId);
+	
+	/*
+	 * ====================================Merchant CRUD=============================================
+	 */
+	public MerchantPagingDTO getAllMerchant(PagingRequest pagingRequest);
+	
+	public MerchantDTO addMerchant(String createdBy, AddEditMerchantRequest addEditMerchantRequest);
+	
+	public MerchantDTO editMerchant(String updatedBy, AddEditMerchantRequest addEditMerchantRequest);
+	
+	public MerchantDTO getMerchant(MerchantByIdRequest merchantByIdRequest);
+	
+	public MerchantPagingDTO lookforMerchant(PagingSearchRequest pagingSearchPosRequest);
+
+	
+	/*
+	 * ====================================Location CRUD=============================================
+	 */
+	public LocationPagingDTO getAllLocations(PagingRequest pagingRequest);
+	public List<LocationDTO> getAllLocations();
+
+	
+	public LocationDTO getLocationById(String locationId);
+	
+	public LocationDTO addLocation(String createdBy, AddEditLocationRequest addEditLocationRequest);
+	
+	public LocationDTO editLocation(String updatedBy, AddEditLocationRequest addEditLocationRequest);
+	
+	public LocationPagingDTO lookforLocation(PagingSearchRequest pagingSearchRequest);
+	/*
+	 * ====================================POS CRUD=============================================
+	 */
+	public PosPagingDTO getAllPos(PagingRequest pagingRequest);
+	
+	public PosDTO addPos(String createdBy, AddEditPosRequest addEditPosRequest);
+	
+	public PosDTO editPos(String updatedBy, AddEditPosRequest addEditPosRequest);
+	
+	public Set<SectorDTO> getAllSectorByLocation(PosByLocationRequest posByLocationRequest);
+	
+	public Set<PosDTO> getAllPosByUser(PosByUserRequest posByUserRequest);
+	
+	public List<PosDTO> searchPOS(String keyword);
+	
+	public PosDTO getPosByPosId(PosByIDRequest posByIDRequest);
+	
+	public PosWithUserAgentDTO getLightPosByPosId(PosByIDRequest posByIDRequest);
+	
+	public PosPagingDTO lookforPos(PagingSearchRequest pagingSearchPosRequest);
+	 
+	/*
+	 * ====================================Role CRUD=============================================
+	 */
+	public List<RoleDTO> getAllRoles();
+	
+	public RoleDTO addRole(String createdBy, AddEditRoleRequest addEditRoleRequest);
+	
+	public RoleDTO editRole(String updatedBy, AddEditRoleRequest addEditRoleRequest);
+	/*
+	 * ====================================Menu CRUD=============================================
+	 */
+	public Set<MenuDTO> getAllMenus(ServiceMenuRequest serviceMenuRequest);
+	
+	public List<MenuDTO> getMenus();
+	
+	public Set<MenuDTO> getAuthMenus(ServiceMenuRequest serviceMenuRequest, Role role);
+
+	/*
+	 * ====================================City CRUD=============================================
+	 */
+	public List<CityDTO> getAllCities();
+	/*
+	 * ====================================Insurance Number CRUD=============================================
+	 */
+	public Long getInsuranceNumber(long serviceId, long locationId);
+	
+	public Long getInsuranceNumber(long bookTypeId, long locationId, long serviceId);
+	
+	public Long getInsuranceNumberWithoutIncrement(long serviceId, long locationId);
+	
+	public Long getInsuranceNumberWithoutIncrement(long bookTypeId, long locationId, long serviceId);
+	
+	public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber);
+	
+	public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber, long bookTypeId);
+	
+	/*
+	 * ====================================Sector CRUD=============================================
+	 */
+	public SectorPagingDTO getAllSector(PagingRequest pagingRequest);
+	
+	public List<SectorDTO> getAllSector();
+	
+	public List<JwtAuthSectorDTO> getAllAuthSector(long locationId);
+	
+	public List<SectorDTO> getAllSector(long locationId);
+	
+	public SectorDTO getSectorById(long id);
+	
+	public SectorDTO getSectorByName(String name);
+	
+	public SectorDTO addSector(String createdBy, AddEditSectorRequest addEditSectorRequest);
+	
+	public SectorDTO editSector(String updatedBy, AddEditSectorRequest addEditSectorRequest);
+	 
+	public SectorPagingDTO lookforSector(PagingSearchRequest pagingSearchRequest);
+	
+	public List<SectorDTO> findAllSector();
+
+	public List<MaazouniaChurchDTO> getAllMaazouniaChurchs();
+	
+	public MaazouniaChurchsPagingDTO maazouniaChurchsPaging(PagingSearchRequest pagingSearchRequest);
+	
+	public MaazouniaChurchDTO addMaazouniaChurch(String createdBy, AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest);
+	
+	public MaazouniaChurchDTO editMaazouniaChurch(String updatedBy, AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest);
+
+	public List<MaazouniaChurchDTO> lookForMaazounizChruch(PagingSearchRequest pagingSearchRequest);
+	
+	public String getSupplyReferenceNumber(SupplyOrderReferenceNumberRequest supplyOrderReferenceNumberRequest);
+	
+	/*
+	 * ====================================Setting CRUD=============================================
+	 */
+	public SettingPagingDTO getAllSetting(PagingRequest pagingRequest);
+	
+	public SettingDTO editSetting(AddEditSettingRequest setting);
+	/*
+	 * ====================================Sub Service Quota CRUD=============================================
+	 */
+	public List<SubServiceQuotaDTO> getAllSubServiceQuota();
+	
+	public SubServiceQuotaDTO addSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest);
+	
+	public SubServiceQuotaDTO editSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest);
+
+	
+}

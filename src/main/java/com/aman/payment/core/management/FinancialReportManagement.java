@@ -1,0 +1,52 @@
+package com.aman.payment.core.management;
+
+import java.util.List;
+
+import com.aman.payment.core.model.dto.FinancialAuditPagingDTO;
+import com.aman.payment.core.model.payload.FinancialReportRequest;
+
+public interface FinancialReportManagement {
+
+	public FinancialAuditPagingDTO getFinancialReviewReport(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportByDaily(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportByLocation(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportByCourt(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportBySector(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportByPOS(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportByAgentAndLocation(FinancialReportRequest financialReportRequest);
+	
+	public List<String> getReportPermissionDetails(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByTransaction(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getRefundAuditReportFinancialMidDetailsByTransaction(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getCanceledAuditReportFinancialMidDetailsByTransaction(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByPOS(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsBySector(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getRefundAuditReportFinancialMidDetailsBySector(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByLocation(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByCourt(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByCity(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByDaily(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getRefundAuditReportFinancialMidDetailsByDaily(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByAgent(FinancialReportRequest financialReportRequest);
+	
+	public FinancialAuditPagingDTO getAuditReportFinancialMidDetailsByTypeName(FinancialReportRequest financialReportRequest);
+	
+}
