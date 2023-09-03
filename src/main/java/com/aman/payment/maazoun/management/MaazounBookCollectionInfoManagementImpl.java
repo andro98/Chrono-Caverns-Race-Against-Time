@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.aman.payment.auth.config.WebSocketHandler;
 import com.aman.payment.auth.model.CustomUserDetails;
 import com.aman.payment.auth.model.Pos;
 import com.aman.payment.auth.model.Sector;
@@ -237,10 +236,6 @@ public class MaazounBookCollectionInfoManagementImpl extends ValidationAndPopula
 
 		String response = maazounCollectInfoMapper.createPreviewAddCollectionInfoDTO(maazounBookCollectionInfoFk)
 				.toString();
-
-		if (eMaazounBookWarehouse.getStatusFk().equals(StatusConstant.STATUS_UNDER_REVIEWED)) {
-			WebSocketHandler.sendUnderReviewedContracts(response);
-		}
 
 		return cryptoMngrMaazounService.encrypt(response);
 

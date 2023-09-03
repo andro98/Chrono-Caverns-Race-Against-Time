@@ -30,3 +30,4 @@ mvnw*
 /bin
 ProjectapplicantImg/*
 *.log
+*.properties
