@@ -11,6 +11,7 @@ import com.aman.payment.auth.model.CustomUserDetails;
 import com.aman.payment.maazoun.model.MaazounBookWarehouse;
 import com.aman.payment.maazoun.model.dto.WarehouseAuditDTO;
 import com.aman.payment.maazoun.model.payload.BooksFilterRequest;
+import com.aman.payment.maazoun.model.payload.BooksRequest;
 import com.aman.payment.maazoun.model.payload.WarehouseBookRequest;
 
 
@@ -19,7 +20,7 @@ public interface MaazounBookWarehouseCustomRepository {
 
 	public Page<MaazounBookWarehouse> findByLocationIdInOrderByCreatedAtDesc(Set<Long> locationIds, Pageable pageable);
 	
-	public Page<MaazounBookWarehouse> findBySectorFkInOrderByCreatedAtDesc(Set<Long> sectorIds, Pageable pageable, CustomUserDetails customUserDetails);
+	public Page<MaazounBookWarehouse> findBySectorFkInOrderByCreatedAtDesc(Set<Long> sectorIds, Pageable pageable, CustomUserDetails customUserDetail);
 	
 	public List<WarehouseAuditDTO> warehouseReportByLocationAndBookType(CustomUserDetails customUserDetails);
 	

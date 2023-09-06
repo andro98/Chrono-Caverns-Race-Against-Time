@@ -20,12 +20,24 @@ public class SupplyOrderDTO {
 	private String imageUrl;
 	private String supplyOrderType;
 	private String custody;
-
+	
 	long marriageBookCount = 0;
 	long authenticationBookCount = 0;
 	long reviewBookCount = 0;
 	long mullahMarriageBookCount = 0;
 	long divorceBookCount = 0;
+
+	long marriageBookCount8 = 0;
+	long authenticationBookCount8 = 0;
+	long reviewBookCount8 = 0;
+	long mullahMarriageBookCount8 = 0;
+	long divorceBookCount8 = 0;
+	
+	long marriageBookCount15 = 0;
+	long authenticationBookCount15 = 0;
+	long reviewBookCount15 = 0;
+	long mullahMarriageBookCount15 = 0;
+	long divorceBookCount15 = 0;
 	
 	private String refSupplyOrderNumber;
 	
@@ -128,46 +140,6 @@ public class SupplyOrderDTO {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-
-	public long getMarriageBookCount() {
-		return marriageBookCount;
-	}
-
-	public void setMarriageBookCount(long marriageBookCount) {
-		this.marriageBookCount = marriageBookCount;
-	}
-
-	public long getAuthenticationBookCount() {
-		return authenticationBookCount;
-	}
-
-	public void setAuthenticationBookCount(long authenticationBookCount) {
-		this.authenticationBookCount = authenticationBookCount;
-	}
-
-	public long getReviewBookCount() {
-		return reviewBookCount;
-	}
-
-	public void setReviewBookCount(long reviewBookCount) {
-		this.reviewBookCount = reviewBookCount;
-	}
-
-	public long getMullahMarriageBookCount() {
-		return mullahMarriageBookCount;
-	}
-
-	public void setMullahMarriageBookCount(long mullahMarriageBookCount) {
-		this.mullahMarriageBookCount = mullahMarriageBookCount;
-	}
-
-	public long getDivorceBookCount() {
-		return divorceBookCount;
-	}
-
-	public void setDivorceBookCount(long divorceBookCount) {
-		this.divorceBookCount = divorceBookCount;
-	}
 	
 	public String getRefSupplyOrderNumber() {
 		return refSupplyOrderNumber;
@@ -208,6 +180,126 @@ public class SupplyOrderDTO {
 
 	public void setCustody(String custody) {
 		this.custody = custody;
+	}
+
+	public long getMarriageBookCount8() {
+		return marriageBookCount8;
+	}
+
+	public void setMarriageBookCount8(long marriageBookCount8) {
+		this.marriageBookCount8 = marriageBookCount8;
+	}
+
+	public long getAuthenticationBookCount8() {
+		return authenticationBookCount8;
+	}
+
+	public void setAuthenticationBookCount8(long authenticationBookCount8) {
+		this.authenticationBookCount8 = authenticationBookCount8;
+	}
+
+	public long getReviewBookCount8() {
+		return reviewBookCount8;
+	}
+
+	public void setReviewBookCount8(long reviewBookCount8) {
+		this.reviewBookCount8 = reviewBookCount8;
+	}
+
+	public long getMullahMarriageBookCount8() {
+		return mullahMarriageBookCount8;
+	}
+
+	public void setMullahMarriageBookCount8(long mullahMarriageBookCount8) {
+		this.mullahMarriageBookCount8 = mullahMarriageBookCount8;
+	}
+
+	public long getDivorceBookCount8() {
+		return divorceBookCount8;
+	}
+
+	public void setDivorceBookCount8(long divorceBookCount8) {
+		this.divorceBookCount8 = divorceBookCount8;
+	}
+
+	public long getMarriageBookCount15() {
+		return marriageBookCount15;
+	}
+
+	public void setMarriageBookCount15(long marriageBookCount15) {
+		this.marriageBookCount15 = marriageBookCount15;
+	}
+
+	public long getAuthenticationBookCount15() {
+		return authenticationBookCount15;
+	}
+
+	public void setAuthenticationBookCount15(long authenticationBookCount15) {
+		this.authenticationBookCount15 = authenticationBookCount15;
+	}
+
+	public long getReviewBookCount15() {
+		return reviewBookCount15;
+	}
+
+	public void setReviewBookCount15(long reviewBookCount15) {
+		this.reviewBookCount15 = reviewBookCount15;
+	}
+
+	public long getMullahMarriageBookCount15() {
+		return mullahMarriageBookCount15;
+	}
+
+	public void setMullahMarriageBookCount15(long mullahMarriageBookCount15) {
+		this.mullahMarriageBookCount15 = mullahMarriageBookCount15;
+	}
+
+	public long getDivorceBookCount15() {
+		return divorceBookCount15;
+	}
+
+	public void setDivorceBookCount15(long divorceBookCount15) {
+		this.divorceBookCount15 = divorceBookCount15;
+	}
+
+	public long getMarriageBookCount() {
+		return marriageBookCount;
+	}
+
+	public void setMarriageBookCount(long marriageBookCount) {
+		this.marriageBookCount = marriageBookCount;
+	}
+
+	public long getAuthenticationBookCount() {
+		return authenticationBookCount;
+	}
+
+	public void setAuthenticationBookCount(long authenticationBookCount) {
+		this.authenticationBookCount = authenticationBookCount;
+	}
+
+	public long getReviewBookCount() {
+		return reviewBookCount;
+	}
+
+	public void setReviewBookCount(long reviewBookCount) {
+		this.reviewBookCount = reviewBookCount;
+	}
+
+	public long getMullahMarriageBookCount() {
+		return mullahMarriageBookCount;
+	}
+
+	public void setMullahMarriageBookCount(long mullahMarriageBookCount) {
+		this.mullahMarriageBookCount = mullahMarriageBookCount;
+	}
+
+	public long getDivorceBookCount() {
+		return divorceBookCount;
+	}
+
+	public void setDivorceBookCount(long divorceBookCount) {
+		this.divorceBookCount = divorceBookCount;
 	}
 
 	@Override

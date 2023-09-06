@@ -6,6 +6,8 @@ public class BooksFilterRequest extends PaginationRequest{
 	private Long sectorId;
 	private String durationFrom;
 	private String durationTo;
+	private String refSupplyOrderNumber;
+
 
 	public String getStatus() {
 		return status;
@@ -38,5 +40,14 @@ public class BooksFilterRequest extends PaginationRequest{
 	public void setDurationTo(String durationTo) {
 		this.durationTo = durationTo;
 	}
+
+	public String getRefSupplyOrderNumber() {
+		return refSupplyOrderNumber;
+	}
+
+	public void setRefSupplyOrderNumber(String refSupplyOrderNumber) {
+		this.refSupplyOrderNumber = refSupplyOrderNumber;
+	}
 	 
+	
 }

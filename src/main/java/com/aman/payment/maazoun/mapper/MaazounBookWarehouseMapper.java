@@ -3,13 +3,17 @@ package com.aman.payment.maazoun.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.aman.payment.auth.model.SubService;
+import com.aman.payment.auth.model.SubServiceQuota;
+import com.aman.payment.auth.service.SubServiceQuotaService;
 import com.aman.payment.maazoun.model.MaazounBookQuota;
 import com.aman.payment.maazoun.model.MaazounBookWarehouse;
 import com.aman.payment.maazoun.model.dto.BookDTO;
+import com.aman.payment.util.StatusConstant;
 
 @Service
 public class MaazounBookWarehouseMapper extends MaazounBookQuota{
@@ -21,6 +25,8 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 	 */
 	@Value("${aman.logo}")
 	private String amanLogoUrl;
+	@Autowired
+	private SubServiceQuotaService subServiceQuotaService;
 	
 	public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
 		if (maazounBookWarehouse!=null) {
@@ -171,7 +177,13 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 		bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
 		bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
 		bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
-		bookDTO.setFees(subService.getFees());
+		List<SubServiceQuota> subServiceQuota = subServiceQuotaService.findBySubServiceFk(subService);
+		double fees = (double) 0;
+		for(SubServiceQuota quota : subServiceQuota) {
+			if(quota.getStatusFk().equals(StatusConstant.STATUS_ACTIVE) && quota.getFeesType().equals("n"))
+				fees = fees + quota.getFees();
+		}
+		bookDTO.setFees(fees);
 		bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
 		
 		if(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {

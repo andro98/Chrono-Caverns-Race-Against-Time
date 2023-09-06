@@ -145,26 +145,47 @@ public class MaazounBookSupplyOrderMapper {
 		supplyOrderDTO.setSupplyOrderType("الكترونى");
 
 		supplyOrder.getSupplyOrderDetailsSet().stream().forEach(s -> {
-			if(Integer.valueOf(s.getBookTypeFK()) == 9 || Integer.valueOf(s.getBookTypeFK()) == 19) {
-				supplyOrderDTO.setMarriageBookCount(supplyOrderDTO.getMarriageBookCount() + 
+			if(Integer.valueOf(s.getBookTypeFK()) == 9) {
+				supplyOrderDTO.setMarriageBookCount8(supplyOrderDTO.getMarriageBookCount8() + 
 						s.getCurrentBookTypeCount());
 			}
-			else if(Integer.valueOf(s.getBookTypeFK()) == 10 || Integer.valueOf(s.getBookTypeFK()) == 20) {
-				supplyOrderDTO.setDivorceBookCount(supplyOrderDTO.getDivorceBookCount() + 
+			else if(Integer.valueOf(s.getBookTypeFK()) == 19) {
+				supplyOrderDTO.setMarriageBookCount15(supplyOrderDTO.getMarriageBookCount15() + 
 						s.getCurrentBookTypeCount());
 			}
-			else if(Integer.valueOf(s.getBookTypeFK()) == 11 || Integer.valueOf(s.getBookTypeFK()) == 21) {
-				supplyOrderDTO.setAuthenticationBookCount(supplyOrderDTO.getAuthenticationBookCount() + 
+			else if(Integer.valueOf(s.getBookTypeFK()) == 10) {
+				supplyOrderDTO.setDivorceBookCount8(supplyOrderDTO.getDivorceBookCount15() + 
 						s.getCurrentBookTypeCount());
 			}
-			else if(Integer.valueOf(s.getBookTypeFK()) == 12 || Integer.valueOf(s.getBookTypeFK()) == 22) {
-				supplyOrderDTO.setReviewBookCount(supplyOrderDTO.getReviewBookCount() + 
+			else if(Integer.valueOf(s.getBookTypeFK()) == 20) {
+				supplyOrderDTO.setDivorceBookCount15(supplyOrderDTO.getDivorceBookCount15() + 
 						s.getCurrentBookTypeCount());
 			}
-			else if(Integer.valueOf(s.getBookTypeFK()) == 13 || Integer.valueOf(s.getBookTypeFK()) == 23) {
-				supplyOrderDTO.setMullahMarriageBookCount(supplyOrderDTO.getMullahMarriageBookCount() + 
+			else if(Integer.valueOf(s.getBookTypeFK()) == 11) {
+				supplyOrderDTO.setAuthenticationBookCount8(supplyOrderDTO.getAuthenticationBookCount8() + 
 						s.getCurrentBookTypeCount());
 			}
+			else if(Integer.valueOf(s.getBookTypeFK()) == 21) {
+				supplyOrderDTO.setAuthenticationBookCount15(supplyOrderDTO.getAuthenticationBookCount15() + 
+						s.getCurrentBookTypeCount());
+			}
+			else if(Integer.valueOf(s.getBookTypeFK()) == 12) {
+				supplyOrderDTO.setReviewBookCount8(supplyOrderDTO.getReviewBookCount8() + 
+						s.getCurrentBookTypeCount());
+			}
+			else if(Integer.valueOf(s.getBookTypeFK()) == 22) {
+				supplyOrderDTO.setReviewBookCount15(supplyOrderDTO.getReviewBookCount15() + 
+						s.getCurrentBookTypeCount());
+			}
+			else if(Integer.valueOf(s.getBookTypeFK()) == 13) {
+				supplyOrderDTO.setMullahMarriageBookCount8(supplyOrderDTO.getMullahMarriageBookCount8() + 
+						s.getCurrentBookTypeCount());
+			}
+			else if(Integer.valueOf(s.getBookTypeFK()) == 23) {
+				supplyOrderDTO.setMullahMarriageBookCount15(supplyOrderDTO.getMullahMarriageBookCount15() + 
+						s.getCurrentBookTypeCount());
+			}
+			
 		});
 		
 		return supplyOrderDTO;

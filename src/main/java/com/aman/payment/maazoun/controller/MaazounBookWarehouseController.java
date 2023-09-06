@@ -220,10 +220,10 @@ public class MaazounBookWarehouseController extends MaazounJsonObjectFactoryImpl
 
 	// when add new supply order(Labeled books) decrement by the number from supply
 	// order Details(Not Labeled books)
-	@PostMapping("/addBookSupplyOrder")
+	@PostMapping("/addBookSupplyOrderCoding")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Add books batch. Requires ADMIN Access")
-	public ResponseEntity<String> addBookSupplyOrder(@CurrentUser CustomUserDetails customUserDetails,
+	@ApiOperation(value = "Add books batch coding. Requires ADMIN Access")
+	public ResponseEntity<String> addBookSupplyOrderCoding(@CurrentUser CustomUserDetails customUserDetails,
 			@Valid @RequestPart String jsonString,
 			@Nullable @RequestPart(name = "supplyOrderImge", required = false) MultipartFile supplyOrderImge) {
 
@@ -231,7 +231,7 @@ public class MaazounBookWarehouseController extends MaazounJsonObjectFactoryImpl
 		decryptAddBookSupplyOrder.setImageUrl(supplyOrderImge);
 
 		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.addBookSupplyOrder(customUserDetails, decryptAddBookSupplyOrder));
+				.ok(maazounBookWarehouseManagement.addBookSupplyOrderCoding(customUserDetails, decryptAddBookSupplyOrder));
 	}
 
 	@PostMapping("/addCustodyBookSupplyOrder")
@@ -346,7 +346,7 @@ public class MaazounBookWarehouseController extends MaazounJsonObjectFactoryImpl
 		ReviewRequest decryptReviewSupplyOrderRequest = convertJsonStringToObject(jsonString, ReviewRequest.class);
 
 		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.reviewSupplyOrder(customUserDetails, decryptReviewSupplyOrderRequest));
+				maazounBookWarehouseManagement.reviewSupplyOrderCoding(customUserDetails, decryptReviewSupplyOrderRequest));
 	}
 	
 	

@@ -90,7 +90,7 @@ public class SupplyOrderDetailsManagementImpl extends ValidationAndPopulateManag
 		String atteUrl;
 		try {
 			atteUrl = saveBrowseAttFile(addSupplyOrderDetails.getAttUrl(), supplyOrdersDetailsPathAtt,
-					addSupplyOrderDetails.getSectorName() + "-" + customUserDetails.getUsername());
+					addSupplyOrderDetails.getSupplyOrderReferenceNumber() + "-" + customUserDetails.getUsername());
 		} catch (Exception e) {
 			throw new NullPointerException("imge must not be null");
 			// e.printStackTrace();
@@ -180,11 +180,10 @@ public class SupplyOrderDetailsManagementImpl extends ValidationAndPopulateManag
 		booksPagingDTO.setTotalPages(pageResult.getTotalPages());
 
 		List<SupplyOrderDetailsDTO> eBooksDTO = new ArrayList<SupplyOrderDetailsDTO>();
-		supplyOrderDetailsMapper
-				.supplyOrdersDetailsToSupplyOrderDetailsDTOs(pageResult.getContent()).stream()
+		pageResult.getContent().stream()
 				.forEach(s -> {
-
-					eBooksDTO.add(s);
+					if(s.getSupplyOrderFk().getStatusFk().equals(StatusConstant.STATUS_APPROVED))
+						eBooksDTO.add(supplyOrderDetailsMapper.supplyOrderDetailsToSupplyOrderDetailsDTO(s));
 				});
 
 		List<String> eBooks = new ArrayList<String>();
@@ -334,11 +333,10 @@ public class SupplyOrderDetailsManagementImpl extends ValidationAndPopulateManag
  
 
 		List<SupplyOrderDetailsDTO> eBooksDTO = new ArrayList<SupplyOrderDetailsDTO>();
-		supplyOrderDetailsMapper
-				.supplyOrdersDetailsToSupplyOrderDetailsDTOs(list).stream()
+		list.stream()
 				.forEach(s -> {
-
-					eBooksDTO.add(s);
+					if(s.getSupplyOrderFk().getStatusFk().equals(StatusConstant.STATUS_APPROVED))
+						eBooksDTO.add(supplyOrderDetailsMapper.supplyOrderDetailsToSupplyOrderDetailsDTO(s));
 				});
 
 		List<String> eBooks = new ArrayList<String>();

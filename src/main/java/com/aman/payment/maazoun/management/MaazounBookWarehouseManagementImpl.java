@@ -63,7 +63,6 @@ import com.aman.payment.maazoun.model.payload.ReviewRequest;
 import com.aman.payment.maazoun.model.payload.SupplyOrderDetailsRequest;
 import com.aman.payment.maazoun.model.payload.SupplyOrderRequest;
 import com.aman.payment.maazoun.model.payload.WarehouseBookRequest;
-import com.aman.payment.maazoun.repository.SupplyOrderDetailsRepository;
 import com.aman.payment.maazoun.service.CryptoMngrMaazounService;
 import com.aman.payment.maazoun.service.MaazounBookStockLabelService;
 import com.aman.payment.maazoun.service.MaazounBookSupplyOrderService;
@@ -164,7 +163,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public String addBookSupplyOrder(CustomUserDetails customUserDetails, AddBookSupplyOrder addBookSupplyOrder) {
+	public String addBookSupplyOrderCoding(CustomUserDetails customUserDetails, AddBookSupplyOrder addBookSupplyOrder) {
 
 		Optional<SupplyOrder> eSupplyOrder = supplyOrderService
 				.findByRefSupplyOrderNumber(addBookSupplyOrder.getRefSupplyOrderNumber());
@@ -172,6 +171,11 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 		if (!eSupplyOrder.isPresent() || !eSupplyOrder.get().getStatusFk().equals(StatusConstant.STATUS_APPROVED)) {
 			return cryptoMngrMaazounService.encrypt("Sorry, Reference Supply Order Number is Rejected or not present");
 		}
+		
+		/*
+		 * validate the remaining count from books related to the ref_supply_order_number
+		 */
+		validateTheRemainingCountInSupplyOrderDetails(addBookSupplyOrder, eSupplyOrder.get());
 
 		Date createdAt = Date.from(Instant.now());
 		Pos pos = getAssignedPOS(customUserDetails.getPosSet(), addBookSupplyOrder.getSectorId());
@@ -181,6 +185,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 				customUserDetails.getUsername(), createdAt, addBookSupplyOrder.getImageUrl(),
 				Boolean.valueOf(addBookSupplyOrder.getCustody()), supplyOrderPathAtt,
 				addBookSupplyOrder.getRefSupplyOrderNumber(), sector);
+		
 		maazounBookSupplyOrderFk.setImageUrl(eSupplyOrder.get().getImageUrl());
 		maazounBookSupplyOrderFk = maazounBookSupplyOrderService.save(maazounBookSupplyOrderFk);
 
@@ -208,12 +213,6 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 //					maazounBookWarehouseMapper.maazounBookWarehouseSetToBookDTOs(maazounBookWarehouseSet),
 //					String.valueOf(maazounBookSupplyOrderFk.getCreatedAt()), String.valueOf(maazounBookSupplyOrderFk.getId()));
 //			applicationEventPublisher.publishEvent(generateTempSupplyOrderEvent);
-
-		SupplyOrder supplyOrderFk = supplyOrderService.findByRefSupplyOrderNumber(
-				addBookSupplyOrder.getRefSupplyOrderNumber()).orElse(null);
-		if(supplyOrderFk != null)
-			updateRemainingBookTypeCountInMainSupplyOrderDetails(
-				batchBooks, supplyOrderFk);
 		
 		return cryptoMngrMaazounService.encrypt(maazounBookSupplyOrderMapper
 				.maazounBookSupplyOrderToMaazounBookSupplyOrderDTO(maazounBookSupplyOrderFk).toString());
@@ -624,13 +623,14 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 	}
 
 	@Override
-	public String reviewSupplyOrder(CustomUserDetails customUserDetails, ReviewRequest reviewSupplyOrderRequest) {
+	public String reviewSupplyOrderCoding(CustomUserDetails customUserDetails, ReviewRequest reviewSupplyOrderRequest) {
 
 		MaazounBookSupplyOrder eMaazounBookSupplyOrder = maazounBookSupplyOrderService
 				.findById(Long.valueOf(reviewSupplyOrderRequest.getId())).get();
 
 		if (reviewSupplyOrderRequest.getStatus().equalsIgnoreCase(StatusConstant.STATUS_APPROVED)) {
 			eMaazounBookSupplyOrder.setStatusFk(StatusConstant.STATUS_APPROVED);
+			updateRemainingBookTypeCountInMainSupplyOrderDetails(eMaazounBookSupplyOrder);
 		} else {
 			eMaazounBookSupplyOrder.setStatusFk(StatusConstant.STATUS_REJECTED);
 		}
@@ -1433,18 +1433,102 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 		return sectors.stream().filter(sector -> sector.getId().equals(sectorId)).findFirst().orElse(null);
 	}
 
-	private void updateRemainingBookTypeCountInMainSupplyOrderDetails(List<MaazounBookWarehouse> batchBooks, 
-			SupplyOrder supplyOrderFk) {
-		for (MaazounBookWarehouse e : batchBooks) {
-			String bookTypeId = Long.toString(e.getBookTypeId());
-			SupplyOrderDetails supplyOrderDetails = supplyOrderDetailsService.findBySupplyOrderFk(bookTypeId,
-					supplyOrderFk);
+	private void updateRemainingBookTypeCountInMainSupplyOrderDetails(MaazounBookSupplyOrder eMaazounBookSupplyOrder) {
+		if(eMaazounBookSupplyOrder.getRefSupplyOrderNumber() != null) {
+			
+			/*
+			 * duple check on validatin count naumber remaining
+			 */
+			validationRemainingCount(eMaazounBookSupplyOrder);
+			
+			Set<Long> maazounBookWarehouseSet = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
+	                .stream()
+	                .map(MaazounBookWarehouse::getBookTypeId)
+	                .collect(Collectors.toSet());
+			
+			SupplyOrder eSupplyOrder = supplyOrderService
+					.findByRefSupplyOrderNumber(eMaazounBookSupplyOrder.getRefSupplyOrderNumber()).orElse(null);
 
-			if (supplyOrderDetails != null) {
-				supplyOrderDetails.setRemainingBookTypeCount(supplyOrderDetails.getRemainingBookTypeCount() - 1);
-				supplyOrderDetailsService.save(supplyOrderDetails);
+			for (SupplyOrderDetails supplyOrderDetailsFk : eSupplyOrder.getSupplyOrderDetailsSet()) {
+
+				Long bookType = maazounBookWarehouseSet.stream()
+						.filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
+						.findAny().orElse(null);
+
+				if(bookType != null) {
+					supplyOrderDetailsFk.setRemainingBookTypeCount(supplyOrderDetailsFk.getRemainingBookTypeCount() - 1);
+					supplyOrderDetailsService.save(supplyOrderDetailsFk);
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	private void validationRemainingCount(MaazounBookSupplyOrder eMaazounBookSupplyOrder) {
+		
+		SupplyOrder eSupplyOrder = supplyOrderService
+				.findByRefSupplyOrderNumber(eMaazounBookSupplyOrder.getRefSupplyOrderNumber()).orElse(null);
+		
+		Set<Long> maazounBookWarehouseSet = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
+                .stream()
+                .map(MaazounBookWarehouse::getBookTypeId)
+                .collect(Collectors.toSet());
+		
+		for (SupplyOrderDetails supplyOrderDetailsFk : eSupplyOrder.getSupplyOrderDetailsSet()) {
+			
+			Long bookType = maazounBookWarehouseSet.stream()
+					.filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
+					.findAny().orElse(null);
+			
+			if(bookType != null) {
+				if(supplyOrderDetailsFk.getRemainingBookTypeCount() <= 0) {
+					throw new IllegalArgumentException("Sorry, the remaining count in this ref_supply_order_number"
+							+ " with bookTypeId "+bookType+" count = "+supplyOrderDetailsFk.getRemainingBookTypeCount());
+				}
+				
+				Set<String> bookList = new HashSet<String>();
+				for(MaazounBookWarehouse obj : eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()) {
+					if(String.valueOf(bookType).equals(String.valueOf(obj.getBookTypeId()))) {
+						bookList.add(obj.getSerialNumber());
+					}
+						
+				}
+				if(bookList.size() > supplyOrderDetailsFk.getRemainingBookTypeCount()) {
+					throw new IllegalArgumentException("Sorry, the remaining count in this ref_supply_order_number"
+							+ " with bookTypeId "+bookType+" count = "+
+							supplyOrderDetailsFk.getRemainingBookTypeCount()+" < coding book count = "+ bookList.size());
+				}
+				
+			}
+			
+		}
+	}
+	
+	private void validateTheRemainingCountInSupplyOrderDetails(AddBookSupplyOrder addBookSupplyOrder, SupplyOrder eSupplyOrder) {
+		
+		for(BookListRequest book : addBookSupplyOrder.getBookList()) {
+			long bookTypeId = book.getTypeId();
+			
+			SupplyOrderDetails eSupplyOrderDetails = eSupplyOrder.getSupplyOrderDetailsSet().stream()
+			.filter(p -> p.getBookTypeFK().equals(String.valueOf(bookTypeId))).findAny().orElse(null);
+			
+			if(eSupplyOrderDetails == null) {
+				throw new IllegalArgumentException("Sorry, not exist bookType Id = "+bookTypeId+" in this ref_supply_order_number");
+			}
+			
+			long remainingCount = eSupplyOrderDetails.getRemainingBookTypeCount();
+			
+			List<BookListRequest> bookList = addBookSupplyOrder.getBookList().stream()
+					.filter(x -> x.getTypeId() == bookTypeId).collect(Collectors.toList());
+			
+			if(bookList.size() > remainingCount) {
+				throw new IllegalArgumentException("Sorry, the coding request for bookType Id = "+bookTypeId+" "
+						+ "more than exist in the remaining count in ref_supply_order_number");
 			}
 		}
+		
 	}
 
 }

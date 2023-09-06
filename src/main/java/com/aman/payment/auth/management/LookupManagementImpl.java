@@ -822,6 +822,12 @@ public class LookupManagementImpl implements LookupManagement {
 		sector.setLocationFk(locationService.findById(Long.valueOf(addEditSectorRequest.getLocationId())).get());
 		sector.setName(addEditSectorRequest.getName());
 		sector.setStatusFk(addEditSectorRequest.getStatus());
+		sector.setSupplyOrderSeqRef((long) 0);
+		// Get the current year
+        long currentYear = LocalDate.now().getYear();
+        // Extract the last two digits
+        long lastTwoDigits = currentYear % 100;
+		sector.setSupplyOrderYearRef(lastTwoDigits);
 
 		return sectorMapper.sectorToSectorDTO(sectorService.save(sector));
 	}
@@ -1047,7 +1053,7 @@ public class LookupManagementImpl implements LookupManagement {
 		entity.setMidAccount(addEditSubServiceQuotaRequest.getMidAccount());
 		entity.setName(addEditSubServiceQuotaRequest.getName());
 		entity.setStatusFk(addEditSubServiceQuotaRequest.getStatusFk());
-		entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
+	//	entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
 		 
 		
 		return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTO(subServiceQuotaService.save(entity));

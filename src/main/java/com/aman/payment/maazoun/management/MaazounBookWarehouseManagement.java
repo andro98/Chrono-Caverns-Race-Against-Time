@@ -37,7 +37,7 @@ public interface MaazounBookWarehouseManagement {
 	
 	public String bookDistinctBySerialNumberAndStatus(BooksByIdRequest booksByIdRequest, CustomUserDetails customUserDetails);
 	
-	public String addBookSupplyOrder(CustomUserDetails customUserDetails, AddBookSupplyOrder addBookSupplyOrder);
+	public String addBookSupplyOrderCoding(CustomUserDetails customUserDetails, AddBookSupplyOrder addBookSupplyOrder);
 	
 	public String addCustodyBookSupplyOrder(CustomUserDetails customUserDetails, AddBookSupplyOrder addBookSupplyOrder);
 	
@@ -54,7 +54,7 @@ public interface MaazounBookWarehouseManagement {
 	
 	public List<String> warehouseReportByDaily(CustomUserDetails customUserDetails, WarehouseBookRequest warehouseBookRequest);
 	
-	public String reviewSupplyOrder(CustomUserDetails customUserDetails, ReviewRequest reviewSupplyOrderRequest);
+	public String reviewSupplyOrderCoding(CustomUserDetails customUserDetails, ReviewRequest reviewSupplyOrderRequest);
 	
 	public InputStream downloadFile(URLRequest uRLRequest);
 	

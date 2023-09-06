@@ -21,6 +21,7 @@ import com.aman.payment.maazoun.model.MaazounBookWarehouse;
 import com.aman.payment.maazoun.model.dto.WarehouseAuditDTO;
 import com.aman.payment.maazoun.model.payload.BooksByIdRequest;
 import com.aman.payment.maazoun.model.payload.BooksFilterRequest;
+import com.aman.payment.maazoun.model.payload.BooksRequest;
 import com.aman.payment.maazoun.model.payload.WarehouseBookRequest;
 import com.aman.payment.maazoun.repository.MaazounBoorkWarehouseRepository;
 import com.aman.payment.maazoun.service.MaazounBookWarehouseService;

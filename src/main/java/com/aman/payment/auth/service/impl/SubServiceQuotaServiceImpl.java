@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.aman.payment.auth.model.SubService;
 import com.aman.payment.auth.model.SubServiceQuota;
 import com.aman.payment.auth.repository.SubServiceQuotaRepository;
 import com.aman.payment.auth.service.SubServiceQuotaService;
@@ -69,6 +70,12 @@ public class SubServiceQuotaServiceImpl implements SubServiceQuotaService {
 	@Override
 	public void deleteAll(List<SubServiceQuota> entities) {
 		repository.deleteAll(entities);
+	}
+
+	@Override
+	public List<SubServiceQuota> findBySubServiceFk(SubService subServiceFk) {
+		// TODO Auto-generated method stub
+		return repository.findBySubServiceFk(subServiceFk);
 	}
 	
     

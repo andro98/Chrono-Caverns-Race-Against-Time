@@ -22,6 +22,7 @@ import com.aman.payment.auth.model.Sector;
 import com.aman.payment.maazoun.model.MaazounBookWarehouse;
 import com.aman.payment.maazoun.model.dto.WarehouseAuditDTO;
 import com.aman.payment.maazoun.model.payload.BooksFilterRequest;
+import com.aman.payment.maazoun.model.payload.BooksRequest;
 import com.aman.payment.maazoun.model.payload.WarehouseBookRequest;
 import com.aman.payment.util.StatusConstant;
 
@@ -70,7 +71,7 @@ public class MaazounBookWarehouseCustomRepositoryImpl implements MaazounBookWare
 		jpql.append(" SELECT mo FROM MaazounBookWarehouse mo "
 				+ " JOIN MaazounBookSupplyOrder p ON p.id = mo.maazounBookSupplyOrderFk "
 				+ " WHERE mo.statusFk = 'New' ");
-
+		 
 		if (customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_AGENT)
 				|| customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_AGENT_SUPERVISOR)
 				|| customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_AREA_MANAGER)
@@ -764,6 +765,9 @@ public class MaazounBookWarehouseCustomRepositoryImpl implements MaazounBookWare
 		if (booksByStatusRequest.getSectorId() != null) {
 			jpql.append(" And p.sectorFk = '" + booksByStatusRequest.getSectorId() + "' ");
 		}
+		if (booksByStatusRequest.getRefSupplyOrderNumber() != null) {
+			jpql.append(" And p.refSupplyOrderNumber = '" + booksByStatusRequest.getRefSupplyOrderNumber() + "' ");
+		}
 		if (booksByStatusRequest.getStatus() != null ) {
 			jpql.append("And mo.statusFk = '" + booksByStatusRequest.getStatus() + "' ");
 		}
@@ -788,6 +792,9 @@ public class MaazounBookWarehouseCustomRepositoryImpl implements MaazounBookWare
 
 		if (booksByStatusRequest.getSectorId() != null) {
 			jpqlCount.append(" And p.sectorFk = '" + booksByStatusRequest.getSectorId() + "' ");
+		}
+		if (booksByStatusRequest.getRefSupplyOrderNumber() != null) {
+			jpqlCount.append(" And p.refSupplyOrderNumber = '" + booksByStatusRequest.getRefSupplyOrderNumber() + "' ");
 		}
 		if (booksByStatusRequest.getStatus() != null) {
 			jpqlCount.append("And mo.statusFk = '" + booksByStatusRequest.getStatus() + "' ");
