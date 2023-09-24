@@ -172,6 +172,7 @@ public class FinancialReportController extends CoreJsonObjectFactoryImpl{
 				getReportPermissionDetails(decryptFinancialReportRequest));
 	}
 	//---------------------------------------------------------------------------------------------------
+	// TODO Return حسب المعاملة البيع
 	@PostMapping("/financialMidDetailsByTransaction")
 	//    @PreAuthorize("hasRole('ADMIN')")
 	@ApiOperation(value = "Returns the list of All Accumulate Data related with MIDs Accounts.")
@@ -184,7 +185,9 @@ public class FinancialReportController extends CoreJsonObjectFactoryImpl{
 		return ResponseEntity.ok(financialReportManagement.
 				getAuditReportFinancialMidDetailsByTransaction(decryptFinancialReportRequest));
 	}
-	
+
+
+	// TODO :: ISSUE OF REFUND 20/9/2023 AT AMAN WITH HADIDI
 	@PostMapping("/refundFinancialMidDetailsByTransaction")
 	//    @PreAuthorize("hasRole('ADMIN')")
 	@ApiOperation(value = "Returns the list of All Accumulate Data related with MIDs Accounts.")
@@ -223,7 +226,8 @@ public class FinancialReportController extends CoreJsonObjectFactoryImpl{
 		return ResponseEntity.ok(financialReportManagement.
 				getAuditReportFinancialMidDetailsByPOS(decryptFinancialReportRequest));
 	}
-	
+
+	// TODO تفاصيل المعاملات حسب النيابة
 	@PostMapping("/financialMidDetailsBySector")
 	//    @PreAuthorize("hasRole('ADMIN')")
 	@ApiOperation(value = "Returns the list of All Accumulate Data related with MIDs Accounts.")
