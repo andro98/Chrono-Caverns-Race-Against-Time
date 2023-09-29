@@ -1,0 +1,6 @@
+res://scenes/menu.tscn
+res://scripts/menu.gd
+res://scenes/level.tscn
+res://scenes/counter.tscn
+res://scripts/counter.gd
+res://scenes/game_over.tscn

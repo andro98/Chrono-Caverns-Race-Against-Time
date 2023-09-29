@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b06w2nwo2d3br"]
+
+[ext_resource type="Script" path="res://scripts/counter.gd" id="1_41js8"]
+[ext_resource type="FontFile" uid="uid://b1xj0hoqpipar" path="res://fonts/Montserrat-Bold.ttf" id="2_gk5qd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yylja"]
+font = ExtResource("2_gk5qd")
+font_size = 30
+font_color = Color(0, 0.745098, 0.117647, 1)
+
+[node name="Counter" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_41js8")
+
+[node name="CounterLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "5:00"
+label_settings = SubResource("LabelSettings_yylja")
+horizontal_alignment = 1
+vertical_alignment = 1

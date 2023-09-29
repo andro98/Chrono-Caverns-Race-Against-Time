@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyg4dyytm25a5"]
+
+[ext_resource type="PackedScene" uid="uid://b06w2nwo2d3br" path="res://scenes/counter.tscn" id="2_qyy43"]
+
+[node name="Level" type="Node2D"]
+
+[node name="Counter" parent="." instance=ExtResource("2_qyy43")]
+offset_left = 506.0
+offset_right = 506.0

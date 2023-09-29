@@ -1,0 +1,17 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1696012167
+icon.svg::CompressedTexture2D::4766358258378686847::1695987018::1695987024::1::::<><>::
+::res://fonts/::1695995703
+Audiowide-Regular.ttf::FontFile::4093329848601973986::1692985884::1695995564::1::::<><>::
+Montserrat-Bold.ttf::FontFile::4259402794445894909::1695995692::1695995692::1::::<><>::
+Montserrat-VariableFont_wght.ttf::FontFile::5999672120321505574::1694730438::1695995564::1::::<><>::
+Orbitron-Bold.ttf::FontFile::5794141297462860035::1695995703::1695995703::1::::<><>::
+Orbitron-VariableFont_wght.ttf::FontFile::6171174652629969813::1695995473::1695995543::1::::<><>::
+::res://scenes/::1695995920
+counter.tscn::PackedScene::4206522192757634475::1695995920::0::1::::<><>::res://scripts/counter.gd<>uid://b1xj0hoqpipar::::res://fonts/Montserrat-Bold.ttf
+game_over.tscn::PackedScene::9055873275223244643::1695995764::0::1::::<><>::uid://cosywpxt1bm5p::::res://fonts/Orbitron-Bold.ttf
+level.tscn::PackedScene::6471527329911394574::1695995908::0::1::::<><>::uid://b06w2nwo2d3br::::res://scenes/counter.tscn
+menu.tscn::PackedScene::2412572722079849808::1695995764::0::1::::<><>::res://scripts/menu.gd
+::res://scripts/::1695995920
+counter.gd::GDScript::-1::1695995920::0::1::::<>Control<>::
+menu.gd::GDScript::-1::1695989639::0::1::::<>Control<>::
