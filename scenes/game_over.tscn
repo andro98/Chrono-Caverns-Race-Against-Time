@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://d2ay56xlorcgh"]
 
-[ext_resource type="FontFile" uid="uid://cosywpxt1bm5p" path="res://fonts/Orbitron-Bold.ttf" id="1_6jwcc"]
+[ext_resource type="FontFile" uid="uid://cosywpxt1bm5p" path="res://assets/cyberpunk/characters/Orbitron-Bold.ttf" id="1_bl2wl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_e6gun"]
-font = ExtResource("1_6jwcc")
+font = ExtResource("1_bl2wl")
 font_size = 50
 font_color = Color(0.862745, 0, 0.203922, 1)
 

@@ -1,6 +1,10 @@
+AnimationPlayer
+AnimationTree
+CollisionShape2D
+Sprite2D
+CharacterBody2D
 Timer
 Label
-Sprite2D
 VBoxContainer
 Container
 Button
