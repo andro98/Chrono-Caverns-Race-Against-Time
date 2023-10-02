@@ -821,12 +821,12 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
 					+ "JOIN location l ON l.id = s.location_fk "
 					+ "JOIN city c ON c.id = l.city_fk ";
 		}else {
-			selectQuery = "SELECT SUM(IF (v.status_fk = 'Final' || v.status_fk = 'Canceled', v.amount, 0)) AS totalAmountIncludingCanceled, "  
+			selectQuery = "SELECT SUM(IF (v.status_fk = 'Final' || v.status_fk = 'Canceled', v.amount, 0)) AS totalAmountIncludingCanceled, "
 					+ "s.name AS sectorName, l.name AS locationName, c.name_ar AS cityName, "
-					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='بنك ناصر' AND transaction_fk = v.id)) AS bankNaserAccount, "  
-					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='وزارة المالية' AND transaction_fk = v.id)) AS ministryFinancialAccount, "  
-					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='هيئة أبنية المحاكم' AND transaction_fk = v.id)) AS abnyatMhakemAccount, "
-					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='جمعية المأذونيين' AND transaction_fk = v.id)) AS gamyatMazouneenAccount, co.name as courtName, "
+					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='بنك ناصر' AND transaction_fk = v.id AND v.status_fk = 'Final')) AS bankNaserAccount, "
+					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='وزارة المالية' AND transaction_fk = v.id AND v.status_fk = 'Final')) AS ministryFinancialAccount, "
+					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='هيئة أبنية المحاكم' AND transaction_fk = v.id AND v.status_fk = 'Final')) AS abnyatMhakemAccount, "
+					+ "SUM((SELECT mid_value FROM transaction_mids WHERE beneficiary='جمعية المأذونيين' AND transaction_fk = v.id AND v.status_fk = 'Final')) AS gamyatMazouneenAccount, co.name as courtName, "
 					+ "SUM(IF (v.status_fk = 'Refund', v.amount, 0)) AS totalAmountRefund, "
 					+ "SUM(IF (v.status_fk = 'Canceled', v.amount, 0)) AS totalAmountCanceled "
 					+ "FROM transaction v "
