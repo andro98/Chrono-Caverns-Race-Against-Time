@@ -867,7 +867,8 @@ public class MaazounRequestInfoManagementImpl extends ValidationAndPopulateManag
 	    }
 	    return null;
 	}
-	
+
+	// TODO :: ANDREW CHECK QUOTA HERE
 	private void validateMaazounQuota(List<BookListRequest> maazounBooks, MaazounProfile maazounProfile) {
 		
 		Map<String, List<BookListRequest>> groupedBooks = groupBooksByType(maazounBooks);

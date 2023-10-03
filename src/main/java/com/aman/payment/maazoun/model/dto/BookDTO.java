@@ -12,6 +12,7 @@ public class BookDTO extends MaazounBookQuota{
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String serialNumber;
+	private String bookTypeName;
 	private String bookTypeId;
 	private String bookType;
 	private String locationId;
@@ -351,4 +352,11 @@ public class BookDTO extends MaazounBookQuota{
 		return true;
 	}
 
+	public String getBookTypeName() {
+		return bookTypeName;
+	}
+
+	public void setBookTypeName(String bookTypeName) {
+		this.bookTypeName = bookTypeName;
+	}
 }

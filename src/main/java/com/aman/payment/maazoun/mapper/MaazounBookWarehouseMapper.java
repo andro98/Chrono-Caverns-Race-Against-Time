@@ -44,9 +44,9 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 		else return null ;
     }
 	
-	public BookDTO previewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse) {
+	public BookDTO previewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
 		if (maazounBookWarehouse!=null) {
-	        return createPreviewContractCollectionDTO(maazounBookWarehouse);
+	        return createPreviewContractCollectionDTO(maazounBookWarehouse, subService);
 
 		}
 		else return null ;
@@ -61,7 +61,7 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 		
 	}
 	
-	private BookDTO createPreviewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse) {
+	private BookDTO createPreviewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
 		BookDTO bookDTO = new BookDTO();
 		bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName():null);
 //		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
@@ -71,9 +71,8 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
 		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()):
 			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
-		
-		
-		
+
+		bookDTO.setBookTypeName(subService.getBookType());
 		bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
 		bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
 		bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());

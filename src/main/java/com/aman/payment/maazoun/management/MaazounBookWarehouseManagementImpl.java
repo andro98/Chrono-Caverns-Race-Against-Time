@@ -680,12 +680,21 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
 		if (contractObj.isPresent()) {
 
+			Optional<SubService> subService = subServiceService.findById(contractObj.get().getBookTypeId());
+			if(!subService.isPresent()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("response", "This Contract Type is not applicable");
+
+				return cryptoMngrMaazounService.encrypt(jsonObject.toString());
+
+			}
+
 			List<Long> sectorIds = getSectorIds(customUserDetails.getPosSet());
 
 			if (sectorIds.contains(contractObj.get().getMaazounBookSupplyOrderFk().getSectorFk().getId())) {
 
 				return cryptoMngrMaazounService
-						.encrypt(maazounBookWarehouseMapper.previewContractCollectionDTO(contractObj.get()).toString());
+						.encrypt(maazounBookWarehouseMapper.previewContractCollectionDTO(contractObj.get(), subService.get()).toString());
 
 			} else {
 
@@ -777,12 +786,21 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
 		if (contractObj.isPresent()) {
 
+			Optional<SubService> subService = subServiceService.findById(contractObj.get().getBookTypeId());
+			if(!subService.isPresent()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("response", "This Contract Type is not applicable");
+
+				return cryptoMngrMaazounService.encrypt(jsonObject.toString());
+
+			}
+
 			List<Long> sectorIds = getSectorIds(customUserDetails.getPosSet());
 
 			if (sectorIds.contains(contractObj.get().getMaazounBookSupplyOrderFk().getSectorFk().getId())) {
 
 				return cryptoMngrMaazounService
-						.encrypt(maazounBookWarehouseMapper.previewContractCollectionDTO(contractObj.get()).toString());
+						.encrypt(maazounBookWarehouseMapper.previewContractCollectionDTO(contractObj.get(), subService.get()).toString());
 
 			} else {
 
