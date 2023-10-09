@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import ch.qos.logback.core.pattern.parser.OptionTokenizer;
 import com.aman.payment.auth.model.SubServicePriceTier;
 import com.aman.payment.auth.service.SubServicePriceTierService;
+import com.aman.payment.maazoun.model.MaazounBookStockLabel;
+import com.aman.payment.maazoun.service.MaazounBookStockLabelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,11 +31,17 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
      */
     @Value("${aman.logo}")
     private String amanLogoUrl;
-    @Autowired
-    private SubServiceQuotaService subServiceQuotaService;
 
-    @Autowired
-    private SubServicePriceTierService subServicePriceTierService;
+    final private SubServiceQuotaService subServiceQuotaService;
+    final private SubServicePriceTierService subServicePriceTierService;
+    final private MaazounBookStockLabelService maazounBookStockLabelService;
+
+    public MaazounBookWarehouseMapper(SubServiceQuotaService subServiceQuotaService, SubServicePriceTierService subServicePriceTierService, MaazounBookStockLabelService maazounBookStockLabelService) {
+        super();
+        this.subServiceQuotaService = subServiceQuotaService;
+        this.subServicePriceTierService = subServicePriceTierService;
+        this.maazounBookStockLabelService = maazounBookStockLabelService;
+    }
 
     public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService, Long tierId) {
         if (maazounBookWarehouse != null) {
@@ -124,6 +133,17 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
         bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
+
+        Optional<MaazounBookStockLabel> label = maazounBookStockLabelService
+                .findByLabelCode(maazounBookWarehouse.getSerialNumber());
+        if (label.isPresent()) {
+            Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(label.get().getBookTierId());
+            if (subServicePriceTier.isPresent()) {
+                bookDTO.setFees(subServicePriceTier.get().getFees());
+                bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
+                bookDTO.setBookTierName(subServicePriceTier.get().getName());
+            }
+        }
 
         if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
             bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());

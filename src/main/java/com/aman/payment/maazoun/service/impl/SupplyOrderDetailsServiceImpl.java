@@ -24,7 +24,6 @@ import com.aman.payment.maazoun.service.SupplyOrderDetailsService;
 @Transactional
 public class SupplyOrderDetailsServiceImpl implements SupplyOrderDetailsService {
 
-	@Autowired
 	private final SupplyOrderDetailsRepository repository;
 
 	public SupplyOrderDetailsServiceImpl(SupplyOrderDetailsRepository repository) {
@@ -115,4 +114,8 @@ public class SupplyOrderDetailsServiceImpl implements SupplyOrderDetailsService 
 		return repository.findByBookTypeFKAndSupplyOrderFk(bookTypeFK, supplyOrderFk);
 	}
 
+	@Override
+	public List<SupplyOrderDetails> findBySupplyOrderFk(SupplyOrder supplyOrderFk) {
+		return repository.findBySupplyOrderFk(supplyOrderFk);
+	}
 }

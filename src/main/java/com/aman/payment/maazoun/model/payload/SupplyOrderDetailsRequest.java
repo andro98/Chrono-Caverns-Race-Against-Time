@@ -1,16 +1,11 @@
 package com.aman.payment.maazoun.model.payload;
 
-public class SupplyOrderDetailsRequest{
 
-	private Long supplyOrderId;
+import lombok.Getter;
+import lombok.Setter;
 
-	public Long getSupplyOrderId() {
-		return supplyOrderId;
-	}
-
-	public void setSupplyOrderId(Long supplyOrderId) {
-		this.supplyOrderId = supplyOrderId;
-	}
-	
-
+@Getter
+@Setter
+public class SupplyOrderDetailsRequest {
+    private Long supplyOrderId;
 }

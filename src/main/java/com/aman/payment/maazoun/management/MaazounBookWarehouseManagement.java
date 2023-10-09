@@ -75,6 +75,7 @@ public interface MaazounBookWarehouseManagement {
 	public BooksPagingDTO getBookBySectorId(BooksFilterRequest booksByStatusRequest, CustomUserDetails customUserDetails);
 	
 	public List<String> getAllSupplyOrderDetails(SupplyOrderDetailsRequest supplyOrderDetailsRequest, CustomUserDetails customUserDetails);
+	public List<String> getAllSupplyOrderDetailsUnlabeled(SupplyOrderDetailsRequest supplyOrderDetailsRequest, CustomUserDetails customUserDetails);
 	
 	public String editBookFinancialNumber(EditBookFinancialNumberRequest editBookFinancialNumberRequest);
 

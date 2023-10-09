@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.aman.payment.maazoun.mapper.SupplyOrderDetailsMapper;
 import com.aman.payment.maazoun.model.*;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -83,6 +84,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
     private final MaazounRequestInfoService maazounRequestInfoService;
     private final MaazounProfileService maazounProfileService;
     private final SupplyOrderDetailsService supplyOrderDetailsService;
+    private final SupplyOrderDetailsMapper supplyOrderDetailsMapper;
 
     @Value("${attachment.maazoun.supply.orders}")
     private String supplyOrderPathAtt;
@@ -102,7 +104,8 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                                               MaazounBookSupplyOrderMapper maazounBookSupplyOrderMapper, SubServiceService subServiceService,
                                               MaazounBookStockLabelService maazounBookStockLabelService,
                                               MaazounRequestInfoService maazounRequestInfoService, MaazounProfileService maazounProfileService,
-                                              SupplyOrderDetailsService supplyOrderDetailsService, SupplyOrderService supplyOrderService) {
+                                              SupplyOrderDetailsService supplyOrderDetailsService, SupplyOrderService supplyOrderService,
+                                              SupplyOrderDetailsMapper supplyOrderDetailsMapper) {
         super();
         this.maazounBookWarehouseService = maazounBookWarehouseService;
         this.cryptoMngrMaazounService = cryptoMngrMaazounService;
@@ -116,6 +119,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
         this.maazounProfileService = maazounProfileService;
         this.supplyOrderDetailsService = supplyOrderDetailsService;
         this.supplyOrderService = supplyOrderService;
+        this.supplyOrderDetailsMapper = supplyOrderDetailsMapper;
     }
 
     @Override
@@ -997,7 +1001,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
     @Override
     public List<String> getAllSupplyOrderDetails(SupplyOrderDetailsRequest supplyOrderDetailsRequest,
                                                  CustomUserDetails customUserDetails) {
-
+        // TODO :: ANDREW
         MaazounBookSupplyOrder maazounBookSupplyOrderFk = maazounBookSupplyOrderService
                 .findById(supplyOrderDetailsRequest.getSupplyOrderId()).get();
 
@@ -1006,6 +1010,20 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
         maazounBookWarehouseService.findByMaazounBookSupplyOrderFk(maazounBookSupplyOrderFk).stream().forEach(s -> {
             eBooks.add(cryptoMngrMaazounService
                     .encrypt(maazounBookWarehouseMapper.maazounBookWarehouseToBookDTO(s).toString()));
+        });
+
+        return eBooks;
+    }
+
+    @Override
+    public List<String> getAllSupplyOrderDetailsUnlabeled(SupplyOrderDetailsRequest supplyOrderDetailsRequest, CustomUserDetails customUserDetails) {
+        SupplyOrder supplyOrder = supplyOrderService.findById(supplyOrderDetailsRequest.getSupplyOrderId()).get();
+
+        List<String> eBooks = new ArrayList<String>();
+
+        supplyOrderDetailsService.findBySupplyOrderFk(supplyOrder).forEach(s -> {
+            eBooks.add(cryptoMngrMaazounService
+                    .encrypt(supplyOrderDetailsMapper.supplyOrderDetailsToSupplyOrderDetailsDTO(s).toString()));
         });
 
         return eBooks;
