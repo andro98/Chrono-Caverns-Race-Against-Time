@@ -16,6 +16,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.Nullable;
@@ -23,9 +27,12 @@ import org.springframework.lang.Nullable;
 import com.aman.payment.auth.model.Sector;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "supply_order_details")
-
 public class SupplyOrderDetails implements Serializable {
  
 	private static final long serialVersionUID = 1L;
@@ -35,8 +42,7 @@ public class SupplyOrderDetails implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-	 
-	
+
 	@Nullable
 	@Column(name = "bookTypeFK")
 	private String bookTypeFK;
@@ -79,99 +85,7 @@ public class SupplyOrderDetails implements Serializable {
 	@JsonIgnore
 	private SupplyOrder supplyOrderFk;
 
-    
-	public SupplyOrderDetails() {
-		super();
-	}
-
-	public int getCurrentBookTypeCount() {
-		return currentBookTypeCount;
-	}
-
-	public void setCurrentBookTypeCount(int currentBookTypeCount) {
-		this.currentBookTypeCount = currentBookTypeCount;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getBookTypeFK() {
-		return bookTypeFK;
-	}
-
-	public void setBookTypeFK(String bookTypeFK) {
-		this.bookTypeFK = bookTypeFK;
-	}
-
-	public String getBookType() {
-		return bookType;
-	}
-
-	public void setBookType(String bookType) {
-		this.bookType = bookType;
-	}
-
-	public String getBookTypeCount() {
-		return bookTypeCount;
-	}
-
-	public void setBookTypeCount(String bookTypeCount) {
-		this.bookTypeCount = bookTypeCount;
-	}
-
-	public String getSectorFK() {
-		return sectorFK;
-	}
-
-	public void setSectorFK(String sectorFK) {
-		this.sectorFK = sectorFK;
-	}
-
-	public String getSectorName() {
-		return sectorName;
-	}
-
-	public void setSectorName(String sectorName) {
-		this.sectorName = sectorName;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public SupplyOrder getSupplyOrderFk() {
-		return supplyOrderFk;
-	}
-
-	public void setSupplyOrderFk(SupplyOrder supplyOrderFk) {
-		this.supplyOrderFk = supplyOrderFk;
-	}
-
-	public int getRemainingBookTypeCount() {
-		return remainingBookTypeCount;
-	}
-
-	public void setRemainingBookTypeCount(int remainingBookTypeCount) {
-		this.remainingBookTypeCount = remainingBookTypeCount;
-	}
-    
-    
-
+	@JsonIgnore
+	@Column(name = "bootTierIdFK")
+	private String bootTierId;
 }

@@ -88,7 +88,7 @@ public class MaazounBookStockLabelManagementImpl extends ValidationAndPopulateMa
 			eMaazounBookStockLabel.setLocationId(stockLabelRequest.getLocationId());
 			eMaazounBookStockLabel.setBookTypeId(stockLabelRequest.getBootTypeId());
 			eMaazounBookStockLabel.setStatusFk(StatusConstant.STATUS_NEW);
-			
+			eMaazounBookStockLabel.setBookTierId(stockLabelRequest.getBookTierId());
 			labels.add(eMaazounBookStockLabel);
 			
 		}

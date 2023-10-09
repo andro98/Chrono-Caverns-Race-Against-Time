@@ -1,39 +1,20 @@
 package com.aman.payment.maazoun.model.payload;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class AddSupplyOrderDetailsListRequest {
 
-	private String bootTypeId;
-	private String bootTypeName;
-	private String count;
-	
-	public AddSupplyOrderDetailsListRequest() {
-		// TODO Auto-generated constructor stub
-	}
+    private String bootTypeId;
+    private String bootTypeName;
+    private String count;
+    private String subServicePriceTierId;
+    private String bootTierName;
 
-	public String getBootTypeId() {
-		return bootTypeId;
-	}
-
-	public void setBootTypeId(String bootTypeId) {
-		this.bootTypeId = bootTypeId;
-	}
-
-	public String getBootTypeName() {
-		return bootTypeName;
-	}
-
-	public void setBootTypeName(String bootTypeName) {
-		this.bootTypeName = bootTypeName;
-	}
-
-	public String getCount() {
-		return count;
-	}
-
-	public void setCount(String count) {
-		this.count = count;
-	}
-
-	
-	
 }

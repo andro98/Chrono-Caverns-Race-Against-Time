@@ -43,6 +43,9 @@ public class MaazounBookStockLabel extends MaazounDateAudit implements Serializa
 	@Column(name = "bookTypeId")
 	private Long bookTypeId;
 
+	@Column(name = "bookTierId")
+	private long bookTierId;
+
 
 	public MaazounBookStockLabel() {
 		super();
@@ -94,6 +97,11 @@ public class MaazounBookStockLabel extends MaazounDateAudit implements Serializa
 		this.bookTypeId = bookTypeId;
 	}
 
+	public long getBookTierId() {
+		return bookTierId;
+	}
 
-	
+	public void setBookTierId(long bookTierId) {
+		this.bookTierId = bookTierId;
+	}
 }

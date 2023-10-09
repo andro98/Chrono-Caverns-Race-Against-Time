@@ -4,26 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aman.payment.auth.model.Role;
-import com.aman.payment.auth.model.dto.CityDTO;
-import com.aman.payment.auth.model.dto.JwtAuthSectorDTO;
-import com.aman.payment.auth.model.dto.LocationDTO;
-import com.aman.payment.auth.model.dto.LocationPagingDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchsPagingDTO;
-import com.aman.payment.auth.model.dto.MenuDTO;
-import com.aman.payment.auth.model.dto.MerchantDTO;
-import com.aman.payment.auth.model.dto.MerchantPagingDTO;
-import com.aman.payment.auth.model.dto.PosDTO;
-import com.aman.payment.auth.model.dto.PosPagingDTO;
-import com.aman.payment.auth.model.dto.PosWithUserAgentDTO;
-import com.aman.payment.auth.model.dto.RoleDTO;
-import com.aman.payment.auth.model.dto.SectorDTO;
-import com.aman.payment.auth.model.dto.SectorPagingDTO;
-import com.aman.payment.auth.model.dto.ServiceDTO;
-import com.aman.payment.auth.model.dto.SettingDTO;
-import com.aman.payment.auth.model.dto.SettingPagingDTO;
-import com.aman.payment.auth.model.dto.SubServiceDTO;
-import com.aman.payment.auth.model.dto.SubServiceQuotaDTO;
+import com.aman.payment.auth.model.dto.*;
 import com.aman.payment.auth.model.payload.AddEditLocationRequest;
 import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
 import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
@@ -56,6 +37,8 @@ public interface LookupManagement {
 	public List<ServiceDTO> getAllMainServices();
 	
 	public List<ServiceDTO> getSubServicesByParent(SubServiceByServiceIDRequest subServiceByServiceIDRequest);
+
+	List<SubServicePriceTierDTO> getAllSubServicesPriceTier();
 	
 	public ServiceDTO addService(String username, AddEditServiceRequest addEditServiceRequest);
 	

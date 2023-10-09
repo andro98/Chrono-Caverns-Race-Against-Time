@@ -2,7 +2,10 @@ package com.aman.payment.maazoun.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.aman.payment.auth.model.SubServicePriceTier;
+import com.aman.payment.auth.service.SubServicePriceTierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,186 +19,193 @@ import com.aman.payment.maazoun.model.dto.BookDTO;
 import com.aman.payment.util.StatusConstant;
 
 @Service
-public class MaazounBookWarehouseMapper extends MaazounBookQuota{
+public class MaazounBookWarehouseMapper extends MaazounBookQuota {
 
-	/*
-	 * maazounBookWarehouse to bookDTO
-	 * maazounBookWarehouseList to bookDTOs
-	 * ****************************************************************************************************
-	 */
-	@Value("${aman.logo}")
-	private String amanLogoUrl;
-	@Autowired
-	private SubServiceQuotaService subServiceQuotaService;
-	
-	public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
-		if (maazounBookWarehouse!=null) {
-	        return createBookDTO(maazounBookWarehouse, subService);
+    /*
+     * maazounBookWarehouse to bookDTO
+     * maazounBookWarehouseList to bookDTOs
+     * ****************************************************************************************************
+     */
+    @Value("${aman.logo}")
+    private String amanLogoUrl;
+    @Autowired
+    private SubServiceQuotaService subServiceQuotaService;
 
-		}
-		else return null ;
+    @Autowired
+    private SubServicePriceTierService subServicePriceTierService;
+
+    public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService, Long tierId) {
+        if (maazounBookWarehouse != null) {
+            return createBookDTO(maazounBookWarehouse, subService, tierId);
+
+        } else return null;
     }
-	
-	public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse) {
-		if (maazounBookWarehouse!=null) {
-	        return createBookDTO(maazounBookWarehouse);
 
-		}
-		else return null ;
-    }
-	
-	public BookDTO previewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
-		if (maazounBookWarehouse!=null) {
-	        return createPreviewContractCollectionDTO(maazounBookWarehouse, subService);
+    public BookDTO maazounBookWarehouseToBookDTO(MaazounBookWarehouse maazounBookWarehouse) {
+        if (maazounBookWarehouse != null) {
+            return createBookDTO(maazounBookWarehouse);
 
-		}
-		else return null ;
+        } else return null;
     }
-	
-	public List<BookDTO> maazounBookWarehouseSetToBookDTOs(List<MaazounBookWarehouse> maazounBookWarehouseSet) {
-		List<BookDTO> dtoList = new ArrayList<BookDTO>();
-		maazounBookWarehouseSet.stream().forEach(s -> {
-			dtoList.add(maazounBookWarehouseToBookDTO(s));
-		});
-		return dtoList;
-		
-	}
-	
-	private BookDTO createPreviewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
-		BookDTO bookDTO = new BookDTO();
-		bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName():null);
+
+    public BookDTO previewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
+        if (maazounBookWarehouse != null) {
+            return createPreviewContractCollectionDTO(maazounBookWarehouse, subService);
+
+        } else return null;
+    }
+
+    public List<BookDTO> maazounBookWarehouseSetToBookDTOs(List<MaazounBookWarehouse> maazounBookWarehouseSet) {
+        List<BookDTO> dtoList = new ArrayList<BookDTO>();
+        maazounBookWarehouseSet.stream().forEach(s -> {
+            dtoList.add(maazounBookWarehouseToBookDTO(s));
+        });
+        return dtoList;
+
+    }
+
+    private BookDTO createPreviewContractCollectionDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName() : null);
 //		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
 //		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
-		
-		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName():
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
-		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()):
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
 
-		bookDTO.setBookTypeName(subService.getBookType());
-		bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
-		bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
-		bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
-		bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
-		bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
-		bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
-		bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
-		bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
-		if(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
-			bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
-			bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()):null);
-			bookDTO.setMaazouniaChurchNameType(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName());
-		}
-		
-		return bookDTO;
-	}
-	
-	private BookDTO createBookDTO(MaazounBookWarehouse maazounBookWarehouse) {
-		BookDTO bookDTO = new BookDTO();
-		bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
-		bookDTO.setCreateAt(maazounBookWarehouse.getMaazounBookSupplyOrderFk() !=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedAt()):null);
-		bookDTO.setCreateBy(maazounBookWarehouse.getMaazounBookSupplyOrderFk() !=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedBy():null);
-		bookDTO.setSupplyOrderId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() !=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getId()):null);
-		bookDTO.setId(String.valueOf(maazounBookWarehouse.getId()));
-		bookDTO.setLocationId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getId()):null);
-		bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName():null);
-		bookDTO.setPosId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getId()):null);
-		bookDTO.setPosName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getName():null);
+        bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName() :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName() : null);
+        bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()) :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()) : null);
+
+        bookDTO.setBookTypeName(subService.getBookType());
+        bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
+        bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
+        bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
+        bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
+        bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
+        bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
+        bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
+        bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
+        if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
+            bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
+            bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()) : null);
+            bookDTO.setMaazouniaChurchNameType(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName());
+        }
+
+        return bookDTO;
+    }
+
+    private BookDTO createBookDTO(MaazounBookWarehouse maazounBookWarehouse) {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
+        bookDTO.setCreateAt(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedAt()) : null);
+        bookDTO.setCreateBy(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedBy() : null);
+        bookDTO.setSupplyOrderId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getId()) : null);
+        bookDTO.setId(String.valueOf(maazounBookWarehouse.getId()));
+        bookDTO.setLocationId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getId()) : null);
+        bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName() : null);
+        bookDTO.setPosId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getId()) : null);
+        bookDTO.setPosName(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getName() : null);
 //		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
 //		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
-		bookDTO.setRefSupplyOrderNumber(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getRefSupplyOrderNumber():"");
-		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName():
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
-		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()):
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
-		
-		
-		bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
-		bookDTO.setType(maazounBookWarehouse.getBookTypeName());
-		bookDTO.setTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
-		bookDTO.setBookType(maazounBookWarehouse.getBookTypeName());
-		bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
-		bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
-		bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
-		bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
-		bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
-		bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
-		bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
+        bookDTO.setRefSupplyOrderNumber(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getRefSupplyOrderNumber() : "");
+        bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName() :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName() : null);
+        bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()) :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()) : null);
 
-		if(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
-			bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
-			bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
-			bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()):null);
-			bookDTO.setMaazouniaChurchNameType(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName()!=null?
-					maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName():
-						maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().
-						getMaazounMaazouniaChurch().stream().findFirst().get().getMaazouniaChurchFk().getName());
-		}
-		if(maazounBookWarehouse.getMaazounBookCollectionInfoFk() != null) {
-			bookDTO.setCollectionInfoId(String.valueOf(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getId()));
-			bookDTO.setReceivedStatus(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getReceivedStatus());
 
-		}
-		else {
-			bookDTO.setReceivedStatus("غير محصل");
-		}
-		
-		bookDTO.setAmanLogoUrl(amanLogoUrl);
-		bookDTO.setBookInventoryReference(maazounBookWarehouse.getBookInventoryNumber()+"/"+maazounBookWarehouse.getBookInventoryReference());
-		
-		return bookDTO;
-	}
-	
-	private BookDTO createBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService) {
-		BookDTO bookDTO = new BookDTO();
-		bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
-		bookDTO.setCreateAt(maazounBookWarehouse.getMaazounBookSupplyOrderFk() !=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedAt()):null);
-		bookDTO.setCreateBy(maazounBookWarehouse.getMaazounBookSupplyOrderFk() !=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedBy():null);
-		bookDTO.setId(String.valueOf(maazounBookWarehouse.getId()));
-		bookDTO.setLocationId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getId()):null);
-		bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName():null);
-		bookDTO.setPosId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getId()):null);
-		bookDTO.setPosName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getName():null);
+        bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
+        bookDTO.setType(maazounBookWarehouse.getBookTypeName());
+        bookDTO.setTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
+        bookDTO.setBookType(maazounBookWarehouse.getBookTypeName());
+        bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
+        bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
+        bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
+        bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
+        bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
+        bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
+        bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
+
+        if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
+            bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
+            bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
+            bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()) : null);
+            bookDTO.setMaazouniaChurchNameType(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName() != null ?
+                    maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazouniaName() :
+                    maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().
+                            getMaazounMaazouniaChurch().stream().findFirst().get().getMaazouniaChurchFk().getName());
+        }
+        if (maazounBookWarehouse.getMaazounBookCollectionInfoFk() != null) {
+            bookDTO.setCollectionInfoId(String.valueOf(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getId()));
+            bookDTO.setReceivedStatus(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getReceivedStatus());
+
+        } else {
+            bookDTO.setReceivedStatus("غير محصل");
+        }
+
+        bookDTO.setAmanLogoUrl(amanLogoUrl);
+        bookDTO.setBookInventoryReference(maazounBookWarehouse.getBookInventoryNumber() + "/" + maazounBookWarehouse.getBookInventoryReference());
+
+        return bookDTO;
+    }
+
+    private BookDTO createBookDTO(MaazounBookWarehouse maazounBookWarehouse, SubService subService, Long tierId) {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setMaazounWarehouseId(String.valueOf(maazounBookWarehouse.getId()));
+        bookDTO.setCreateAt(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedAt()) : null);
+        bookDTO.setCreateBy(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getCreatedBy() : null);
+        bookDTO.setId(String.valueOf(maazounBookWarehouse.getId()));
+        bookDTO.setLocationId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getId()) : null);
+        bookDTO.setLocationName(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getLocationFk().getName() : null);
+        bookDTO.setPosId(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getId()) : null);
+        bookDTO.setPosName(maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getPosFk().getName() : null);
 //		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
 //		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
-		
-		bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName():
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName():null);
-		bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()):
-			maazounBookWarehouse.getMaazounBookSupplyOrderFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()):null);
-		
-		
-		bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
-		bookDTO.setType(maazounBookWarehouse.getBookTypeName());
-		bookDTO.setTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
-		bookDTO.setBookType(maazounBookWarehouse.getBookTypeName());
-		bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
-		bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
-		bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
-		bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
-		bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
-		bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
-		bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
-		List<SubServiceQuota> subServiceQuota = subServiceQuotaService.findBySubServiceFk(subService);
-		double fees = (double) 0;
-		for(SubServiceQuota quota : subServiceQuota) {
-			if(quota.getStatusFk().equals(StatusConstant.STATUS_ACTIVE) && quota.getFeesType().equals("n"))
-				fees = fees + quota.getFees();
-		}
-		bookDTO.setFees(fees);
-		bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
-		
-		if(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
-			bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
-			bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
-			bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk()!=null?String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()):null);
 
-		}
-		if(maazounBookWarehouse.getMaazounBookCollectionInfoFk() != null) {
-			bookDTO.setCollectionInfoId(String.valueOf(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getId()));
-			bookDTO.setReceivedStatus(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getReceivedStatus());
-		}
-		
+        bookDTO.setSectorName(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getName() :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getName() : null);
+        bookDTO.setSectorId(maazounBookWarehouse.getMaazounBookRequestInfoFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getSectorFk().getId()) :
+                maazounBookWarehouse.getMaazounBookSupplyOrderFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getSectorFk().getId()) : null);
+
+
+        bookDTO.setSerialNumber(maazounBookWarehouse.getSerialNumber());
+        bookDTO.setType(maazounBookWarehouse.getBookTypeName());
+        bookDTO.setTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
+        bookDTO.setBookType(maazounBookWarehouse.getBookTypeName());
+        bookDTO.setBookTypeId(String.valueOf(maazounBookWarehouse.getBookTypeId()));
+        bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
+        bookDTO.setStatus(maazounBookWarehouse.getStatusFk());
+        bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
+        bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
+        bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
+        bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
+        // TODO : get fees from subServiceQuota with sub service and tier type
+        Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(tierId);
+        List<SubServiceQuota> subServiceQuota = new ArrayList<>();
+        if (subServicePriceTier.isPresent()) {
+            subServiceQuota = subServiceQuotaService.findBySubServiceFkAndSubServicePriceTierFK(subService, subServicePriceTier.get());
+        } else {
+            subServiceQuota = subServiceQuotaService.findBySubServiceFk(subService);
+        }
+
+        double fees = (double) 0;
+        for (SubServiceQuota quota : subServiceQuota) {
+            if (quota.getStatusFk().equals(StatusConstant.STATUS_ACTIVE) && quota.getFeesType().equals("n"))
+                fees = fees + quota.getFees();
+        }
+        bookDTO.setFees(fees);
+        bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
+
+        if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
+            bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
+            bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
+            bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()) : null);
+
+        }
+        if (maazounBookWarehouse.getMaazounBookCollectionInfoFk() != null) {
+            bookDTO.setCollectionInfoId(String.valueOf(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getId()));
+            bookDTO.setReceivedStatus(maazounBookWarehouse.getMaazounBookCollectionInfoFk().getReceivedStatus());
+        }
+
 //		SubServiceQuota subServiceQuotaDarebtDamgha = subService.getSubServicesQuota().stream()
 //				.filter(x -> x.getName().equalsIgnoreCase(StatusConstant.BOOK_QUOTA_DAREBT_DAMGHA) &&
 //						x.getStatusFk().equals(StatusConstant.STATUS_ACTIVE))
@@ -263,10 +273,10 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota{
 //			bookDTO.setFees(Double.valueOf(String.format("%.2f", totalAmount)));
 //		}
 
-		bookDTO.setAmanLogoUrl(amanLogoUrl);
-		
-		return bookDTO;
-	}
-	
+        bookDTO.setAmanLogoUrl(amanLogoUrl);
+
+        return bookDTO;
+    }
+
 
 }

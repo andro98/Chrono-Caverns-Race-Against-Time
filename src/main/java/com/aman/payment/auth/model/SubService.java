@@ -68,8 +68,7 @@ public class SubService extends DateAudit implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "subServiceFk")
 	private Set<SubServiceQuota> subServicesQuota  = new HashSet<SubServiceQuota>(0);
-	
-	
+
 	@Transient
 	private double feesQuota;
 	

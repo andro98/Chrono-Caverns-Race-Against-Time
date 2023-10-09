@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -16,6 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.aman.payment.auth.model.*;
+import com.aman.payment.auth.model.dto.*;
+import com.aman.payment.auth.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -38,40 +40,6 @@ import com.aman.payment.auth.mapper.SectorMapper;
 import com.aman.payment.auth.mapper.ServiceMapper;
 import com.aman.payment.auth.mapper.SettingMapper;
 import com.aman.payment.auth.mapper.SubServiceQuotaMapper;
-import com.aman.payment.auth.model.City;
-import com.aman.payment.auth.model.InsuranceNumber;
-import com.aman.payment.auth.model.Location;
-import com.aman.payment.auth.model.MaazouniaChurch;
-import com.aman.payment.auth.model.Menu;
-import com.aman.payment.auth.model.Merchant;
-import com.aman.payment.auth.model.Pos;
-import com.aman.payment.auth.model.Role;
-import com.aman.payment.auth.model.Sector;
-import com.aman.payment.auth.model.Service;
-import com.aman.payment.auth.model.Setting;
-import com.aman.payment.auth.model.SubService;
-import com.aman.payment.auth.model.SubServiceQuota;
-import com.aman.payment.auth.model.User;
-import com.aman.payment.auth.model.dto.CityDTO;
-import com.aman.payment.auth.model.dto.JwtAuthSectorDTO;
-import com.aman.payment.auth.model.dto.LocationDTO;
-import com.aman.payment.auth.model.dto.LocationPagingDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchsPagingDTO;
-import com.aman.payment.auth.model.dto.MenuDTO;
-import com.aman.payment.auth.model.dto.MerchantDTO;
-import com.aman.payment.auth.model.dto.MerchantPagingDTO;
-import com.aman.payment.auth.model.dto.PosDTO;
-import com.aman.payment.auth.model.dto.PosPagingDTO;
-import com.aman.payment.auth.model.dto.PosWithUserAgentDTO;
-import com.aman.payment.auth.model.dto.RoleDTO;
-import com.aman.payment.auth.model.dto.SectorDTO;
-import com.aman.payment.auth.model.dto.SectorPagingDTO;
-import com.aman.payment.auth.model.dto.ServiceDTO;
-import com.aman.payment.auth.model.dto.SettingDTO;
-import com.aman.payment.auth.model.dto.SettingPagingDTO;
-import com.aman.payment.auth.model.dto.SubServiceDTO;
-import com.aman.payment.auth.model.dto.SubServiceQuotaDTO;
 import com.aman.payment.auth.model.payload.AddEditLocationRequest;
 import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
 import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
@@ -91,18 +59,6 @@ import com.aman.payment.auth.model.payload.ServiceMenuRequest;
 import com.aman.payment.auth.model.payload.SubServiceByIDRequest;
 import com.aman.payment.auth.model.payload.SubServiceByServiceIDRequest;
 import com.aman.payment.auth.model.payload.SupplyOrderReferenceNumberRequest;
-import com.aman.payment.auth.service.CityService;
-import com.aman.payment.auth.service.CryptoMngrAuthService;
-import com.aman.payment.auth.service.InsuranceNumberService;
-import com.aman.payment.auth.service.LocationService;
-import com.aman.payment.auth.service.MaazouniaChurchService;
-import com.aman.payment.auth.service.MerchantService;
-import com.aman.payment.auth.service.PosService;
-import com.aman.payment.auth.service.SectorService;
-import com.aman.payment.auth.service.ServiceService;
-import com.aman.payment.auth.service.SettingService;
-import com.aman.payment.auth.service.SubServiceQuotaService;
-import com.aman.payment.auth.service.SubServiceService;
 import com.aman.payment.auth.service.impl.MenuServiceImpl;
 import com.aman.payment.auth.service.impl.RoleServiceImpl;
 import com.aman.payment.auth.service.impl.UserService;
@@ -123,6 +79,7 @@ public class LookupManagementImpl implements LookupManagement {
 	private final ServiceService serviceService;
 	private final SubServiceService subServiceService;
 	private final SubServiceQuotaService subServiceQuotaService;
+	private final SubServicePriceTierService subServicePriceTierService;
 	private final PosService posService;
 	private final MerchantService merchantService;
 	private final LocationService locationService;
@@ -159,7 +116,7 @@ public class LookupManagementImpl implements LookupManagement {
 			SectorMapper sectorMapper, MaazouniaChurchService maazouniaChurchService,
 			MaazouniaChurchMapper maazouniaChurchMapper, SettingService settingService, 
 			SettingMapper settingMapper, SubServiceQuotaService subServiceQuotaService,
-			SubServiceQuotaMapper subServiceQuotaMapper) {
+			SubServiceQuotaMapper subServiceQuotaMapper, SubServicePriceTierService subServicePriceTierService) {
 
 		super();
 		this.menuService = menuService;
@@ -189,6 +146,7 @@ public class LookupManagementImpl implements LookupManagement {
 		this.settingMapper = settingMapper;
 		this.subServiceQuotaService = subServiceQuotaService;
 		this.subServiceQuotaMapper = subServiceQuotaMapper;
+		this.subServicePriceTierService = subServicePriceTierService;
 	}
 
 	/*
@@ -219,6 +177,11 @@ public class LookupManagementImpl implements LookupManagement {
 
 		Service eService = serviceService.findById(Long.valueOf(subServiceByServiceIDRequest.getServiceId())).get();
 		return serviceMapper.subServicesToServiceDTOs(subServiceService.getSubServiceByServiceFk(eService));
+	}
+
+	@Override
+	public List<SubServicePriceTierDTO> getAllSubServicesPriceTier() {
+		return serviceMapper.subServicePriceTierToSubServicePriceTierDTOS(subServicePriceTierService.findAll());
 	}
 
 	@Override
