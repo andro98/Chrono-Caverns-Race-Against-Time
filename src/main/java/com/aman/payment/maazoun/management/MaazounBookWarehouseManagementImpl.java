@@ -1185,12 +1185,18 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
             List<Long> sectorIds = getSectorIds(customUserDetails.getPosSet());
 
+            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(bookWarehouseOptional.getSerialNumber());
+            Long tierId = null;
+            if (stockLabel.isPresent()) {
+                tierId = stockLabel.get().getBookTierId();
+            }
+
             if (customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_SUPPORT)
                     || customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_ADMIN)) {
 
                 SubService subService = subServiceService.findById(bookWarehouseOptional.getBookTypeId()).get();
                 BookDTO bookDto = maazounBookWarehouseMapper.maazounBookWarehouseToBookDTO(bookWarehouseOptional,
-                        subService, null);
+                        subService, tierId);
 
                 return cryptoMngrMaazounService.encrypt(bookDto.toString());
 
@@ -1199,7 +1205,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
                     SubService subService = subServiceService.findById(bookWarehouseOptional.getBookTypeId()).get();
                     BookDTO bookDto = maazounBookWarehouseMapper.maazounBookWarehouseToBookDTO(bookWarehouseOptional,
-                            subService, null);
+                            subService, tierId);
 
                     return cryptoMngrMaazounService.encrypt(bookDto.toString());
 

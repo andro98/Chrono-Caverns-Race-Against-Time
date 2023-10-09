@@ -21,6 +21,7 @@ public class BookDTO extends MaazounBookQuota {
     private String bookType;
     private String bookTierId;
     private String bookTierName;
+    private String bookTierPrice;
     private String locationId;
     private String locationName;
     private String createAt;

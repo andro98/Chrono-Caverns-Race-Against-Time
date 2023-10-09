@@ -139,7 +139,7 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         if (label.isPresent()) {
             Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(label.get().getBookTierId());
             if (subServicePriceTier.isPresent()) {
-                bookDTO.setFees(subServicePriceTier.get().getFees());
+                bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
                 bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
                 bookDTO.setBookTierName(subServicePriceTier.get().getName());
             }
@@ -199,10 +199,13 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
         // TODO : get fees from subServiceQuota with sub service and tier type
-        Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(tierId);
+        Optional<SubServicePriceTier> subServicePriceTier = tierId == null ? Optional.empty() : subServicePriceTierService.findById(tierId);
         List<SubServiceQuota> subServiceQuota = new ArrayList<>();
         if (subServicePriceTier.isPresent()) {
             subServiceQuota = subServiceQuotaService.findBySubServiceFkAndSubServicePriceTierFK(subService, subServicePriceTier.get());
+            bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
+            bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
+            bookDTO.setBookTierName(subServicePriceTier.get().getName());
         } else {
             subServiceQuota = subServiceQuotaService.findBySubServiceFk(subService);
         }
