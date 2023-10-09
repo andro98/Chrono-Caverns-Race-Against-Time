@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.aman.payment.auth.model.*;
+import com.aman.payment.auth.service.SubServicePriceTierService;
 import com.aman.payment.maazoun.mapper.SupplyOrderDetailsMapper;
 import com.aman.payment.maazoun.model.*;
 import org.apache.log4j.Logger;
@@ -27,10 +29,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aman.payment.auth.management.LookupManagement;
-import com.aman.payment.auth.model.CustomUserDetails;
-import com.aman.payment.auth.model.Pos;
-import com.aman.payment.auth.model.Sector;
-import com.aman.payment.auth.model.SubService;
 import com.aman.payment.auth.service.SubServiceService;
 import com.aman.payment.core.exception.ResourceAlreadyInUseException;
 import com.aman.payment.core.model.payload.URLRequest;
@@ -85,6 +83,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
     private final MaazounProfileService maazounProfileService;
     private final SupplyOrderDetailsService supplyOrderDetailsService;
     private final SupplyOrderDetailsMapper supplyOrderDetailsMapper;
+    private final SubServicePriceTierService subServicePriceTierService;
 
     @Value("${attachment.maazoun.supply.orders}")
     private String supplyOrderPathAtt;
@@ -105,7 +104,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                                               MaazounBookStockLabelService maazounBookStockLabelService,
                                               MaazounRequestInfoService maazounRequestInfoService, MaazounProfileService maazounProfileService,
                                               SupplyOrderDetailsService supplyOrderDetailsService, SupplyOrderService supplyOrderService,
-                                              SupplyOrderDetailsMapper supplyOrderDetailsMapper) {
+                                              SupplyOrderDetailsMapper supplyOrderDetailsMapper, SubServicePriceTierService subServicePriceTierService) {
         super();
         this.maazounBookWarehouseService = maazounBookWarehouseService;
         this.cryptoMngrMaazounService = cryptoMngrMaazounService;
@@ -120,6 +119,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
         this.supplyOrderDetailsService = supplyOrderDetailsService;
         this.supplyOrderService = supplyOrderService;
         this.supplyOrderDetailsMapper = supplyOrderDetailsMapper;
+        this.subServicePriceTierService = subServicePriceTierService;
     }
 
     @Override
@@ -856,6 +856,14 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
             eMaazounBookHistoryDTO.setSuppliedReviewedDateBy(Util.dateFormat(eMaazounBookSupplyOrder.getUpdatedAt())
                     + "/" + eMaazounBookSupplyOrder.getUpdatedBy());
             eMaazounBookHistoryDTO.setCustody(String.valueOf(eMaazounBookSupplyOrder.getIsCustody()));
+
+            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(eMaazounBookWarehouse.getSerialNumber());
+            if (stockLabel.isPresent()) {
+                Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(stockLabel.get().getBookTierId());
+                if (subServicePriceTier.isPresent()) {
+                    eMaazounBookHistoryDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
+                }
+            }
 
             // 3- Maazoun book sold info
             MaazounBookRequestInfo eMaazounBookRequestInfo = eMaazounBookWarehouse.getMaazounBookRequestInfoFk();
