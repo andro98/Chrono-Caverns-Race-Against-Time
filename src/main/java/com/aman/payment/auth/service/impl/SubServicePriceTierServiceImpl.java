@@ -50,7 +50,7 @@ public class SubServicePriceTierServiceImpl implements SubServicePriceTierServic
     }
 
     @Override
-    @Cacheable(value = "serviceCache",key = "#id", unless = "#result==null")
+//    @Cacheable(value = "serviceCache",key = "#id", unless = "#result==null")
     public Optional<SubServicePriceTier> findById(Long id) {
         return repository.findById(id);
     }
