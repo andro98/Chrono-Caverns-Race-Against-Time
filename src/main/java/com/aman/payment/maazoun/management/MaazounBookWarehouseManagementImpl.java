@@ -5,13 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.aman.payment.auth.model.*;
@@ -1541,8 +1535,13 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                 }
 
                 Set<String> bookList = new HashSet<String>();
+                Map<String, String> tierMap = new HashMap<String, String>();
                 for (MaazounBookWarehouse obj : eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()) {
-                    if (String.valueOf(bookType).equals(String.valueOf(obj.getBookTypeId()))) {
+                    if (tierMap.get(obj.getSerialNumber()) == null) {
+                        tierMap.put(obj.getSerialNumber(), String.valueOf(maazounBookStockLabelService.findByLabelCode(obj.getSerialNumber()).get().getBookTierId()));
+                    }
+
+                    if (bookType == obj.getBookTypeId() && supplyOrderDetailsFk.getBootTierId().equals(tierMap.get(obj.getSerialNumber()))) {
                         bookList.add(obj.getSerialNumber());
                     }
 
@@ -1562,15 +1561,20 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
         for (BookListRequest book : addBookSupplyOrder.getBookList()) {
             long bookTypeId = book.getTypeId();
+//            long bookTierId = maazounBookStockLabelService.findByLabelCode(book.getSerialNumber()).get().getBookTierId();
 
-            SupplyOrderDetails eSupplyOrderDetails = eSupplyOrder.getSupplyOrderDetailsSet().stream()
-                    .filter(p -> p.getBookTypeFK().equals(String.valueOf(bookTypeId))).findAny().orElse(null);
+            List<SupplyOrderDetails> eSupplyOrderDetails = eSupplyOrder.getSupplyOrderDetailsSet().stream()
+                    .filter(p -> p.getBookTypeFK().equals(String.valueOf(bookTypeId)))
+                    .collect(Collectors.toList());
 
-            if (eSupplyOrderDetails == null) {
+            if (eSupplyOrderDetails.isEmpty()) {
                 throw new IllegalArgumentException("Sorry, not exist bookType Id = " + bookTypeId + " in this ref_supply_order_number");
             }
 
-            long remainingCount = eSupplyOrderDetails.getRemainingBookTypeCount();
+            long remainingCount = eSupplyOrderDetails.stream().reduce(
+                    0L,
+                    (partialResult, element) -> partialResult + element.getRemainingBookTypeCount(),
+                    Long::sum);
 
             List<BookListRequest> bookList = addBookSupplyOrder.getBookList().stream()
                     .filter(x -> x.getTypeId() == bookTypeId).collect(Collectors.toList());
