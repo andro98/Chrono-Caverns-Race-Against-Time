@@ -154,7 +154,7 @@ public class MaazounBookSupplyOrderMapper {
 						s.getCurrentBookTypeCount());
 			}
 			else if(Integer.valueOf(s.getBookTypeFK()) == 10) {
-				supplyOrderDTO.setDivorceBookCount8(supplyOrderDTO.getDivorceBookCount15() + 
+				supplyOrderDTO.setDivorceBookCount8(supplyOrderDTO.getDivorceBookCount8() +
 						s.getCurrentBookTypeCount());
 			}
 			else if(Integer.valueOf(s.getBookTypeFK()) == 20) {
