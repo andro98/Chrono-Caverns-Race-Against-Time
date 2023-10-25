@@ -60,6 +60,8 @@ import com.aman.payment.maazoun.service.SupplyOrderService;
 import com.aman.payment.util.StatusConstant;
 import com.aman.payment.util.Util;
 
+import javax.swing.text.html.Option;
+
 @Component
 public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateManagement
         implements MaazounBookWarehouseManagement {
@@ -178,6 +180,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                 addBookSupplyOrder.getRefSupplyOrderNumber(), sector);
 
         maazounBookSupplyOrderFk.setImageUrl(eSupplyOrder.get().getImageUrl());
+
         maazounBookSupplyOrderFk = maazounBookSupplyOrderService.save(maazounBookSupplyOrderFk);
 
         /*
@@ -1497,11 +1500,17 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
             for (SupplyOrderDetails supplyOrderDetailsFk : eSupplyOrder.getSupplyOrderDetailsSet()) {
 
-                Long bookType = maazounBookWarehouseSet.stream()
-                        .filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
-                        .findAny().orElse(null);
+                Optional<MaazounBookWarehouse> warehouse = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
+                        .stream()
+                        .filter(f -> String.valueOf(f.getBookTypeId()).equals(supplyOrderDetailsFk.getBookTypeFK())
+                                && String.valueOf(f.getBookTierId()).equals(supplyOrderDetailsFk.getBootTierId()))
+                        .findAny();
+//
+//                Long bookType = maazounBookWarehouseSet.stream()
+//                        .filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
+//                        .findAny().orElse(null);
 
-                if (bookType != null) {
+                if (warehouse.isPresent()) {
                     supplyOrderDetailsFk.setRemainingBookTypeCount(supplyOrderDetailsFk.getRemainingBookTypeCount() - 1);
                     supplyOrderDetailsService.save(supplyOrderDetailsFk);
                 }
@@ -1524,14 +1533,20 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
         for (SupplyOrderDetails supplyOrderDetailsFk : eSupplyOrder.getSupplyOrderDetailsSet()) {
 
-            Long bookType = maazounBookWarehouseSet.stream()
-                    .filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
-                    .findAny().orElse(null);
+//            Long bookType = maazounBookWarehouseSet.stream()
+//                    .filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
+//                    .findAny().orElse(null);
 
-            if (bookType != null) {
+            Optional<MaazounBookWarehouse> warehouse = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
+                    .stream()
+                    .filter(f -> String.valueOf(f.getBookTypeId()).equals(supplyOrderDetailsFk.getBookTypeFK())
+                            && String.valueOf(f.getBookTierId()).equals(supplyOrderDetailsFk.getBootTierId()))
+                    .findAny();
+
+            if (warehouse.isPresent()) {
                 if (supplyOrderDetailsFk.getRemainingBookTypeCount() <= 0) {
                     throw new IllegalArgumentException("Sorry, the remaining count in this ref_supply_order_number"
-                            + " with bookTypeId " + bookType + " count = " + supplyOrderDetailsFk.getRemainingBookTypeCount());
+                            + " with bookTypeId " + supplyOrderDetailsFk.getBookTypeFK() + " count = " + supplyOrderDetailsFk.getRemainingBookTypeCount());
                 }
 
                 Set<String> bookList = new HashSet<String>();
@@ -1541,14 +1556,14 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                         tierMap.put(obj.getSerialNumber(), String.valueOf(maazounBookStockLabelService.findByLabelCode(obj.getSerialNumber()).get().getBookTierId()));
                     }
 
-                    if (bookType == obj.getBookTypeId() && supplyOrderDetailsFk.getBootTierId().equals(tierMap.get(obj.getSerialNumber()))) {
+                    if (supplyOrderDetailsFk.getBookTypeFK().equals(String.valueOf(obj.getBookTypeId())) && supplyOrderDetailsFk.getBootTierId().equals(tierMap.get(obj.getSerialNumber()))) {
                         bookList.add(obj.getSerialNumber());
                     }
 
                 }
                 if (bookList.size() > supplyOrderDetailsFk.getRemainingBookTypeCount()) {
                     throw new IllegalArgumentException("Sorry, the remaining count in this ref_supply_order_number"
-                            + " with bookTypeId " + bookType + " count = " +
+                            + " with bookTypeId " + supplyOrderDetailsFk.getBookTypeFK() + " count = " +
                             supplyOrderDetailsFk.getRemainingBookTypeCount() + " < coding book count = " + bookList.size());
                 }
 

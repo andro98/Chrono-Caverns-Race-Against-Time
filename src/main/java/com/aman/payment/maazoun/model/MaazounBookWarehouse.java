@@ -34,6 +34,9 @@ public class MaazounBookWarehouse implements Serializable {
 	
 	@Column(name = "bookTypeId")
 	private long bookTypeId;
+
+	@Column(name = "bookTierId")
+	private long bookTierId;
 	
 	@Column(name = "bookTypeName")
 	private String bookTypeName;
@@ -223,6 +226,11 @@ public class MaazounBookWarehouse implements Serializable {
 	}
 
 
-	
-	
+	public void setBookTierId(long bookTierId) {
+		this.bookTierId = bookTierId;
+	}
+
+	public long getBookTierId() {
+		return bookTierId;
+	}
 }
