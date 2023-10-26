@@ -1500,18 +1500,19 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
             for (SupplyOrderDetails supplyOrderDetailsFk : eSupplyOrder.getSupplyOrderDetailsSet()) {
 
-                Optional<MaazounBookWarehouse> warehouse = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
+                Set<String> warehouse = eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()
                         .stream()
                         .filter(f -> String.valueOf(f.getBookTypeId()).equals(supplyOrderDetailsFk.getBookTypeFK())
                                 && String.valueOf(f.getBookTierId()).equals(supplyOrderDetailsFk.getBootTierId()))
-                        .findAny();
+                        .map(MaazounBookWarehouse::getSerialNumber)
+                        .collect(Collectors.toSet());
 //
 //                Long bookType = maazounBookWarehouseSet.stream()
 //                        .filter(f -> f.equals(Long.valueOf(supplyOrderDetailsFk.getBookTypeFK())))
 //                        .findAny().orElse(null);
 
-                if (warehouse.isPresent()) {
-                    supplyOrderDetailsFk.setRemainingBookTypeCount(supplyOrderDetailsFk.getRemainingBookTypeCount() - 1);
+                if (!warehouse.isEmpty()) {
+                    supplyOrderDetailsFk.setRemainingBookTypeCount(supplyOrderDetailsFk.getRemainingBookTypeCount() - warehouse.size());
                     supplyOrderDetailsService.save(supplyOrderDetailsFk);
                 }
 
@@ -1576,25 +1577,30 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
         for (BookListRequest book : addBookSupplyOrder.getBookList()) {
             long bookTypeId = book.getTypeId();
-//            long bookTierId = maazounBookStockLabelService.findByLabelCode(book.getSerialNumber()).get().getBookTierId();
+            long bookTierId = maazounBookStockLabelService.findByLabelCode(book.getSerialNumber()).get().getBookTierId();
 
-            List<SupplyOrderDetails> eSupplyOrderDetails = eSupplyOrder.getSupplyOrderDetailsSet().stream()
-                    .filter(p -> p.getBookTypeFK().equals(String.valueOf(bookTypeId)))
-                    .collect(Collectors.toList());
+            SupplyOrderDetails eSupplyOrderDetails = eSupplyOrder.getSupplyOrderDetailsSet().stream()
+                    .filter(p -> p.getBookTypeFK().equals(String.valueOf(bookTypeId))
+                            && p.getBootTierId().equals(String.valueOf(bookTierId)))
+                    .findAny()
+                    .orElse(null);
 
-            if (eSupplyOrderDetails.isEmpty()) {
+            if (eSupplyOrderDetails == null) {
                 throw new IllegalArgumentException("Sorry, not exist bookType Id = " + bookTypeId + " in this ref_supply_order_number");
             }
 
-            long remainingCount = eSupplyOrderDetails.stream().reduce(
-                    0L,
-                    (partialResult, element) -> partialResult + element.getRemainingBookTypeCount(),
-                    Long::sum);
+            long remainingCount = eSupplyOrderDetails.getRemainingBookTypeCount();
 
-            List<BookListRequest> bookList = addBookSupplyOrder.getBookList().stream()
-                    .filter(x -> x.getTypeId() == bookTypeId).collect(Collectors.toList());
+            List<BookListRequest> bookListByTier = addBookSupplyOrder.getBookList().stream()
+                    .filter(x -> x.getTypeId() == bookTypeId)
+                    .filter(x -> maazounBookStockLabelService
+                            .findByLabelCode(x.getSerialNumber())
+                            .map(y -> y.getBookTierId() == bookTierId)
+                            .orElse(false)
+                    )
+                    .collect(Collectors.toList());
 
-            if (bookList.size() > remainingCount) {
+            if (bookListByTier.size() > remainingCount) {
                 throw new IllegalArgumentException("Sorry, the coding request for bookType Id = " + bookTypeId + " "
                         + "more than exist in the remaining count in ref_supply_order_number");
             }
