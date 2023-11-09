@@ -2,36 +2,44 @@ package com.aman.payment.maazoun.model.payload;
 
 public class StockLabelRequest {
 
-	private Long locationId;
-	private Long numberOfLabels;
-	private Long bootTypeId;
+    private Long locationId;
+    private Long numberOfLabels;
+    private Long bootTypeId;
 
-	public StockLabelRequest() {
-	}
+    private Long bookTierId;
 
-	public Long getLocationId() {
-		return locationId;
-	}
+    public StockLabelRequest() {
+    }
 
-	public void setLocationId(Long locationId) {
-		this.locationId = locationId;
-	}
+    public Long getLocationId() {
+        return locationId;
+    }
 
-	public Long getNumberOfLabels() {
-		return numberOfLabels;
-	}
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
+    }
 
-	public void setNumberOfLabels(Long numberOfLabels) {
-		this.numberOfLabels = numberOfLabels;
-	}
+    public Long getNumberOfLabels() {
+        return numberOfLabels;
+    }
 
-	public Long getBootTypeId() {
-		return bootTypeId;
-	}
+    public void setNumberOfLabels(Long numberOfLabels) {
+        this.numberOfLabels = numberOfLabels;
+    }
 
-	public void setBootTypeId(Long bootTypeId) {
-		this.bootTypeId = bootTypeId;
-	}
+    public Long getBootTypeId() {
+        return bootTypeId;
+    }
 
+    public void setBootTypeId(Long bootTypeId) {
+        this.bootTypeId = bootTypeId;
+    }
 
+    public Long getBookTierId() {
+        return bookTierId;
+    }
+
+    public void setBookTierId(Long bookTierId) {
+        this.bookTierId = bookTierId;
+    }
 }

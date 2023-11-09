@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import com.aman.payment.auth.model.dto.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,23 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aman.payment.annotation.CurrentUser;
 import com.aman.payment.auth.management.LookupManagement;
 import com.aman.payment.auth.model.CustomUserDetails;
-import com.aman.payment.auth.model.dto.CityDTO;
-import com.aman.payment.auth.model.dto.LocationDTO;
-import com.aman.payment.auth.model.dto.LocationPagingDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchDTO;
-import com.aman.payment.auth.model.dto.MaazouniaChurchsPagingDTO;
-import com.aman.payment.auth.model.dto.MenuDTO;
-import com.aman.payment.auth.model.dto.MerchantDTO;
-import com.aman.payment.auth.model.dto.MerchantPagingDTO;
-import com.aman.payment.auth.model.dto.PosDTO;
-import com.aman.payment.auth.model.dto.PosPagingDTO;
-import com.aman.payment.auth.model.dto.RoleDTO;
-import com.aman.payment.auth.model.dto.SectorDTO;
-import com.aman.payment.auth.model.dto.SectorPagingDTO;
-import com.aman.payment.auth.model.dto.ServiceDTO;
-import com.aman.payment.auth.model.dto.SettingDTO;
-import com.aman.payment.auth.model.dto.SettingPagingDTO;
-import com.aman.payment.auth.model.dto.SubServiceDTO;
 import com.aman.payment.auth.model.payload.AddEditLocationRequest;
 import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
 import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
@@ -137,6 +121,16 @@ public class LookupController {
 		});
 		
 		return ResponseEntity.ok(eServiceDTO);
+	}
+
+	@GetMapping("/allTiers")
+	@ApiOperation(value = "Returns the list of configured sub services price tier. Requires ADMIN Access")
+	public ResponseEntity<Set<SubServicePriceTierDTO>> getAllSubServicesPriceTier(){
+		Set<SubServicePriceTierDTO> eSubServicePriceTierDTO = new HashSet<>();
+		lookupManagement.getAllSubServicesPriceTier().forEach(s -> {
+			eSubServicePriceTierDTO.add(s.encrypt(cryptoMngrAuthService));
+		});
+		return ResponseEntity.ok(eSubServicePriceTierDTO);
 	}
 
 	@PostMapping("/subServicesByParent")

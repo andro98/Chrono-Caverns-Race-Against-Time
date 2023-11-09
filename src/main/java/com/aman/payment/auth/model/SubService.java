@@ -57,7 +57,10 @@ public class SubService extends DateAudit implements Serializable {
 	
 	@Column(name = "requiredService",columnDefinition="tinyint(1) default 0")
 	private boolean requiredService;
-	
+
+	@Column(name = "book_Type")
+	private String bookType;
+
 	@ManyToOne
 	@JoinColumn(name = "serviceFk", referencedColumnName = "id", nullable = true)
     @JsonIgnore
@@ -65,8 +68,7 @@ public class SubService extends DateAudit implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "subServiceFk")
 	private Set<SubServiceQuota> subServicesQuota  = new HashSet<SubServiceQuota>(0);
-	
-	
+
 	@Transient
 	private double feesQuota;
 	
@@ -192,4 +194,7 @@ public class SubService extends DateAudit implements Serializable {
 	}
 
 
+	public String getBookType() {
+		return bookType;
+	}
 }

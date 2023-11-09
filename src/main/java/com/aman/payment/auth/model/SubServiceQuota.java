@@ -59,6 +59,11 @@ public class SubServiceQuota implements Serializable {
 	@JoinColumn(name = "subServiceFk", referencedColumnName = "id", nullable = true)
     @JsonIgnore
     private SubService subServiceFk;
+
+	@ManyToOne
+	@JoinColumn(name = "subServicePriceTierFk", referencedColumnName = "id", nullable = true)
+	@JsonIgnore
+	private SubServicePriceTier subServicePriceTierFk;
 	
 	public SubServiceQuota(Long id) {
 		this.id = id;
@@ -168,7 +173,12 @@ public class SubServiceQuota implements Serializable {
 		this.beneficiary = beneficiary;
 	}
 
-	
 
+	public SubServicePriceTier getSubServicePriceTierFk() {
+		return subServicePriceTierFk;
+	}
 
+	public void setSubServicePriceTierFk(SubServicePriceTier subServicePriceTierFk) {
+		this.subServicePriceTierFk = subServicePriceTierFk;
+	}
 }

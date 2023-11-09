@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.aman.payment.auth.model.SubServicePriceTier;
+import com.aman.payment.auth.model.dto.SubServicePriceTierDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -150,5 +152,25 @@ public class ServiceMapper {
 			jwtAuthServiceDTO.setMerchantId(String.valueOf(service.getMerchantFk().getId()));
 		}
 		return jwtAuthServiceDTO.encrypt(cryptoMngrAuthService);
+	}
+
+	public SubServicePriceTierDTO subServicePriceTierToDto(SubServicePriceTier subService) {
+		return createSubServicePriceTierDTO(subService);
+	}
+
+	public List<SubServicePriceTierDTO> subServicePriceTierToSubServicePriceTierDTOS(List<SubServicePriceTier> subServices) {
+		return subServices.stream().filter(Objects::nonNull)
+				.map(this::subServicePriceTierToDto).collect(Collectors.toList());
+	}
+
+
+	private SubServicePriceTierDTO createSubServicePriceTierDTO(SubServicePriceTier subServicePriceTier) {
+		SubServicePriceTierDTO subServicePriceTierDTO = new SubServicePriceTierDTO();
+		subServicePriceTierDTO.setName(subServicePriceTier.getName());
+		subServicePriceTierDTO.setId(String.valueOf(subServicePriceTier.getId()));
+		subServicePriceTierDTO.setFees(String.valueOf(subServicePriceTier.getFees()));
+		subServicePriceTierDTO.setDescription(subServicePriceTier.getDescription());
+		subServicePriceTierDTO.setSubServiceId(String.valueOf(subServicePriceTier.getSubServiceFk().getId()));
+		return subServicePriceTierDTO;
 	}
 }

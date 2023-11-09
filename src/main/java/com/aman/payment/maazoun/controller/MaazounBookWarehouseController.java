@@ -67,512 +67,524 @@ import reactor.util.annotation.Nullable;
 @Api(value = "Maazoun Book Warehouse Rest API", description = "Defines endpoints for the Maazoun Book Warehouse. It's secured by default")
 public class MaazounBookWarehouseController extends MaazounJsonObjectFactoryImpl {
 
-	final static Logger logger = Logger.getLogger("maazoun");
+    final static Logger logger = Logger.getLogger("maazoun");
 
-	private final MaazounBookWarehouseManagement maazounBookWarehouseManagement;
-	private final SupplyOrderDetailsManagement supplyOrderDetailsManagement;
+    private final MaazounBookWarehouseManagement maazounBookWarehouseManagement;
+    private final SupplyOrderDetailsManagement supplyOrderDetailsManagement;
 
-	@Autowired
-	public MaazounBookWarehouseController(MaazounBookWarehouseManagement maazounBookWarehouseManagement,
-			SupplyOrderDetailsManagement supplyOrderDetailsManagement) {
-		super();
-		this.maazounBookWarehouseManagement = maazounBookWarehouseManagement;
-		this.supplyOrderDetailsManagement = supplyOrderDetailsManagement;
-	}
+    @Autowired
+    public MaazounBookWarehouseController(MaazounBookWarehouseManagement maazounBookWarehouseManagement,
+                                          SupplyOrderDetailsManagement supplyOrderDetailsManagement) {
+        super();
+        this.maazounBookWarehouseManagement = maazounBookWarehouseManagement;
+        this.supplyOrderDetailsManagement = supplyOrderDetailsManagement;
+    }
 
-	@PostMapping("/books")
+    @PostMapping("/books")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
-	public ResponseEntity<BooksPagingDTO> getAllBooks(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
+    public ResponseEntity<BooksPagingDTO> getAllBooks(@CurrentUser CustomUserDetails customUserDetails,
+                                                      @Valid @RequestBody String jsonString) {
 
-		BooksRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksRequest.class);
+        BooksRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.getAllBooks(decryptBooksRequest, customUserDetails));
-	}
+        return ResponseEntity.ok(maazounBookWarehouseManagement.getAllBooks(decryptBooksRequest, customUserDetails));
+    }
 
-//	   find all supply order Details by sector fk
-	@PostMapping("/findAllSupplyOrder")
-	@ApiOperation(value = "Returns the list of books  that is Doest NNNNot have Barcode . Requires ADMIN Access")
-	public ResponseEntity<BooksPagingDTO> getAllSupplyOrderDetailss(@CurrentUser CustomUserDetails customUserDetails,
-			@RequestBody String jsonString) {
-		BooksRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksRequest.class);
+    //	   find all supply order Details by sector fk
+    @PostMapping("/findAllSupplyOrder")
+    @ApiOperation(value = "Returns the list of books  that is Doest NNNNot have Barcode . Requires ADMIN Access")
+    public ResponseEntity<BooksPagingDTO> getAllSupplyOrderDetailss(@CurrentUser CustomUserDetails customUserDetails,
+                                                                    @RequestBody String jsonString) {
+        BooksRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksRequest.class);
 
-		return ResponseEntity
-				.ok(supplyOrderDetailsManagement.getAllSupplyOrderDetails(decryptBooksRequest, customUserDetails));
-	}
+        return ResponseEntity
+                .ok(supplyOrderDetailsManagement.getAllSupplyOrderDetails(decryptBooksRequest, customUserDetails));
+    }
 
-//// find all supply order Details  by created at between
-	@PostMapping("/findByDateBetween")
-	public ResponseEntity<BooksPagingDTO> findByDateBetween(@CurrentUser CustomUserDetails customUserDetails,
-			@RequestBody String jsonString) {
-		SupplyOrderDetailsBetweenDates decryptSupplyOrderDetailsBetweenDates = convertJsonStringToObject(jsonString,
-				SupplyOrderDetailsBetweenDates.class);
+    //// find all supply order Details  by created at between
+    @PostMapping("/findByDateBetween")
+    public ResponseEntity<BooksPagingDTO> findByDateBetween(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @RequestBody String jsonString) {
+        SupplyOrderDetailsBetweenDates decryptSupplyOrderDetailsBetweenDates = convertJsonStringToObject(jsonString,
+                SupplyOrderDetailsBetweenDates.class);
 
-		return ResponseEntity.ok(supplyOrderDetailsManagement
-				.findBookBetweenDates(decryptSupplyOrderDetailsBetweenDates, customUserDetails));
-	}
+        return ResponseEntity.ok(supplyOrderDetailsManagement
+                .findBookBetweenDates(decryptSupplyOrderDetailsBetweenDates, customUserDetails));
+    }
 
-	@PostMapping("/bookBySerialNumber")
+    @PostMapping("/bookBySerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getBookBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getBookBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                        @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookBySerialNumber(decryptBooksRequest, customUserDetails));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookBySerialNumber(decryptBooksRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/bookBySerialNumberForSell")
+    @PostMapping("/bookBySerialNumberForSell")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> bookBySerialNumberForSell(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> bookBySerialNumberForSell(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.getBookBySerialNumberForSell(decryptBooksRequest, customUserDetails));
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.getBookBySerialNumberForSell(decryptBooksRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/editBookFinancialNumber")
+    @PostMapping("/editBookFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> editBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> editBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                          @Valid @RequestBody String jsonString) {
 
-		EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
-				EditBookFinancialNumberRequest.class);
+        EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
+                EditBookFinancialNumberRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.editBookFinancialNumber(decryptBookFinancialNumberRequest));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.editBookFinancialNumber(decryptBookFinancialNumberRequest));
 
-	}
+    }
 
-	@PostMapping("/bookDistinctBySerialNumberAndStatus")
+    @PostMapping("/bookDistinctBySerialNumberAndStatus")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getBookDistinctBySerialNumberAndStatus(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getBookDistinctBySerialNumberAndStatus(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.bookDistinctBySerialNumberAndStatus(decryptBooksRequest,
-				customUserDetails));
+        return ResponseEntity.ok(maazounBookWarehouseManagement.bookDistinctBySerialNumberAndStatus(decryptBooksRequest,
+                customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/bookReceivedContractsBySerialNumber")
+    @PostMapping("/bookReceivedContractsBySerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<List<String>> getBookReceivedContractsBySerialNumber(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<List<String>> getBookReceivedContractsBySerialNumber(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement
-				.getBookReceivedContractsBySerialNumber(decryptBooksRequest, customUserDetails));
+        return ResponseEntity.ok(maazounBookWarehouseManagement
+                .getBookReceivedContractsBySerialNumber(decryptBooksRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/bookContractsBySerialNumber")
+    @PostMapping("/bookContractsBySerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getBookContractsBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getBookContractsBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                                 @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.getBookContructsBySerialNumber(decryptBooksRequest, customUserDetails));
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.getBookContructsBySerialNumber(decryptBooksRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/contractBySerialNumber")
+    @PostMapping("/contractBySerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getContractBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getContractBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @Valid @RequestBody String jsonString) {
 
-		ContractByIdRequest decryptContractByIdRequest = convertDecryptedJsonStringToObject(jsonString,
-				ContractByIdRequest.class);
+        ContractByIdRequest decryptContractByIdRequest = convertDecryptedJsonStringToObject(jsonString,
+                ContractByIdRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.getContractBySerialNumber(customUserDetails,
-				decryptContractByIdRequest));
-	}
+        return ResponseEntity.ok(maazounBookWarehouseManagement.getContractBySerialNumber(customUserDetails,
+                decryptContractByIdRequest));
+    }
 
-	@PostMapping("/contractByContractFinancialNumber")
+    @PostMapping("/contractByContractFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getContractByContractFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getContractByContractFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                                       @Valid @RequestBody String jsonString) {
 
-		ContractByIdRequest decryptContractByIdRequest = convertJsonStringToObject(jsonString,
-				ContractByIdRequest.class);
+        ContractByIdRequest decryptContractByIdRequest = convertJsonStringToObject(jsonString,
+                ContractByIdRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.getContractByContractFinancialNumber(customUserDetails,
-				decryptContractByIdRequest));
-	}
+        return ResponseEntity.ok(maazounBookWarehouseManagement.getContractByContractFinancialNumber(customUserDetails,
+                decryptContractByIdRequest));
+    }
 
-	// when add new supply order(Labeled books) decrement by the number from supply
-	// order Details(Not Labeled books)
-	@PostMapping("/addBookSupplyOrderCoding")
+    // when add new supply order(Labeled books) decrement by the number from supply
+    // order Details(Not Labeled books)
+    @PostMapping("/addBookSupplyOrderCoding")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Add books batch coding. Requires ADMIN Access")
-	public ResponseEntity<String> addBookSupplyOrderCoding(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestPart String jsonString,
-			@Nullable @RequestPart(name = "supplyOrderImge", required = false) MultipartFile supplyOrderImge) {
+    @ApiOperation(value = "Add books batch coding. Requires ADMIN Access")
+    public ResponseEntity<String> addBookSupplyOrderCoding(@CurrentUser CustomUserDetails customUserDetails,
+                                                           @Valid @RequestPart String jsonString,
+                                                           @Nullable @RequestPart(name = "supplyOrderImge", required = false) MultipartFile supplyOrderImge) {
 
-		AddBookSupplyOrder decryptAddBookSupplyOrder = convertJsonStringToObject(jsonString, AddBookSupplyOrder.class);
-		decryptAddBookSupplyOrder.setImageUrl(supplyOrderImge);
+        AddBookSupplyOrder decryptAddBookSupplyOrder = convertJsonStringToObject(jsonString, AddBookSupplyOrder.class);
+        decryptAddBookSupplyOrder.setImageUrl(supplyOrderImge);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.addBookSupplyOrderCoding(customUserDetails, decryptAddBookSupplyOrder));
-	}
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.addBookSupplyOrderCoding(customUserDetails, decryptAddBookSupplyOrder));
+    }
 
-	@PostMapping("/addCustodyBookSupplyOrder")
+    @PostMapping("/addCustodyBookSupplyOrder")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Add books batch. Requires ADMIN Access")
-	public ResponseEntity<String> addCustodyBookSupplyOrder(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestPart String jsonString,
-			@Nullable @RequestPart(name = "supplyOrderImge", required = false) MultipartFile supplyOrderImge) {
+    @ApiOperation(value = "Add books batch. Requires ADMIN Access")
+    public ResponseEntity<String> addCustodyBookSupplyOrder(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @Valid @RequestPart String jsonString,
+                                                            @Nullable @RequestPart(name = "supplyOrderImge", required = false) MultipartFile supplyOrderImge) {
 
-		AddBookSupplyOrder decryptAddBookSupplyOrder = convertJsonStringToObject(jsonString, AddBookSupplyOrder.class);
-		decryptAddBookSupplyOrder.setImageUrl(supplyOrderImge);
+        AddBookSupplyOrder decryptAddBookSupplyOrder = convertJsonStringToObject(jsonString, AddBookSupplyOrder.class);
+        decryptAddBookSupplyOrder.setImageUrl(supplyOrderImge);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.addCustodyBookSupplyOrder(customUserDetails, decryptAddBookSupplyOrder));
-	}
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.addCustodyBookSupplyOrder(customUserDetails, decryptAddBookSupplyOrder));
+    }
 
-	@PostMapping("/generateBookSerialNumber")
+    @PostMapping("/generateBookSerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Generate Books Serial Number. Requires ADMIN Access")
-	public ResponseEntity<String> generateBookSerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Generate Books Serial Number. Requires ADMIN Access")
+    public ResponseEntity<String> generateBookSerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                           @Valid @RequestBody String jsonString) {
 
-		GenerateBookSerialNumberRequest decryptGenerateBookSerialNumberRequest = convertJsonStringToObject(jsonString,
-				GenerateBookSerialNumberRequest.class);
+        GenerateBookSerialNumberRequest decryptGenerateBookSerialNumberRequest = convertJsonStringToObject(jsonString,
+                GenerateBookSerialNumberRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.generateBookSerialNumber(customUserDetails,
-				decryptGenerateBookSerialNumberRequest));
-	}
+        return ResponseEntity.ok(maazounBookWarehouseManagement.generateBookSerialNumber(customUserDetails,
+                decryptGenerateBookSerialNumberRequest));
+    }
 
-	@PostMapping("/supplyOrdersCoding")
+    @PostMapping("/supplyOrdersCoding")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured supply orders coding. Requires ADMIN Access")
-	public ResponseEntity<SupplyOrderPagingDTO> getAllSupplyOrdersCoding(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured supply orders coding. Requires ADMIN Access")
+    public ResponseEntity<SupplyOrderPagingDTO> getAllSupplyOrdersCoding(@CurrentUser CustomUserDetails customUserDetails,
+                                                                         @Valid @RequestBody String jsonString) {
 
-		SupplyOrderRequest decryptSupplyOrderRequest = convertJsonStringToObject(jsonString, SupplyOrderRequest.class);
+        SupplyOrderRequest decryptSupplyOrderRequest = convertJsonStringToObject(jsonString, SupplyOrderRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getAllSupplyOrdersCoding(decryptSupplyOrderRequest, customUserDetails));
-	}
-	
-	@PostMapping("/supplyOrders")
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getAllSupplyOrdersCoding(decryptSupplyOrderRequest, customUserDetails));
+    }
+
+    @PostMapping("/supplyOrders")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured supply orders. Requires ADMIN Access")
-	public ResponseEntity<SupplyOrderPagingDTO> getAllSupplyOrders(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured supply orders. Requires ADMIN Access")
+    public ResponseEntity<SupplyOrderPagingDTO> getAllSupplyOrders(@CurrentUser CustomUserDetails customUserDetails,
+                                                                   @Valid @RequestBody String jsonString) {
 
-		SupplyOrderRequest decryptSupplyOrderRequest = convertJsonStringToObject(jsonString, SupplyOrderRequest.class);
+        SupplyOrderRequest decryptSupplyOrderRequest = convertJsonStringToObject(jsonString, SupplyOrderRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getAllSupplyOrders(decryptSupplyOrderRequest, customUserDetails));
-	}
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getAllSupplyOrders(decryptSupplyOrderRequest, customUserDetails));
+    }
 
-	@PostMapping("/supplyOrderBySupplyOrderRefNumber")
+    @PostMapping("/supplyOrdersDetailsUnLabeled")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured supply orders. Requires ADMIN Access")
-	public ResponseEntity<String> getAllSupplyOrderBySupplyOrderRefNumber(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured supply orders details unlabeled. Requires ADMIN Access")
+    public ResponseEntity<List<String>> getAllSupplyOrdersDetaolsUnLabeled(@CurrentUser CustomUserDetails customUserDetails,
+                                                                           @Valid @RequestBody String jsonString) {
+        SupplyOrderDetailsRequest decryptSupplyOrderDetailsRequest = convertJsonStringToObject(jsonString,
+                SupplyOrderDetailsRequest.class);
 
-		BookBySupplyOrderRefNumber decryptBookBySupplyOrderRefNumbert = convertJsonStringToObject(jsonString,
-				BookBySupplyOrderRefNumber.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getSupplyOrderByRefrenceNumber(decryptBookBySupplyOrderRefNumbert));
-	}
+        return ResponseEntity.ok(maazounBookWarehouseManagement
+                .getAllSupplyOrderDetailsUnlabeled(decryptSupplyOrderDetailsRequest, customUserDetails));
+    }
 
-	@GetMapping("/warehouseReportByLocationAndBookType")
+    @PostMapping("/supplyOrderBySupplyOrderRefNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
-	public ResponseEntity<List<String>> warehouseReportByLocationAndBookType(
-			@CurrentUser CustomUserDetails customUserDetails) {
+    @ApiOperation(value = "Returns the list of configured supply orders. Requires ADMIN Access")
+    public ResponseEntity<String> getAllSupplyOrderBySupplyOrderRefNumber(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.warehouseReportByLocationAndBookType(customUserDetails));
+        BookBySupplyOrderRefNumber decryptBookBySupplyOrderRefNumbert = convertJsonStringToObject(jsonString,
+                BookBySupplyOrderRefNumber.class);
 
-	}
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getSupplyOrderByRefrenceNumber(decryptBookBySupplyOrderRefNumbert));
+    }
 
-	@PostMapping("/warehouseReportByBookType")
+    @GetMapping("/warehouseReportByLocationAndBookType")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
-	public ResponseEntity<List<String>> warehouseReportByBookType(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
+    public ResponseEntity<List<String>> warehouseReportByLocationAndBookType(
+            @CurrentUser CustomUserDetails customUserDetails) {
 
-		WarehouseBookRequest decryptWarehouseBookRequest = convertJsonStringToObject(jsonString,
-				WarehouseBookRequest.class);
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.warehouseReportByLocationAndBookType(customUserDetails));
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.warehouseReportByBookType(customUserDetails,
-				decryptWarehouseBookRequest));
+    }
 
-	}
-
-	@PostMapping("/warehouseReportByDaily")
+    @PostMapping("/warehouseReportByBookType")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
-	public ResponseEntity<List<String>> warehouseReportByDaily(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
+    public ResponseEntity<List<String>> warehouseReportByBookType(@CurrentUser CustomUserDetails customUserDetails,
+                                                                  @Valid @RequestBody String jsonString) {
 
-		WarehouseBookRequest decryptWarehouseBookRequest = convertJsonStringToObject(jsonString,
-				WarehouseBookRequest.class);
+        WarehouseBookRequest decryptWarehouseBookRequest = convertJsonStringToObject(jsonString,
+                WarehouseBookRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.warehouseReportByDaily(customUserDetails, decryptWarehouseBookRequest));
+        return ResponseEntity.ok(maazounBookWarehouseManagement.warehouseReportByBookType(customUserDetails,
+                decryptWarehouseBookRequest));
 
-	}
+    }
 
-	@PostMapping("/reviewSupplyOrder")
+    @PostMapping("/warehouseReportByDaily")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of All approved supply orders.")
-	public ResponseEntity<String> reviewSupplyOrder(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured calculation. Requires ADMIN Access")
+    public ResponseEntity<List<String>> warehouseReportByDaily(@CurrentUser CustomUserDetails customUserDetails,
+                                                               @Valid @RequestBody String jsonString) {
 
-		ReviewRequest decryptReviewSupplyOrderRequest = convertJsonStringToObject(jsonString, ReviewRequest.class);
+        WarehouseBookRequest decryptWarehouseBookRequest = convertJsonStringToObject(jsonString,
+                WarehouseBookRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.reviewSupplyOrderCoding(customUserDetails, decryptReviewSupplyOrderRequest));
-	}
-	
-	
-	
-	@PostMapping("/reviewSupplyOrderDetails")
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.warehouseReportByDaily(customUserDetails, decryptWarehouseBookRequest));
+
+    }
+
+    @PostMapping("/reviewSupplyOrder")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of All approved supply orders.")
-	public ResponseEntity<String> reviewSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of All approved supply orders.")
+    public ResponseEntity<String> reviewSupplyOrder(@CurrentUser CustomUserDetails customUserDetails,
+                                                    @Valid @RequestBody String jsonString) {
 
-		ReviewRequest decryptReviewSupplyOrderRequest = convertJsonStringToObject(jsonString, ReviewRequest.class);
+        ReviewRequest decryptReviewSupplyOrderRequest = convertJsonStringToObject(jsonString, ReviewRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.reviewSupplyOrderDetails(customUserDetails, decryptReviewSupplyOrderRequest));
-	}
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.reviewSupplyOrderCoding(customUserDetails, decryptReviewSupplyOrderRequest));
+    }
 
-	@PostMapping("/download/att")
-	public void downloadFile(@Valid @RequestBody String jsonString, HttpServletResponse response) {
 
-		URLRequest decryptURLRequest = convertJsonStringToObject(jsonString, URLRequest.class);
-
-		try {
-
-			InputStream is = maazounBookWarehouseManagement.downloadFile(decryptURLRequest);
-			IOUtils.copy(is, response.getOutputStream());
-			response.flushBuffer();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@PostMapping("/getMaazounBookHistory")
+    @PostMapping("/reviewSupplyOrderDetails")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of maazoun book history. Requires ADMIN Access")
-	public ResponseEntity<String> getMaazounBookHistory(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of All approved supply orders.")
+    public ResponseEntity<String> reviewSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
+                                                           @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksByIdRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        ReviewRequest decryptReviewSupplyOrderRequest = convertJsonStringToObject(jsonString, ReviewRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement.getMaazounBookHistory(decryptBooksByIdRequest));
-	}
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.reviewSupplyOrderDetails(customUserDetails, decryptReviewSupplyOrderRequest));
+    }
 
-	@PostMapping("/filterBooksByStatus")
+    @PostMapping("/download/att")
+    public void downloadFile(@Valid @RequestBody String jsonString, HttpServletResponse response) {
+
+        URLRequest decryptURLRequest = convertJsonStringToObject(jsonString, URLRequest.class);
+
+        try {
+
+            InputStream is = maazounBookWarehouseManagement.downloadFile(decryptURLRequest);
+            IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @PostMapping("/getMaazounBookHistory")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by status in warehous. Requires ADMIN Access")
-	public ResponseEntity<BooksPagingDTO> getBookByStatus(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of maazoun book history. Requires ADMIN Access")
+    public ResponseEntity<String> getMaazounBookHistory(@CurrentUser CustomUserDetails customUserDetails,
+                                                        @Valid @RequestBody String jsonString) {
 
-		BooksFilterRequest decryptBooksByStatusRequest = convertJsonStringToObject(jsonString,
-				BooksFilterRequest.class);
+        BooksByIdRequest decryptBooksByIdRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookByStatus(decryptBooksByStatusRequest, customUserDetails));
+        return ResponseEntity.ok(maazounBookWarehouseManagement.getMaazounBookHistory(decryptBooksByIdRequest));
+    }
 
-	}
-
-	@PostMapping("/filterBooksBySectorId")
+    @PostMapping("/filterBooksByStatus")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by sector id in warehous. Requires ADMIN Access")
-	public ResponseEntity<BooksPagingDTO> getBookBySectorId(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by status in warehous. Requires ADMIN Access")
+    public ResponseEntity<BooksPagingDTO> getBookByStatus(@CurrentUser CustomUserDetails customUserDetails,
+                                                          @Valid @RequestBody String jsonString) {
 
-		BooksFilterRequest decryptBooksByStatusRequest = convertJsonStringToObject(jsonString,
-				BooksFilterRequest.class);
+        BooksFilterRequest decryptBooksByStatusRequest = convertJsonStringToObject(jsonString,
+                BooksFilterRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookBySectorId(decryptBooksByStatusRequest, customUserDetails));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookByStatus(decryptBooksByStatusRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/supplyOrderDetails")
+    @PostMapping("/filterBooksBySectorId")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of added books related to supply order. Requires ADMIN Access")
-	public ResponseEntity<List<String>> getAllSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by sector id in warehous. Requires ADMIN Access")
+    public ResponseEntity<BooksPagingDTO> getBookBySectorId(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @Valid @RequestBody String jsonString) {
 
-		SupplyOrderDetailsRequest decryptSupplyOrderDetailsRequest = convertJsonStringToObject(jsonString,
-				SupplyOrderDetailsRequest.class);
+        BooksFilterRequest decryptBooksByStatusRequest = convertJsonStringToObject(jsonString,
+                BooksFilterRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement
-				.getAllSupplyOrderDetails(decryptSupplyOrderDetailsRequest, customUserDetails));
-	}
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookBySectorId(decryptBooksByStatusRequest, customUserDetails));
 
-	@PostMapping("/searchForBookByBookFinancialNumber")
+    }
+
+    @PostMapping("/supplyOrderDetails")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getBookStatus(@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of added books related to supply order. Requires ADMIN Access")
+    public ResponseEntity<List<String>> getAllSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
+                                                                 @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        SupplyOrderDetailsRequest decryptSupplyOrderDetailsRequest = convertJsonStringToObject(jsonString,
+                SupplyOrderDetailsRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookExistingStatusByBookFinancialNumber(decryptBooksRequest));
+        return ResponseEntity.ok(maazounBookWarehouseManagement
+                .getAllSupplyOrderDetails(decryptSupplyOrderDetailsRequest, customUserDetails));
+    }
 
-	}
-
-	@PostMapping("/searchForBookByBookSerialNumber")
+    @PostMapping("/searchForBookByBookFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> searchForBookByBookSerialNumber(@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getBookStatus(@Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookExistingStatusByBookSerialNumber(decryptBooksRequest));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookExistingStatusByBookFinancialNumber(decryptBooksRequest));
 
-	}
+    }
 
-	@PostMapping("/searchForBookByBookSerialNumberOrFinancial")
+    @PostMapping("/searchForBookByBookSerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> searchForBookByBookSerialNumberOrFinancial(@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> searchForBookByBookSerialNumber(@Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.findBySerialNumberOrBookFinancialNumber(decryptBooksRequest));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookExistingStatusByBookSerialNumber(decryptBooksRequest));
 
-	}
+    }
 
-	@PostMapping("/searchForBookByContractNumber")
+    @PostMapping("/searchForBookByBookSerialNumberOrFinancial")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> searchForBookByContractNumber(@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> searchForBookByBookSerialNumberOrFinancial(@Valid @RequestBody String jsonString) {
 
-		GetContractRequest decryptGetContractRequest = convertJsonStringToObject(jsonString, GetContractRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getBookExistingStatusByContractNumber(decryptGetContractRequest));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.findBySerialNumberOrBookFinancialNumber(decryptBooksRequest));
 
-	}
+    }
 
-	@PostMapping("/bookSoldOrNewBySerialNumber")
+    @PostMapping("/searchForBookByContractNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> getSoldOrNewBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> searchForBookByContractNumber(@Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        GetContractRequest decryptGetContractRequest = convertJsonStringToObject(jsonString, GetContractRequest.class);
 
-		return ResponseEntity
-				.ok(maazounBookWarehouseManagement.getSoldOrNewBySerialNumber(decryptBooksRequest, customUserDetails));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getBookExistingStatusByContractNumber(decryptGetContractRequest));
 
-	}
+    }
 
-	@PostMapping("/deleteBookByBookFinancialNumber")
+    @PostMapping("/bookSoldOrNewBySerialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "delete Book By Book Financial Number. Requires ADMIN Access")
-	public ResponseEntity<String> deleteBookByBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> getSoldOrNewBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                             @Valid @RequestBody String jsonString) {
 
-		BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.deleteBookByBookFinancialNumber(customUserDetails, decryptBooksRequest));
+        return ResponseEntity
+                .ok(maazounBookWarehouseManagement.getSoldOrNewBySerialNumber(decryptBooksRequest, customUserDetails));
 
-	}
+    }
 
-	@PostMapping("/editBookTypeByBookFinancialNumber")
+    @PostMapping("/deleteBookByBookFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> editBookTypeByBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "delete Book By Book Financial Number. Requires ADMIN Access")
+    public ResponseEntity<String> deleteBookByBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                                  @Valid @RequestBody String jsonString) {
 
-		EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
-				EditBookFinancialNumberRequest.class);
+        BooksByIdRequest decryptBooksRequest = convertJsonStringToObject(jsonString, BooksByIdRequest.class);
 
-		return ResponseEntity.ok(
-				maazounBookWarehouseManagement.editBookTypeByBookFinancialNumber(decryptBookFinancialNumberRequest));
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.deleteBookByBookFinancialNumber(customUserDetails, decryptBooksRequest));
 
-	}
+    }
 
-	@PostMapping("/editBookContractCountByBookFinancialNumber")
+    @PostMapping("/editBookTypeByBookFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
-	public ResponseEntity<String> editBookContractCountByBookFinancialNumber(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> editBookTypeByBookFinancialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                                    @Valid @RequestBody String jsonString) {
 
-		EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
-				EditBookFinancialNumberRequest.class);
+        EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
+                EditBookFinancialNumberRequest.class);
 
-		return ResponseEntity.ok(maazounBookWarehouseManagement
-				.editBookContractCountByBookFinancialNumber(decryptBookFinancialNumberRequest));
+        return ResponseEntity.ok(
+                maazounBookWarehouseManagement.editBookTypeByBookFinancialNumber(decryptBookFinancialNumberRequest));
 
-	}
+    }
 
-	@PostMapping("/addBookSupplyOrderDetails")
+    @PostMapping("/editBookContractCountByBookFinancialNumber")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Add books batch Details. Requires ADMIN Access")
-	public ResponseEntity<String> addBookSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestPart String jsonString,
-			@Nullable @RequestPart(name = "supplyOrderDetailsImge", required = false) MultipartFile supplyOrderDetailsImge) {
+    @ApiOperation(value = "Returns the of configured books by seial number in warehous. Requires ADMIN Access")
+    public ResponseEntity<String> editBookContractCountByBookFinancialNumber(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
 
-		AddSupplyOrderDetails decryptAddBookSupplyOrderDetails = convertJsonStringToObject(jsonString,
-				AddSupplyOrderDetails.class);
+        EditBookFinancialNumberRequest decryptBookFinancialNumberRequest = convertJsonStringToObject(jsonString,
+                EditBookFinancialNumberRequest.class);
 
-		decryptAddBookSupplyOrderDetails.setAttUrl(supplyOrderDetailsImge);
+        return ResponseEntity.ok(maazounBookWarehouseManagement
+                .editBookContractCountByBookFinancialNumber(decryptBookFinancialNumberRequest));
 
-		return ResponseEntity.ok(supplyOrderDetailsManagement.addSupplyOrderDetails(customUserDetails,
-				decryptAddBookSupplyOrderDetails));
-	}
+    }
 
-	@PostMapping("/supplyOrderDetailsForSectors")
+    @PostMapping("/addBookSupplyOrderDetails")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
-	public ResponseEntity<BooksPagingDTO> getAllSupplyOrderDetailsForSectors(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Add books batch Details. Requires ADMIN Access")
+    public ResponseEntity<String> addBookSupplyOrderDetails(@CurrentUser CustomUserDetails customUserDetails,
+                                                            @Valid @RequestPart String jsonString,
+                                                            @Nullable @RequestPart(name = "supplyOrderDetailsImge", required = false) MultipartFile supplyOrderDetailsImge) {
 
-		SupplyOrderDetailsSearchRequest decryptSupplyOrderDetailsSearchRequest = convertJsonStringToObject(jsonString,
-				SupplyOrderDetailsSearchRequest.class);
+        AddSupplyOrderDetails decryptAddBookSupplyOrderDetails = convertJsonStringToObject(jsonString,
+                AddSupplyOrderDetails.class);
 
-		return ResponseEntity.ok(supplyOrderDetailsManagement
-				.getAllSupplyOrderDetails(decryptSupplyOrderDetailsSearchRequest, customUserDetails));
-	}
-	
-	
-	@PostMapping("/supplyOrderDetailsForSectorsSearch")
+        decryptAddBookSupplyOrderDetails.setAttUrl(supplyOrderDetailsImge);
+
+        return ResponseEntity.ok(supplyOrderDetailsManagement.addSupplyOrderDetails(customUserDetails,
+                decryptAddBookSupplyOrderDetails));
+    }
+
+    @PostMapping("/supplyOrderDetailsForSectors")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
-	public ResponseEntity<List<String>>searchSupplyOrderDetailsForSectors(
-			@CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+    @ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
+    public ResponseEntity<BooksPagingDTO> getAllSupplyOrderDetailsForSectors(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
 
-		SupplyOrderDetailsSearchRequest decryptSupplyOrderDetailsSearchRequest = convertJsonStringToObject(jsonString,
-				SupplyOrderDetailsSearchRequest.class);
+        SupplyOrderDetailsSearchRequest decryptSupplyOrderDetailsSearchRequest = convertJsonStringToObject(jsonString,
+                SupplyOrderDetailsSearchRequest.class);
 
-		return ResponseEntity.ok(supplyOrderDetailsManagement
-				.searchForSupplyOrderDetails(decryptSupplyOrderDetailsSearchRequest, customUserDetails));
-	}
+        return ResponseEntity.ok(supplyOrderDetailsManagement
+                .getAllSupplyOrderDetails(decryptSupplyOrderDetailsSearchRequest, customUserDetails));
+    }
+
+
+    @PostMapping("/supplyOrderDetailsForSectorsSearch")
+//  @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Returns the list of configured books in warehous. Requires ADMIN Access")
+    public ResponseEntity<List<String>> searchSupplyOrderDetailsForSectors(
+            @CurrentUser CustomUserDetails customUserDetails, @Valid @RequestBody String jsonString) {
+
+        SupplyOrderDetailsSearchRequest decryptSupplyOrderDetailsSearchRequest = convertJsonStringToObject(jsonString,
+                SupplyOrderDetailsSearchRequest.class);
+
+        return ResponseEntity.ok(supplyOrderDetailsManagement
+                .searchForSupplyOrderDetails(decryptSupplyOrderDetailsSearchRequest, customUserDetails));
+    }
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.aman.payment.auth.model.SubServicePriceTier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -77,7 +78,9 @@ public class SubServiceQuotaServiceImpl implements SubServiceQuotaService {
 		// TODO Auto-generated method stub
 		return repository.findBySubServiceFk(subServiceFk);
 	}
-	
-    
 
+    @Override
+    public List<SubServiceQuota> findBySubServiceFkAndSubServicePriceTierFK(SubService subServiceFk, SubServicePriceTier subServicePriceTierFK) {
+        return repository.findBySubServiceFkAndSubServicePriceTierFk(subServiceFk, subServicePriceTierFK);
+    }
 }

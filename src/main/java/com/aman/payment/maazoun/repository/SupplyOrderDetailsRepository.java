@@ -44,4 +44,5 @@ public interface SupplyOrderDetailsRepository extends PagingAndSortingRepository
 	
 	public SupplyOrderDetails findByBookTypeFKAndSupplyOrderFk(String bookTypeFK, SupplyOrder supplyOrderFk);
 
+	List<SupplyOrderDetails> findBySupplyOrderFk(SupplyOrder supplyOrderFk);
 }

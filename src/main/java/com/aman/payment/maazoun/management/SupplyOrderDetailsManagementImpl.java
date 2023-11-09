@@ -152,6 +152,7 @@ public class SupplyOrderDetailsManagementImpl extends ValidationAndPopulateManag
 			supplyOrderDetails.setCurrentBookTypeCount(Integer.parseInt(addSupplyOrderDetailsListRequest.getCount()));
 			supplyOrderDetails.setRemainingBookTypeCount(Integer.parseInt(addSupplyOrderDetailsListRequest.getCount()));
 			supplyOrderDetails.setSupplyOrderFk(supplyOrderFk);
+			supplyOrderDetails.setBootTierId(addSupplyOrderDetailsListRequest.getSubServicePriceTierId());
 			entites.add(supplyOrderDetails);
 		}
 

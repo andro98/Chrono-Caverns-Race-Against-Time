@@ -726,7 +726,8 @@ public class MaazounBookRequestInfoCustomRepositoryImpl implements MaazounBookRe
 				+ " JOIN courts co ON s.court_fk = co.id"
 				+ " JOIN sub_service u ON u.id = i.book_type_id"
 				+ " JOIN location l ON l.id = s.location_fk" + " JOIN city c ON c.id = l.city_fk"
-
+				+ " JOIN maazoun_book_stock_label ss ON ss.label_code = i.book_serial_number"
+				+ " JOIN sub_service_price_tier ti ON ti.id = ss.book_tier_id"
 				+ " WHERE i.created_at >= '" + maazounAuditRequest.getDurationFrom() + " 00:00:00' "
 				+ " AND i.created_at <= '" + maazounAuditRequest.getDurationTo() + " 23:59:59' "
 				+ " AND i.transaction_code is not null AND i.status_fk = 'New'");
@@ -749,7 +750,7 @@ public class MaazounBookRequestInfoCustomRepositoryImpl implements MaazounBookRe
 			jpqlCount.append(" AND i.pos_fk IN (" + posIds.toString().replace("]", "").replace("[", "") + ") ");
 		}
 		
-		jpql.append(" GROUP BY i.sector_fk ORDER BY s.name");
+		jpql.append(" GROUP BY ti.id ORDER BY s.name");
 		jpqlCount.append(" GROUP BY i.sector_fk");
 		
 		Query query = em.createNativeQuery(jpql.toString());
@@ -1057,6 +1058,8 @@ public class MaazounBookRequestInfoCustomRepositoryImpl implements MaazounBookRe
 				+ " JOIN courts co ON s.court_fk = co.id"
 				+ " JOIN sub_service u ON u.id = i.book_type_id"
 				+ " JOIN location l ON l.id = s.location_fk" + " JOIN city c ON c.id = l.city_fk"
+				+ " JOIN maazoun_book_stock_label ss ON ss.label_code = i.book_serial_number"
+				+ " JOIN sub_service_price_tier ti ON ti.id = ss.book_tier_id"
 
 				+ " WHERE i.created_at >= '" + maazounAuditRequest.getDurationFrom() + " 00:00:00' "
 				+ " AND i.created_at <= '" + maazounAuditRequest.getDurationTo() + " 23:59:59' "
@@ -1080,7 +1083,7 @@ public class MaazounBookRequestInfoCustomRepositoryImpl implements MaazounBookRe
 			jpqlCount.append(" AND i.pos_fk IN (" + posIds.toString().replace("]", "").replace("[", "") + ") ");
 		}
 		
-		jpql.append(" GROUP BY co.id ORDER BY s.name");
+		jpql.append(" GROUP BY ti.id ORDER BY s.name");
 		jpqlCount.append(" GROUP BY co.id");
 		
 		Query query = em.createNativeQuery(jpql.toString());
