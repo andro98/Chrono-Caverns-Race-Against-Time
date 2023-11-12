@@ -944,7 +944,7 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
 		        eFinanacialMidsDTO.setTotalRefundAmount(totalRefundAmount);
 	        }
 	        Float totalAmount = Float.valueOf(totalAmountIncludingCanceled) - 
-	        		Float.valueOf(totalRefundAmount);
+	        		Float.valueOf(totalCanceledAmount);
 	        eFinanacialMidsDTO.setTotalAmount(String.format("%.2f", totalAmount));
 	        
 	        result.add(eFinanacialMidsDTO);	   
