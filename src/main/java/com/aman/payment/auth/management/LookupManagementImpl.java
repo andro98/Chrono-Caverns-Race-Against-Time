@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import com.aman.payment.auth.model.*;
 import com.aman.payment.auth.model.dto.*;
+import com.aman.payment.auth.model.payload.*;
 import com.aman.payment.auth.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -40,25 +41,6 @@ import com.aman.payment.auth.mapper.SectorMapper;
 import com.aman.payment.auth.mapper.ServiceMapper;
 import com.aman.payment.auth.mapper.SettingMapper;
 import com.aman.payment.auth.mapper.SubServiceQuotaMapper;
-import com.aman.payment.auth.model.payload.AddEditLocationRequest;
-import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
-import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
-import com.aman.payment.auth.model.payload.AddEditPosRequest;
-import com.aman.payment.auth.model.payload.AddEditRoleRequest;
-import com.aman.payment.auth.model.payload.AddEditSectorRequest;
-import com.aman.payment.auth.model.payload.AddEditServiceRequest;
-import com.aman.payment.auth.model.payload.AddEditSettingRequest;
-import com.aman.payment.auth.model.payload.AddEditSubServiceQuotaRequest;
-import com.aman.payment.auth.model.payload.MerchantByIdRequest;
-import com.aman.payment.auth.model.payload.PagingRequest;
-import com.aman.payment.auth.model.payload.PagingSearchRequest;
-import com.aman.payment.auth.model.payload.PosByIDRequest;
-import com.aman.payment.auth.model.payload.PosByLocationRequest;
-import com.aman.payment.auth.model.payload.PosByUserRequest;
-import com.aman.payment.auth.model.payload.ServiceMenuRequest;
-import com.aman.payment.auth.model.payload.SubServiceByIDRequest;
-import com.aman.payment.auth.model.payload.SubServiceByServiceIDRequest;
-import com.aman.payment.auth.model.payload.SupplyOrderReferenceNumberRequest;
 import com.aman.payment.auth.service.impl.MenuServiceImpl;
 import com.aman.payment.auth.service.impl.RoleServiceImpl;
 import com.aman.payment.auth.service.impl.UserService;
@@ -72,981 +54,1005 @@ import com.aman.payment.util.Util;
 
 @Component
 public class LookupManagementImpl implements LookupManagement {
-	final static Logger logger = Logger.getLogger("lookup");
+    final static Logger logger = Logger.getLogger("lookup");
 
-	private final MenuServiceImpl menuService;
-	private final RoleServiceImpl roleService;
-	private final ServiceService serviceService;
-	private final SubServiceService subServiceService;
-	private final SubServiceQuotaService subServiceQuotaService;
-	private final SubServicePriceTierService subServicePriceTierService;
-	private final PosService posService;
-	private final MerchantService merchantService;
-	private final LocationService locationService;
-	private final CityService cityService;
-	private final ServiceMapper serviceMapper;
-	private final PosMapper posMapper;
-	private final RoleMapper roleMapper;
-	private final MenuMapper menuMapper;
-	private final MerchantMapper merchantMapper;
-	private final LocationMapper locationMapper;
-	private final CryptoMngrAuthService cryptoMngrAuthService;
-	private final GenerateCodeService generateCodeService;
-	private final CityMapper cityMapper;
-	private final UserService userService;
-	private final InsuranceNumberService insuranceNumberService;
-	private final SectorService sectorService;
-	private final SectorMapper sectorMapper;
-	private final MaazouniaChurchService maazouniaChurchService;
-	private final MaazouniaChurchMapper maazouniaChurchMapper;
-	private final SettingService settingService;
-	private final SettingMapper settingMapper;
-	private final SubServiceQuotaMapper subServiceQuotaMapper;
+    private final MenuServiceImpl menuService;
+    private final RoleServiceImpl roleService;
+    private final ServiceService serviceService;
+    private final SubServiceService subServiceService;
+    private final SubServiceQuotaService subServiceQuotaService;
+    private final SubServicePriceTierService subServicePriceTierService;
+    private final PosService posService;
+    private final MerchantService merchantService;
+    private final LocationService locationService;
+    private final CityService cityService;
+    private final ServiceMapper serviceMapper;
+    private final PosMapper posMapper;
+    private final RoleMapper roleMapper;
+    private final MenuMapper menuMapper;
+    private final MerchantMapper merchantMapper;
+    private final LocationMapper locationMapper;
+    private final CryptoMngrAuthService cryptoMngrAuthService;
+    private final GenerateCodeService generateCodeService;
+    private final CityMapper cityMapper;
+    private final UserService userService;
+    private final InsuranceNumberService insuranceNumberService;
+    private final SectorService sectorService;
+    private final SectorMapper sectorMapper;
+    private final MaazouniaChurchService maazouniaChurchService;
+    private final MaazouniaChurchMapper maazouniaChurchMapper;
+    private final SettingService settingService;
+    private final SettingMapper settingMapper;
+    private final SubServiceQuotaMapper subServiceQuotaMapper;
 
-	@Value("${attachment.maazoun.maazouniaChurch}")
-	private String maazouniaChurchPathAtt;
+    @Value("${attachment.maazoun.maazouniaChurch}")
+    private String maazouniaChurchPathAtt;
 
-	@Autowired
-	public LookupManagementImpl(MenuServiceImpl menuService, RoleServiceImpl roleService, ServiceService serviceService,
-			SubServiceService subServiceService, PosService posService, MerchantService merchantService,
-			LocationService locationService, CityService cityService, ServiceMapper serviceMapper, PosMapper posMapper,
-			RoleMapper roleMapper, MenuMapper menuMapper, MerchantMapper merchantMapper, LocationMapper locationMapper,
-			CryptoMngrAuthService cryptoMngrAuthService, GenerateCodeService generateCodeService, CityMapper cityMapper,
-			UserService userService, InsuranceNumberService insuranceNumberService, SectorService sectorService,
-			SectorMapper sectorMapper, MaazouniaChurchService maazouniaChurchService,
-			MaazouniaChurchMapper maazouniaChurchMapper, SettingService settingService, 
-			SettingMapper settingMapper, SubServiceQuotaService subServiceQuotaService,
-			SubServiceQuotaMapper subServiceQuotaMapper, SubServicePriceTierService subServicePriceTierService) {
+    @Autowired
+    public LookupManagementImpl(MenuServiceImpl menuService, RoleServiceImpl roleService, ServiceService serviceService,
+                                SubServiceService subServiceService, PosService posService, MerchantService merchantService,
+                                LocationService locationService, CityService cityService, ServiceMapper serviceMapper, PosMapper posMapper,
+                                RoleMapper roleMapper, MenuMapper menuMapper, MerchantMapper merchantMapper, LocationMapper locationMapper,
+                                CryptoMngrAuthService cryptoMngrAuthService, GenerateCodeService generateCodeService, CityMapper cityMapper,
+                                UserService userService, InsuranceNumberService insuranceNumberService, SectorService sectorService,
+                                SectorMapper sectorMapper, MaazouniaChurchService maazouniaChurchService,
+                                MaazouniaChurchMapper maazouniaChurchMapper, SettingService settingService,
+                                SettingMapper settingMapper, SubServiceQuotaService subServiceQuotaService,
+                                SubServiceQuotaMapper subServiceQuotaMapper, SubServicePriceTierService subServicePriceTierService) {
 
-		super();
-		this.menuService = menuService;
-		this.roleService = roleService;
-		this.serviceService = serviceService;
-		this.subServiceService = subServiceService;
-		this.posService = posService;
-		this.merchantService = merchantService;
-		this.locationService = locationService;
-		this.cityService = cityService;
-		this.serviceMapper = serviceMapper;
-		this.posMapper = posMapper;
-		this.roleMapper = roleMapper;
-		this.menuMapper = menuMapper;
-		this.merchantMapper = merchantMapper;
-		this.locationMapper = locationMapper;
-		this.cryptoMngrAuthService = cryptoMngrAuthService;
-		this.generateCodeService = generateCodeService;
-		this.cityMapper = cityMapper;
-		this.userService = userService;
-		this.insuranceNumberService = insuranceNumberService;
-		this.sectorService = sectorService;
-		this.sectorMapper = sectorMapper;
-		this.maazouniaChurchService = maazouniaChurchService;
-		this.maazouniaChurchMapper = maazouniaChurchMapper;
-		this.settingService = settingService;
-		this.settingMapper = settingMapper;
-		this.subServiceQuotaService = subServiceQuotaService;
-		this.subServiceQuotaMapper = subServiceQuotaMapper;
-		this.subServicePriceTierService = subServicePriceTierService;
-	}
+        super();
+        this.menuService = menuService;
+        this.roleService = roleService;
+        this.serviceService = serviceService;
+        this.subServiceService = subServiceService;
+        this.posService = posService;
+        this.merchantService = merchantService;
+        this.locationService = locationService;
+        this.cityService = cityService;
+        this.serviceMapper = serviceMapper;
+        this.posMapper = posMapper;
+        this.roleMapper = roleMapper;
+        this.menuMapper = menuMapper;
+        this.merchantMapper = merchantMapper;
+        this.locationMapper = locationMapper;
+        this.cryptoMngrAuthService = cryptoMngrAuthService;
+        this.generateCodeService = generateCodeService;
+        this.cityMapper = cityMapper;
+        this.userService = userService;
+        this.insuranceNumberService = insuranceNumberService;
+        this.sectorService = sectorService;
+        this.sectorMapper = sectorMapper;
+        this.maazouniaChurchService = maazouniaChurchService;
+        this.maazouniaChurchMapper = maazouniaChurchMapper;
+        this.settingService = settingService;
+        this.settingMapper = settingMapper;
+        this.subServiceQuotaService = subServiceQuotaService;
+        this.subServiceQuotaMapper = subServiceQuotaMapper;
+        this.subServicePriceTierService = subServicePriceTierService;
+    }
 
-	/*
-	 * ====================================Service and
-	 * SubServiceCRUD=============================================
-	 */
-	@Override
-	public List<ServiceDTO> getAllService() {
-		List<ServiceDTO> services = new ArrayList<ServiceDTO>();
-		services.addAll(serviceMapper.subServicesToServiceDTOs(subServiceService.findAll()));
-		services.addAll(serviceMapper.servicesToServiceDTOs(serviceService.findAll()));
-		return services;
-	}
+    /*
+     * ====================================Service and
+     * SubServiceCRUD=============================================
+     */
+    @Override
+    public List<ServiceDTO> getAllService() {
+        List<ServiceDTO> services = new ArrayList<ServiceDTO>();
+        services.addAll(serviceMapper.subServicesToServiceDTOs(subServiceService.findAll()));
+        services.addAll(serviceMapper.servicesToServiceDTOs(serviceService.findAll()));
+        return services;
+    }
 
-	@Override
-	public List<ServiceDTO> getAllSubService() {
-		// TODO Auto-generated method stub
-		return serviceMapper.subServicesToServiceDTOs(subServiceService.findAll());
-	}
+    @Override
+    public List<ServiceDTO> getAllSubService() {
+        // TODO Auto-generated method stub
+        return serviceMapper.subServicesToServiceDTOs(subServiceService.findAll());
+    }
 
-	@Override
-	public List<ServiceDTO> getAllMainServices() {
-		return serviceMapper.servicesToServiceDTOs(serviceService.findAll());
-	}
+    @Override
+    public List<ServiceDTO> getAllMainServices() {
+        return serviceMapper.servicesToServiceDTOs(serviceService.findAll());
+    }
 
-	@Override
-	public List<ServiceDTO> getSubServicesByParent(SubServiceByServiceIDRequest subServiceByServiceIDRequest) {
+    @Override
+    public List<ServiceDTO> getSubServicesByParent(SubServiceByServiceIDRequest subServiceByServiceIDRequest) {
 
-		Service eService = serviceService.findById(Long.valueOf(subServiceByServiceIDRequest.getServiceId())).get();
-		return serviceMapper.subServicesToServiceDTOs(subServiceService.getSubServiceByServiceFk(eService));
-	}
+        Service eService = serviceService.findById(Long.valueOf(subServiceByServiceIDRequest.getServiceId())).get();
+        return serviceMapper.subServicesToServiceDTOs(subServiceService.getSubServiceByServiceFk(eService));
+    }
 
-	@Override
-	public List<SubServicePriceTierDTO> getAllSubServicesPriceTier() {
-		return serviceMapper.subServicePriceTierToSubServicePriceTierDTOS(subServicePriceTierService.findAll());
-	}
+    @Override
+    public List<SubServicePriceTierDTO> getAllSubServicesPriceTier() {
+        List<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findAll();
+        return subServicePriceTier.stream().map(s -> serviceMapper.subServicePriceTierToDto(s, getPriceTierCurrentQuota(s))).collect(Collectors.toList());
+    }
 
-	@Override
-	public ServiceDTO getParentServiceById(String serviceId) {
-		return serviceMapper.serviceToServiceDTO(serviceService.findById(Long.parseLong(serviceId)).get());
-	}
+    private String getPriceTierCurrentQuota(SubServicePriceTier subServicePriceTier) {
+        return subServiceQuotaService
+                .findBySubServiceFkAndSubServicePriceTierFK(subServicePriceTier.getSubServiceFk(), subServicePriceTier)
+                .stream()
+                .map(SubServiceQuota::getFees)
+                .reduce(0D, Double::sum)
+                .toString();
+    }
 
-	@Override
-	public ServiceDTO addService(String username, AddEditServiceRequest addEditServiceRequest) {
+    @Override
+    public ServiceDTO getParentServiceById(String serviceId) {
+        return serviceMapper.serviceToServiceDTO(serviceService.findById(Long.parseLong(serviceId)).get());
+    }
 
-		if (addEditServiceRequest.getServiceType().equals("main")) {
-			Service service = new Service();
-			service.setCode(getCode(StatusConstant.SER));
-			service.setCreatedAt(Date.from(Instant.now()));
-			service.setCreatedBy(username);
-			service.setDescription(addEditServiceRequest.getDescription());
-			service.setName(addEditServiceRequest.getName());
-			service.setTax(Long.parseLong(addEditServiceRequest.getTax()));
-			service.setMerchantFk(new Merchant(Long.valueOf(addEditServiceRequest.getMerchantId())));
-			service.setStatusFk(StatusConstant.STATUS_ACTIVE);
+    @Override
+    public ServiceDTO addService(String username, AddEditServiceRequest addEditServiceRequest) {
 
-			return serviceMapper.serviceToServiceDTO(serviceService.save(service));
+        if (addEditServiceRequest.getServiceType().equals("main")) {
+            Service service = new Service();
+            service.setCode(getCode(StatusConstant.SER));
+            service.setCreatedAt(Date.from(Instant.now()));
+            service.setCreatedBy(username);
+            service.setDescription(addEditServiceRequest.getDescription());
+            service.setName(addEditServiceRequest.getName());
+            service.setTax(Long.parseLong(addEditServiceRequest.getTax()));
+            service.setMerchantFk(new Merchant(Long.valueOf(addEditServiceRequest.getMerchantId())));
+            service.setStatusFk(StatusConstant.STATUS_ACTIVE);
 
-		} else if (addEditServiceRequest.getServiceType().equals("sub")) {
+            return serviceMapper.serviceToServiceDTO(serviceService.save(service));
 
-			SubService subService = new SubService();
-			subService.setCreatedAt(Date.from(Instant.now()));
-			subService.setCreatedBy(username);
-			subService.setDescription(addEditServiceRequest.getDescription());
-			subService.setFees(Double.valueOf(addEditServiceRequest.getFees()));
-			subService.setName(addEditServiceRequest.getName());
-			subService.setServiceFk(new Service(Long.valueOf(addEditServiceRequest.getMainServiceId())));
-			subService.setStatusFk(StatusConstant.STATUS_ACTIVE);
-			subService.setRequiredService(Boolean.valueOf(addEditServiceRequest.getRequiredService()));
+        } else if (addEditServiceRequest.getServiceType().equals("sub")) {
 
-			return serviceMapper.subServiceToServiceDTO(subServiceService.save(subService));
+            SubService subService = new SubService();
+            subService.setCreatedAt(Date.from(Instant.now()));
+            subService.setCreatedBy(username);
+            subService.setDescription(addEditServiceRequest.getDescription());
+            subService.setFees(Double.valueOf(addEditServiceRequest.getFees()));
+            subService.setName(addEditServiceRequest.getName());
+            subService.setServiceFk(new Service(Long.valueOf(addEditServiceRequest.getMainServiceId())));
+            subService.setStatusFk(StatusConstant.STATUS_ACTIVE);
+            subService.setRequiredService(Boolean.valueOf(addEditServiceRequest.getRequiredService()));
 
-		}
-		return null;
-	}
+            return serviceMapper.subServiceToServiceDTO(subServiceService.save(subService));
 
-	@Override
-	public ServiceDTO editService(String username, AddEditServiceRequest addEditServiceRequest) {
-		if (addEditServiceRequest.getServiceType().equals("main")) {
-			Service service = serviceService.findById(Long.valueOf(addEditServiceRequest.getId())).get();
-			// service.setId(Long.parseLong(cryptoMngrAuthService.decrypt(serviceId)));
-			service.setUpdatedAt(Date.from(Instant.now()));
-			service.setUpdatedBy(username);
-			service.setDescription(addEditServiceRequest.getDescription());
-			service.setName(addEditServiceRequest.getName());
-			service.setTax(Long.valueOf(addEditServiceRequest.getTax()));
-			service.setMerchantFk(new Merchant(Long.valueOf(addEditServiceRequest.getMerchantId())));
+        }
+        return null;
+    }
 
-			return serviceMapper.serviceToServiceDTO(serviceService.save(service));
+    @Override
+    public ServiceDTO editService(String username, AddEditServiceRequest addEditServiceRequest) {
+        if (addEditServiceRequest.getServiceType().equals("main")) {
+            Service service = serviceService.findById(Long.valueOf(addEditServiceRequest.getId())).get();
+            // service.setId(Long.parseLong(cryptoMngrAuthService.decrypt(serviceId)));
+            service.setUpdatedAt(Date.from(Instant.now()));
+            service.setUpdatedBy(username);
+            service.setDescription(addEditServiceRequest.getDescription());
+            service.setName(addEditServiceRequest.getName());
+            service.setTax(Long.valueOf(addEditServiceRequest.getTax()));
+            service.setMerchantFk(new Merchant(Long.valueOf(addEditServiceRequest.getMerchantId())));
 
-		} else if (addEditServiceRequest.getServiceType().equals("sub")) {
+            return serviceMapper.serviceToServiceDTO(serviceService.save(service));
 
-			SubService subService = subServiceService.findById(Long.valueOf(addEditServiceRequest.getId())).get();
-			// subService.setId(Long.parseLong(cryptoMngrAuthService.decrypt(serviceId)));
-			subService.setUpdatedAt(Date.from(Instant.now()));
-			subService.setUpdatedBy(username);
-			subService.setDescription(addEditServiceRequest.getDescription());
-			subService.setFees(Double.valueOf(addEditServiceRequest.getFees()));
-			subService.setName(addEditServiceRequest.getName());
-			subService.setServiceFk(new Service(Long.valueOf(addEditServiceRequest.getMainServiceId())));
-			subService.setRequiredService(Boolean.valueOf(addEditServiceRequest.getRequiredService()));
+        } else if (addEditServiceRequest.getServiceType().equals("sub")) {
+
+            SubService subService = subServiceService.findById(Long.valueOf(addEditServiceRequest.getId())).get();
+            // subService.setId(Long.parseLong(cryptoMngrAuthService.decrypt(serviceId)));
+            subService.setUpdatedAt(Date.from(Instant.now()));
+            subService.setUpdatedBy(username);
+            subService.setDescription(addEditServiceRequest.getDescription());
+            subService.setFees(Double.valueOf(addEditServiceRequest.getFees()));
+            subService.setName(addEditServiceRequest.getName());
+            subService.setServiceFk(new Service(Long.valueOf(addEditServiceRequest.getMainServiceId())));
+            subService.setRequiredService(Boolean.valueOf(addEditServiceRequest.getRequiredService()));
 //			Set<Location> locationSet = new HashSet<Location>();
 //			for(String locationId : locationIds) {
 //				locationSet.add(new Location(Long.parseLong(cryptoMngrAuthService.decrypt(locationId))));
 //			}
 //			subService.setLocations(locationSet);
 
-			return serviceMapper.subServiceToServiceDTO(subServiceService.save(subService));
+            return serviceMapper.subServiceToServiceDTO(subServiceService.save(subService));
 
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
-	@Override
-	public SubServiceDTO getSubServiceById(SubServiceByIDRequest subServiceByIDRequest) {
-		return serviceMapper.subServiceToSubServiceDTO(
-				subServiceService.findById(Long.valueOf(subServiceByIDRequest.getSubServiceId())).get());
-	}
+    @Override
+    public SubServiceDTO getSubServiceById(SubServiceByIDRequest subServiceByIDRequest) {
+        return serviceMapper.subServiceToSubServiceDTO(
+                subServiceService.findById(Long.valueOf(subServiceByIDRequest.getSubServiceId())).get());
+    }
 
-	@Override
-	public SubServiceDTO getSubServiceById(long id) {
-		return serviceMapper.subServiceToSubServiceDTO(subServiceService.findById(id).get());
-	}
+    @Override
+    public SubServiceDTO getSubServiceById(long id) {
+        return serviceMapper.subServiceToSubServiceDTO(subServiceService.findById(id).get());
+    }
 
-	/*
-	 * ====================================Merchant
-	 * CRUD=============================================
-	 */
-	@Override
-	public MerchantPagingDTO getAllMerchant(PagingRequest pagingRequest) {
+    /*
+     * ====================================Merchant
+     * CRUD=============================================
+     */
+    @Override
+    public MerchantPagingDTO getAllMerchant(PagingRequest pagingRequest) {
 
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
-				Integer.valueOf(pagingRequest.getPageSize()));
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
+                Integer.valueOf(pagingRequest.getPageSize()));
 
-		Page<Merchant> pageResult = merchantService.findAll(pageable);
+        Page<Merchant> pageResult = merchantService.findAll(pageable);
 
-		MerchantPagingDTO merchantPagingDTO = new MerchantPagingDTO();
-		merchantPagingDTO.setCount(pageResult.getTotalElements());
-		merchantPagingDTO.setTotalPages(pageResult.getTotalPages());
-		merchantPagingDTO.setTransactions(merchantMapper.merchantsToMerchantDTOs(pageResult.getContent()));
+        MerchantPagingDTO merchantPagingDTO = new MerchantPagingDTO();
+        merchantPagingDTO.setCount(pageResult.getTotalElements());
+        merchantPagingDTO.setTotalPages(pageResult.getTotalPages());
+        merchantPagingDTO.setTransactions(merchantMapper.merchantsToMerchantDTOs(pageResult.getContent()));
 
-		return merchantPagingDTO;
+        return merchantPagingDTO;
 
-	}
+    }
 
-	@Override
-	public MerchantDTO addMerchant(String createdBy, AddEditMerchantRequest addEditMerchantRequest) {
-		Merchant merchant = new Merchant();
-		merchant.setAddress(addEditMerchantRequest.getAddress());
-		merchant.setCode(getCode(StatusConstant.MER));
-		merchant.setCreatedAt(Date.from(Instant.now()));
-		merchant.setCreatedBy(createdBy);
-		merchant.setDescription(addEditMerchantRequest.getDescription());
-		merchant.setEmail(addEditMerchantRequest.getEmail());
-		merchant.setFax(addEditMerchantRequest.getFax());
-		merchant.setMobile(addEditMerchantRequest.getMobile());
-		merchant.setName(addEditMerchantRequest.getName());
-		merchant.setPhone1(addEditMerchantRequest.getPhone1());
-		merchant.setPhone2(addEditMerchantRequest.getPhone2());
-		merchant.setStatusFk(StatusConstant.STATUS_ACTIVE);
+    @Override
+    public MerchantDTO addMerchant(String createdBy, AddEditMerchantRequest addEditMerchantRequest) {
+        Merchant merchant = new Merchant();
+        merchant.setAddress(addEditMerchantRequest.getAddress());
+        merchant.setCode(getCode(StatusConstant.MER));
+        merchant.setCreatedAt(Date.from(Instant.now()));
+        merchant.setCreatedBy(createdBy);
+        merchant.setDescription(addEditMerchantRequest.getDescription());
+        merchant.setEmail(addEditMerchantRequest.getEmail());
+        merchant.setFax(addEditMerchantRequest.getFax());
+        merchant.setMobile(addEditMerchantRequest.getMobile());
+        merchant.setName(addEditMerchantRequest.getName());
+        merchant.setPhone1(addEditMerchantRequest.getPhone1());
+        merchant.setPhone2(addEditMerchantRequest.getPhone2());
+        merchant.setStatusFk(StatusConstant.STATUS_ACTIVE);
 
-		return merchantMapper.merchantToMerchantDTO(merchantService.save(merchant));
-	}
+        return merchantMapper.merchantToMerchantDTO(merchantService.save(merchant));
+    }
 
-	@Override
-	public MerchantDTO editMerchant(String updatedBy, AddEditMerchantRequest addEditMerchantRequest) {
-		Merchant merchant = new Merchant();
-		merchant.setId(Long.valueOf(addEditMerchantRequest.getId()));
-		merchant.setAddress(addEditMerchantRequest.getAddress());
-		merchant.setUpdatedAt(Date.from(Instant.now()));
-		merchant.setUpdatedBy(updatedBy);
-		merchant.setDescription(addEditMerchantRequest.getDescription());
-		merchant.setEmail(addEditMerchantRequest.getEmail());
-		merchant.setFax(addEditMerchantRequest.getFax());
-		merchant.setMobile(addEditMerchantRequest.getMobile());
-		merchant.setName(addEditMerchantRequest.getName());
-		merchant.setPhone1(addEditMerchantRequest.getPhone1());
-		merchant.setPhone2(addEditMerchantRequest.getPhone2());
-		merchant.setStatusFk(addEditMerchantRequest.getStatus());
+    @Override
+    public MerchantDTO editMerchant(String updatedBy, AddEditMerchantRequest addEditMerchantRequest) {
+        Merchant merchant = new Merchant();
+        merchant.setId(Long.valueOf(addEditMerchantRequest.getId()));
+        merchant.setAddress(addEditMerchantRequest.getAddress());
+        merchant.setUpdatedAt(Date.from(Instant.now()));
+        merchant.setUpdatedBy(updatedBy);
+        merchant.setDescription(addEditMerchantRequest.getDescription());
+        merchant.setEmail(addEditMerchantRequest.getEmail());
+        merchant.setFax(addEditMerchantRequest.getFax());
+        merchant.setMobile(addEditMerchantRequest.getMobile());
+        merchant.setName(addEditMerchantRequest.getName());
+        merchant.setPhone1(addEditMerchantRequest.getPhone1());
+        merchant.setPhone2(addEditMerchantRequest.getPhone2());
+        merchant.setStatusFk(addEditMerchantRequest.getStatus());
 
-		return merchantMapper.merchantToMerchantDTO(merchantService.save(merchant));
-	}
+        return merchantMapper.merchantToMerchantDTO(merchantService.save(merchant));
+    }
 
-	@Override
-	public MerchantDTO getMerchant(MerchantByIdRequest merchantByIdRequest) {
-		return merchantMapper.merchantToMerchantDTO(
-				merchantService.findById(Long.valueOf(merchantByIdRequest.getMerchantId())).get());
-	}
+    @Override
+    public MerchantDTO getMerchant(MerchantByIdRequest merchantByIdRequest) {
+        return merchantMapper.merchantToMerchantDTO(
+                merchantService.findById(Long.valueOf(merchantByIdRequest.getMerchantId())).get());
+    }
 
-	@Override
-	public MerchantPagingDTO lookforMerchant(PagingSearchRequest pagingSearchPosRequest) {
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchPosRequest.getPageNo()),
-				Integer.valueOf(pagingSearchPosRequest.getPageSize()));
+    @Override
+    public MerchantPagingDTO lookforMerchant(PagingSearchRequest pagingSearchPosRequest) {
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchPosRequest.getPageNo()),
+                Integer.valueOf(pagingSearchPosRequest.getPageSize()));
 
-		Page<Merchant> pageResult = merchantService.lookforMerchant(pagingSearchPosRequest.getSearchBy(), pageable);
+        Page<Merchant> pageResult = merchantService.lookforMerchant(pagingSearchPosRequest.getSearchBy(), pageable);
 
-		MerchantPagingDTO MerchantPagingDTO = new MerchantPagingDTO();
-		MerchantPagingDTO.setCount(pageResult.getTotalElements());
-		MerchantPagingDTO.setTotalPages(pageResult.getTotalPages());
-		MerchantPagingDTO.setTransactions(merchantMapper.merchantsToMerchantDTOs(pageResult.getContent()));
+        MerchantPagingDTO MerchantPagingDTO = new MerchantPagingDTO();
+        MerchantPagingDTO.setCount(pageResult.getTotalElements());
+        MerchantPagingDTO.setTotalPages(pageResult.getTotalPages());
+        MerchantPagingDTO.setTransactions(merchantMapper.merchantsToMerchantDTOs(pageResult.getContent()));
 
-		return MerchantPagingDTO;
-	}
+        return MerchantPagingDTO;
+    }
 
-	/*
-	 * ====================================Location
-	 * CRUD=============================================
-	 */
+    /*
+     * ====================================Location
+     * CRUD=============================================
+     */
 
-	@Override
-	public LocationPagingDTO getAllLocations(PagingRequest pagingRequest) {
+    @Override
+    public LocationPagingDTO getAllLocations(PagingRequest pagingRequest) {
 
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
-				Integer.valueOf(pagingRequest.getPageSize()));
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
+                Integer.valueOf(pagingRequest.getPageSize()));
 
-		Page<Location> pageResult = locationService.findAll(pageable);
+        Page<Location> pageResult = locationService.findAll(pageable);
 
-		LocationPagingDTO locationPagingDTO = new LocationPagingDTO();
-		locationPagingDTO.setCount(pageResult.getTotalElements());
-		locationPagingDTO.setTotalPages(pageResult.getTotalPages());
-		locationPagingDTO.setTransactions(locationMapper.locationsToLocationDTOs(pageResult.getContent()));
+        LocationPagingDTO locationPagingDTO = new LocationPagingDTO();
+        locationPagingDTO.setCount(pageResult.getTotalElements());
+        locationPagingDTO.setTotalPages(pageResult.getTotalPages());
+        locationPagingDTO.setTransactions(locationMapper.locationsToLocationDTOs(pageResult.getContent()));
 
-		return locationPagingDTO;
-	}
+        return locationPagingDTO;
+    }
 
-	public LocationPagingDTO lookforLocation(PagingSearchRequest pagingSearchRequest) {
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
-				Integer.valueOf(pagingSearchRequest.getPageSize()));
+    public LocationPagingDTO lookforLocation(PagingSearchRequest pagingSearchRequest) {
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
+                Integer.valueOf(pagingSearchRequest.getPageSize()));
 
-		Page<Location> pageResult = locationService.lookforLocation(pagingSearchRequest.getSearchBy(), pageable);
+        Page<Location> pageResult = locationService.lookforLocation(pagingSearchRequest.getSearchBy(), pageable);
 
-		LocationPagingDTO locationPagingDTO = new LocationPagingDTO();
-		locationPagingDTO.setCount(pageResult.getTotalElements());
-		locationPagingDTO.setTotalPages(pageResult.getTotalPages());
-		locationPagingDTO.setTransactions(locationMapper.locationsToLocationDTOs(pageResult.getContent()));
+        LocationPagingDTO locationPagingDTO = new LocationPagingDTO();
+        locationPagingDTO.setCount(pageResult.getTotalElements());
+        locationPagingDTO.setTotalPages(pageResult.getTotalPages());
+        locationPagingDTO.setTransactions(locationMapper.locationsToLocationDTOs(pageResult.getContent()));
 
-		return locationPagingDTO;
-	}
+        return locationPagingDTO;
+    }
 
-	@Override
-	public List<LocationDTO> getAllLocations() {
-		// TODO Auto-generated method stub
-		List<Location> location = locationService.findAll();
-		List<LocationDTO> locations = locationMapper.locationsToLocationDTOs(location);
-		return locations;
-	}
+    @Override
+    public List<LocationDTO> getAllLocations() {
+        // TODO Auto-generated method stub
+        List<Location> location = locationService.findAll();
+        List<LocationDTO> locations = locationMapper.locationsToLocationDTOs(location);
+        return locations;
+    }
 
-	@Override
-	public LocationDTO getLocationById(String locationId) {
-		return locationMapper.locationToLocationDTO(locationService.findById(Long.parseLong(locationId)).get());
-	}
+    @Override
+    public LocationDTO getLocationById(String locationId) {
+        return locationMapper.locationToLocationDTO(locationService.findById(Long.parseLong(locationId)).get());
+    }
 
-	@Override
-	public LocationDTO addLocation(String createdBy, AddEditLocationRequest addEditLocationRequest) {
-		Location location = new Location();
-		location.setCityFk(new City(Long.valueOf(addEditLocationRequest.getCityId())));
-		location.setCode(getCode(StatusConstant.LOC));
-		location.setCreatedAt(Date.from(Instant.now()));
-		location.setCreatedBy(createdBy);
-		location.setDescription(addEditLocationRequest.getDescription());
-		location.setName(addEditLocationRequest.getName());
-		location.setStatusFk(addEditLocationRequest.getStatus());
-		location.setSeqValue((long) 0);
+    @Override
+    public LocationDTO addLocation(String createdBy, AddEditLocationRequest addEditLocationRequest) {
+        Location location = new Location();
+        location.setCityFk(new City(Long.valueOf(addEditLocationRequest.getCityId())));
+        location.setCode(getCode(StatusConstant.LOC));
+        location.setCreatedAt(Date.from(Instant.now()));
+        location.setCreatedBy(createdBy);
+        location.setDescription(addEditLocationRequest.getDescription());
+        location.setName(addEditLocationRequest.getName());
+        location.setStatusFk(addEditLocationRequest.getStatus());
+        location.setSeqValue((long) 0);
 
-		return locationMapper.locationToLocationDTO(locationService.save(location));
-	}
+        return locationMapper.locationToLocationDTO(locationService.save(location));
+    }
 
-	@Override
-	public LocationDTO editLocation(String updatedBy, AddEditLocationRequest addEditLocationRequest) {
-		Optional<Location> optionalLocation = locationService.findById(Long.valueOf(addEditLocationRequest.getId()));
-		Location location = optionalLocation.isPresent() ? optionalLocation.get() : new Location();
-		// location.setId(Long.parseLong(cryptoMngrAuthService.decrypt(locationId)));
-		location.setCityFk(new City(Long.valueOf(addEditLocationRequest.getCityId())));
-		location.setUpdatedAt(Date.from(Instant.now()));
-		location.setUpdatedBy(updatedBy);
-		location.setName(addEditLocationRequest.getName());
-		location.setStatusFk(addEditLocationRequest.getStatus());
-		location.setDescription(addEditLocationRequest.getDescription());
+    @Override
+    public LocationDTO editLocation(String updatedBy, AddEditLocationRequest addEditLocationRequest) {
+        Optional<Location> optionalLocation = locationService.findById(Long.valueOf(addEditLocationRequest.getId()));
+        Location location = optionalLocation.isPresent() ? optionalLocation.get() : new Location();
+        // location.setId(Long.parseLong(cryptoMngrAuthService.decrypt(locationId)));
+        location.setCityFk(new City(Long.valueOf(addEditLocationRequest.getCityId())));
+        location.setUpdatedAt(Date.from(Instant.now()));
+        location.setUpdatedBy(updatedBy);
+        location.setName(addEditLocationRequest.getName());
+        location.setStatusFk(addEditLocationRequest.getStatus());
+        location.setDescription(addEditLocationRequest.getDescription());
 
-		return locationMapper.locationToLocationDTO(locationService.save(location));
-	}
+        return locationMapper.locationToLocationDTO(locationService.save(location));
+    }
 
-	/*
-	 * ====================================Generate
-	 * Code=============================================
-	 */
-	@Override
-	public String getCode(String key) {
-		GenerateCode generateCode = generateCodeService.findByKeyName(key);
-		long sequance = generateCode.getSeqValue() + 1;
-		generateCode.setSeqValue(sequance);
-		String code = key + String.format("%03d", sequance);
-		generateCodeService.save(generateCode);
+    /*
+     * ====================================Generate
+     * Code=============================================
+     */
+    @Override
+    public String getCode(String key) {
+        GenerateCode generateCode = generateCodeService.findByKeyName(key);
+        long sequance = generateCode.getSeqValue() + 1;
+        generateCode.setSeqValue(sequance);
+        String code = key + String.format("%03d", sequance);
+        generateCodeService.save(generateCode);
 
-		return code;
-	}
+        return code;
+    }
 
-	/*
-	 * ====================================POS
-	 * CRUD=============================================
-	 */
-	@Override
-	public PosPagingDTO getAllPos(PagingRequest pagingRequest) {
+    /*
+     * ====================================POS
+     * CRUD=============================================
+     */
+    @Override
+    public PosPagingDTO getAllPos(PagingRequest pagingRequest) {
 
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
-				Integer.valueOf(pagingRequest.getPageSize()));
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
+                Integer.valueOf(pagingRequest.getPageSize()));
 
-		Page<Pos> pageResult = posService.findAll(pageable);
+        Page<Pos> pageResult = posService.findAll(pageable);
 
-		PosPagingDTO posPagingDTO = new PosPagingDTO();
-		posPagingDTO.setCount(pageResult.getTotalElements());
-		posPagingDTO.setTotalPages(pageResult.getTotalPages());
-		List<String> ePosDTO = new ArrayList<String>();
-		pageResult.getContent().stream().forEach(s -> {
-			ePosDTO.add(cryptoMngrAuthService.encrypt(posMapper.posToPosDTO(s).toString()));
-		});
-		posPagingDTO.setTransactions(ePosDTO);
+        PosPagingDTO posPagingDTO = new PosPagingDTO();
+        posPagingDTO.setCount(pageResult.getTotalElements());
+        posPagingDTO.setTotalPages(pageResult.getTotalPages());
+        List<String> ePosDTO = new ArrayList<String>();
+        pageResult.getContent().stream().forEach(s -> {
+            ePosDTO.add(cryptoMngrAuthService.encrypt(posMapper.posToPosDTO(s).toString()));
+        });
+        posPagingDTO.setTransactions(ePosDTO);
 
-		return posPagingDTO;
-	}
+        return posPagingDTO;
+    }
 
-	@Override
-	public PosPagingDTO lookforPos(PagingSearchRequest pagingSearchPosRequest) {
+    @Override
+    public PosPagingDTO lookforPos(PagingSearchRequest pagingSearchPosRequest) {
 
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchPosRequest.getPageNo()),
-				Integer.valueOf(pagingSearchPosRequest.getPageSize()));
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchPosRequest.getPageNo()),
+                Integer.valueOf(pagingSearchPosRequest.getPageSize()));
 
-		Page<Pos> pageResult = posService.lookforPos(pagingSearchPosRequest.getSearchBy(), pageable);
+        Page<Pos> pageResult = posService.lookforPos(pagingSearchPosRequest.getSearchBy(), pageable);
 
-		PosPagingDTO posPagingDTO = new PosPagingDTO();
-		posPagingDTO.setCount(pageResult.getTotalElements());
-		posPagingDTO.setTotalPages(pageResult.getTotalPages());
-		List<String> ePosDTO = new ArrayList<String>();
-		pageResult.getContent().stream().forEach(s -> {
-			ePosDTO.add(cryptoMngrAuthService.encrypt(posMapper.posToPosDTO(s).toString()));
-		});
-		posPagingDTO.setTransactions(ePosDTO);
+        PosPagingDTO posPagingDTO = new PosPagingDTO();
+        posPagingDTO.setCount(pageResult.getTotalElements());
+        posPagingDTO.setTotalPages(pageResult.getTotalPages());
+        List<String> ePosDTO = new ArrayList<String>();
+        pageResult.getContent().stream().forEach(s -> {
+            ePosDTO.add(cryptoMngrAuthService.encrypt(posMapper.posToPosDTO(s).toString()));
+        });
+        posPagingDTO.setTransactions(ePosDTO);
 
-		return posPagingDTO;
-	}
+        return posPagingDTO;
+    }
 
-	@Override
-	public PosDTO addPos(String createdBy, AddEditPosRequest addEditPosRequest) {
-		Pos pos = new Pos();
-		pos.setCode(getCode(StatusConstant.POS));
-		pos.setCreatedAt(Date.from(Instant.now()));
-		pos.setCreatedBy(createdBy);
-		pos.setName(addEditPosRequest.getName());
-		pos.setStatusFk(StatusConstant.STATUS_ACTIVE);
+    @Override
+    public PosDTO addPos(String createdBy, AddEditPosRequest addEditPosRequest) {
+        Pos pos = new Pos();
+        pos.setCode(getCode(StatusConstant.POS));
+        pos.setCreatedAt(Date.from(Instant.now()));
+        pos.setCreatedBy(createdBy);
+        pos.setName(addEditPosRequest.getName());
+        pos.setStatusFk(StatusConstant.STATUS_ACTIVE);
 //		pos.setSectorFk(sectorService.findById(Long.valueOf(addEditPosRequest.getSectorId())).get());
-		return posMapper.posToPosDTO(posService.save(pos));
-	}
+        return posMapper.posToPosDTO(posService.save(pos));
+    }
 
-	@Override
-	public PosDTO editPos(String updatedBy, AddEditPosRequest addEditPosRequest) {
-		Pos pos = posService.findById(Long.valueOf(addEditPosRequest.getId())).get();
-		// pos.setId(Long.parseLong(cryptoMngrAuthService.decrypt(posId)));
-		// pos.setCode(getCode(StatusConstant.POS));
-		pos.setUpdatedAt(Date.from(Instant.now()));
-		pos.setUpdatedBy(updatedBy);
-		pos.setName(addEditPosRequest.getName());
-		pos.setStatusFk(addEditPosRequest.getStatus());
+    @Override
+    public PosDTO editPos(String updatedBy, AddEditPosRequest addEditPosRequest) {
+        Pos pos = posService.findById(Long.valueOf(addEditPosRequest.getId())).get();
+        // pos.setId(Long.parseLong(cryptoMngrAuthService.decrypt(posId)));
+        // pos.setCode(getCode(StatusConstant.POS));
+        pos.setUpdatedAt(Date.from(Instant.now()));
+        pos.setUpdatedBy(updatedBy);
+        pos.setName(addEditPosRequest.getName());
+        pos.setStatusFk(addEditPosRequest.getStatus());
 //		pos.setSectorFk(sectorService.findById(Long.valueOf(addEditPosRequest.getSectorId())).get());
-		Set<Service> serviceSet = new HashSet<Service>();
-		if (addEditPosRequest.getServiceIds() != null) {
-			for (String serviceId : addEditPosRequest.getServiceIds()) {
-				serviceSet.add(new Service(Long.valueOf(serviceId)));
-			}
-			pos.setServices(serviceSet);
-		}
+        Set<Service> serviceSet = new HashSet<Service>();
+        if (addEditPosRequest.getServiceIds() != null) {
+            for (String serviceId : addEditPosRequest.getServiceIds()) {
+                serviceSet.add(new Service(Long.valueOf(serviceId)));
+            }
+            pos.setServices(serviceSet);
+        }
 
-		Set<Sector> sectorSet = new HashSet<Sector>();
-		if (addEditPosRequest.getSectorIds() != null) {
-			for (String sectorId : addEditPosRequest.getSectorIds()) {
-				sectorSet.add(new Sector(Long.valueOf(sectorId)));
-			}
-			pos.setSectors(sectorSet);
-		}
+        Set<Sector> sectorSet = new HashSet<Sector>();
+        if (addEditPosRequest.getSectorIds() != null) {
+            for (String sectorId : addEditPosRequest.getSectorIds()) {
+                sectorSet.add(new Sector(Long.valueOf(sectorId)));
+            }
+            pos.setSectors(sectorSet);
+        }
 
-		return posMapper.posToPosDTO(posService.save(pos));
-	}
+        return posMapper.posToPosDTO(posService.save(pos));
+    }
 
-	@Override
-	public Set<SectorDTO> getAllSectorByLocation(PosByLocationRequest posByLocationRequest) {
-		Location location = locationService.findById(Long.valueOf(posByLocationRequest.getLocationId())).get();
-		return sectorMapper.sectorsToSectorDTOs(location.getSectors());
-	}
+    @Override
+    public Set<SectorDTO> getAllSectorByLocation(PosByLocationRequest posByLocationRequest) {
+        Location location = locationService.findById(Long.valueOf(posByLocationRequest.getLocationId())).get();
+        return sectorMapper.sectorsToSectorDTOs(location.getSectors());
+    }
 
-	@Override
-	public Set<PosDTO> getAllPosByUser(PosByUserRequest posByUserRequest) {
-		User user = userService.findById(Long.valueOf(posByUserRequest.getUserId())).get();
-		return posMapper.posesToPosDTOs(user.getPosSet());
-	}
+    @Override
+    public Set<PosDTO> getAllPosByUser(PosByUserRequest posByUserRequest) {
+        User user = userService.findById(Long.valueOf(posByUserRequest.getUserId())).get();
+        return posMapper.posesToPosDTOs(user.getPosSet());
+    }
 
-	public List<PosDTO> searchPOS(String keyword) {
-		List<PosDTO> posDTO = new ArrayList<PosDTO>();
-		try {
-			posDTO = posMapper.posesToPosDTOs(posService.serchPOS(keyword));
+    public List<PosDTO> searchPOS(String keyword) {
+        List<PosDTO> posDTO = new ArrayList<PosDTO>();
+        try {
+            posDTO = posMapper.posesToPosDTOs(posService.serchPOS(keyword));
 
-		} catch (Exception e) {
-			return posDTO;
-		}
-		return posDTO;
-	}
+        } catch (Exception e) {
+            return posDTO;
+        }
+        return posDTO;
+    }
 
-	public PosDTO getPosByPosId(PosByIDRequest posByIDRequest) {
-		return posMapper.posToPosDTO(posService.getPOSById(Long.valueOf(posByIDRequest.getPosId())));
-	}
+    public PosDTO getPosByPosId(PosByIDRequest posByIDRequest) {
+        return posMapper.posToPosDTO(posService.getPOSById(Long.valueOf(posByIDRequest.getPosId())));
+    }
 
-	@Override
-	public PosWithUserAgentDTO getLightPosByPosId(PosByIDRequest posByIDRequest) {
-		return posMapper.posToLightPosDTO(posService.getPOSById(Long.valueOf(posByIDRequest.getPosId())));
-	}
+    @Override
+    public PosWithUserAgentDTO getLightPosByPosId(PosByIDRequest posByIDRequest) {
+        return posMapper.posToLightPosDTO(posService.getPOSById(Long.valueOf(posByIDRequest.getPosId())));
+    }
 
-	/*
-	 * ====================================POS
-	 * CRUD=============================================
-	 */
-	@Override
-	public List<RoleDTO> getAllRoles() {
-		return roleMapper.rolesToRoleDTOs(roleService.findAll());
-	}
+    /*
+     * ====================================POS
+     * CRUD=============================================
+     */
+    @Override
+    public List<RoleDTO> getAllRoles() {
+        return roleMapper.rolesToRoleDTOs(roleService.findAll());
+    }
 
-	@Override
-	public RoleDTO addRole(String createdBy, AddEditRoleRequest addEditRoleRequest) {
-		Role role = new Role();
-		role.setCreatedAt(Date.from(Instant.now()));
-		role.setCreatedBy(createdBy);
-		role.setComment(addEditRoleRequest.getComment());
-		role.setName(addEditRoleRequest.getName());
-		return roleMapper.roleToRoleDTO(roleService.save(role));
-	}
+    @Override
+    public RoleDTO addRole(String createdBy, AddEditRoleRequest addEditRoleRequest) {
+        Role role = new Role();
+        role.setCreatedAt(Date.from(Instant.now()));
+        role.setCreatedBy(createdBy);
+        role.setComment(addEditRoleRequest.getComment());
+        role.setName(addEditRoleRequest.getName());
+        return roleMapper.roleToRoleDTO(roleService.save(role));
+    }
 
-	@Override
-	public RoleDTO editRole(String updatedBy, AddEditRoleRequest addEditRoleRequest) {
-		Role role = roleService.findById(Long.valueOf(addEditRoleRequest.getId())).get();
-		role.setUpdatedAt(Date.from(Instant.now()));
-		role.setUpdatedBy(updatedBy);
-		role.setComment(addEditRoleRequest.getComment());
-		role.setName(addEditRoleRequest.getName());
-		role.setMenus(new HashSet<Menu>());
-		Set<Menu> menuSet = new HashSet<Menu>();
-		for (String menuId : addEditRoleRequest.getMenuIds()) {
-			menuSet.add(new Menu(Long.valueOf(menuId)));
-		}
-		role.setMenus(menuSet);
-		return roleMapper.roleToRoleDTO(roleService.save(role));
-	}
+    @Override
+    public RoleDTO editRole(String updatedBy, AddEditRoleRequest addEditRoleRequest) {
+        Role role = roleService.findById(Long.valueOf(addEditRoleRequest.getId())).get();
+        role.setUpdatedAt(Date.from(Instant.now()));
+        role.setUpdatedBy(updatedBy);
+        role.setComment(addEditRoleRequest.getComment());
+        role.setName(addEditRoleRequest.getName());
+        role.setMenus(new HashSet<Menu>());
+        Set<Menu> menuSet = new HashSet<Menu>();
+        for (String menuId : addEditRoleRequest.getMenuIds()) {
+            menuSet.add(new Menu(Long.valueOf(menuId)));
+        }
+        role.setMenus(menuSet);
+        return roleMapper.roleToRoleDTO(roleService.save(role));
+    }
 
-	/*
-	 * ====================================Menu
-	 * CRUD=============================================
-	 */
-	@Override
-	public Set<MenuDTO> getAllMenus(ServiceMenuRequest serviceMenuRequest) {
-		Service eService = serviceService.findById(Long.valueOf(serviceMenuRequest.getServiceId())).get();
+    /*
+     * ====================================Menu
+     * CRUD=============================================
+     */
+    @Override
+    public Set<MenuDTO> getAllMenus(ServiceMenuRequest serviceMenuRequest) {
+        Service eService = serviceService.findById(Long.valueOf(serviceMenuRequest.getServiceId())).get();
 
-		return menuMapper.menusToMenuDTOs(menuService.findByServiceFk(eService));
-	}
+        return menuMapper.menusToMenuDTOs(menuService.findByServiceFk(eService));
+    }
 
-	@Override
-	public List<MenuDTO> getMenus() {
-		// TODO Auto-generated method stub
-		return menuMapper.menusToMenuDTOs(menuService.findAll());
-	}
+    @Override
+    public List<MenuDTO> getMenus() {
+        // TODO Auto-generated method stub
+        return menuMapper.menusToMenuDTOs(menuService.findAll());
+    }
 
-	@Override
-	public Set<MenuDTO> getAuthMenus(ServiceMenuRequest serviceMenuRequest, Role role) {
-		Set<Menu> roleMenu = role.getMenus().stream()
-				.filter(x -> x.getServiceFk().getId() == Long.valueOf(serviceMenuRequest.getServiceId()))
-				.collect(Collectors.toSet());
-		return menuMapper.menusToMenuDTOs(roleMenu);
-	}
+    @Override
+    public Set<MenuDTO> getAuthMenus(ServiceMenuRequest serviceMenuRequest, Role role) {
+        Set<Menu> roleMenu = role.getMenus().stream()
+                .filter(x -> x.getServiceFk().getId() == Long.valueOf(serviceMenuRequest.getServiceId()))
+                .collect(Collectors.toSet());
+        return menuMapper.menusToMenuDTOs(roleMenu);
+    }
 
-	/*
-	 * ====================================City
-	 * CRUD=============================================
-	 */
+    /*
+     * ====================================City
+     * CRUD=============================================
+     */
 
-	@Override
-	public List<CityDTO> getAllCities() {
-		return cityMapper.locationsToLocationDTOs(cityService.findAll());
-	}
+    @Override
+    public List<CityDTO> getAllCities() {
+        return cityMapper.locationsToLocationDTOs(cityService.findAll());
+    }
 
-	@Override
-	public Long getInsuranceNumber(long serviceId, long locationId) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
-				locationId);
+    @Override
+    public Long getInsuranceNumber(long serviceId, long locationId) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
+                locationId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			long newSequance = eInsuranceNumber.getSequanceNumber() + 1;
-			eInsuranceNumber.setSequanceNumber(newSequance);
-			insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
-			return newSequance;
-		} else {
-			InsuranceNumber eInsuranceNumber = new InsuranceNumber();
-			eInsuranceNumber.setLocationId(locationId);
-			eInsuranceNumber.setServiceId(serviceId);
-			eInsuranceNumber.setSequanceNumber(1);
-			insuranceNumberService.save(eInsuranceNumber);
-			return (long) 1;
-		}
-	}
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            long newSequance = eInsuranceNumber.getSequanceNumber() + 1;
+            eInsuranceNumber.setSequanceNumber(newSequance);
+            insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
+            return newSequance;
+        } else {
+            InsuranceNumber eInsuranceNumber = new InsuranceNumber();
+            eInsuranceNumber.setLocationId(locationId);
+            eInsuranceNumber.setServiceId(serviceId);
+            eInsuranceNumber.setSequanceNumber(1);
+            insuranceNumberService.save(eInsuranceNumber);
+            return (long) 1;
+        }
+    }
 
-	@Override
-	public Long getInsuranceNumber(long bookTypeId, long locationId, long serviceId) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
-				.findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
+    @Override
+    public Long getInsuranceNumber(long bookTypeId, long locationId, long serviceId) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
+                .findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			long newSequance = eInsuranceNumber.getSequanceNumber() + 1;
-			eInsuranceNumber.setSequanceNumber(newSequance);
-			insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
-			return newSequance;
-		} else {
-			InsuranceNumber eInsuranceNumber = new InsuranceNumber();
-			eInsuranceNumber.setBookTypeId(bookTypeId);
-			eInsuranceNumber.setLocationId(locationId);
-			eInsuranceNumber.setServiceId(serviceId);
-			eInsuranceNumber.setSequanceNumber(1);
-			insuranceNumberService.save(eInsuranceNumber);
-			return (long) 1;
-		}
-	}
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            long newSequance = eInsuranceNumber.getSequanceNumber() + 1;
+            eInsuranceNumber.setSequanceNumber(newSequance);
+            insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
+            return newSequance;
+        } else {
+            InsuranceNumber eInsuranceNumber = new InsuranceNumber();
+            eInsuranceNumber.setBookTypeId(bookTypeId);
+            eInsuranceNumber.setLocationId(locationId);
+            eInsuranceNumber.setServiceId(serviceId);
+            eInsuranceNumber.setSequanceNumber(1);
+            insuranceNumberService.save(eInsuranceNumber);
+            return (long) 1;
+        }
+    }
 
-	@Override
-	public Long getInsuranceNumberWithoutIncrement(long serviceId, long locationId) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
-				locationId);
+    @Override
+    public Long getInsuranceNumberWithoutIncrement(long serviceId, long locationId) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
+                locationId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			return eInsuranceNumber.getSequanceNumber();
-		} else {
-			return (long) 0;
-		}
-	}
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            return eInsuranceNumber.getSequanceNumber();
+        } else {
+            return (long) 0;
+        }
+    }
 
-	@Override
-	public Long getInsuranceNumberWithoutIncrement(long bookTypeId, long locationId, long serviceId) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
-				.findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
+    @Override
+    public Long getInsuranceNumberWithoutIncrement(long bookTypeId, long locationId, long serviceId) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
+                .findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			return eInsuranceNumber.getSequanceNumber();
-		} else {
-			return (long) 0;
-		}
-	}
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            return eInsuranceNumber.getSequanceNumber();
+        } else {
+            return (long) 0;
+        }
+    }
 
-	@Override
-	public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
-				locationId);
+    @Override
+    public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService.findByServiceIdAndLocationId(serviceId,
+                locationId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			eInsuranceNumber.setSequanceNumber(eInsuranceNumber.getSequanceNumber() + incrementNumber);
-			insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            eInsuranceNumber.setSequanceNumber(eInsuranceNumber.getSequanceNumber() + incrementNumber);
+            insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
 
-		} else {
-			InsuranceNumber eInsuranceNumber = new InsuranceNumber();
-			eInsuranceNumber.setLocationId(locationId);
-			eInsuranceNumber.setServiceId(serviceId);
-			eInsuranceNumber.setSequanceNumber(incrementNumber);
-			insuranceNumberService.save(eInsuranceNumber);
+        } else {
+            InsuranceNumber eInsuranceNumber = new InsuranceNumber();
+            eInsuranceNumber.setLocationId(locationId);
+            eInsuranceNumber.setServiceId(serviceId);
+            eInsuranceNumber.setSequanceNumber(incrementNumber);
+            insuranceNumberService.save(eInsuranceNumber);
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber, long bookTypeId) {
-		Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
-				.findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
+    @Override
+    public void editInsuranceNumber(long serviceId, long locationId, long incrementNumber, long bookTypeId) {
+        Optional<InsuranceNumber> OInsuranceNumber = insuranceNumberService
+                .findByBookTypeIdAndLocationIdAndServiceId(bookTypeId, locationId, serviceId);
 
-		if (OInsuranceNumber.isPresent()) {
-			InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
-			eInsuranceNumber.setSequanceNumber(eInsuranceNumber.getSequanceNumber() + incrementNumber);
-			insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
+        if (OInsuranceNumber.isPresent()) {
+            InsuranceNumber eInsuranceNumber = OInsuranceNumber.get();
+            eInsuranceNumber.setSequanceNumber(eInsuranceNumber.getSequanceNumber() + incrementNumber);
+            insuranceNumberService.update(eInsuranceNumber, eInsuranceNumber.getId());
 
-		} else {
-			InsuranceNumber eInsuranceNumber = new InsuranceNumber();
-			eInsuranceNumber.setBookTypeId(bookTypeId);
-			eInsuranceNumber.setLocationId(locationId);
-			eInsuranceNumber.setServiceId(serviceId);
-			eInsuranceNumber.setSequanceNumber(incrementNumber);
-			insuranceNumberService.save(eInsuranceNumber);
+        } else {
+            InsuranceNumber eInsuranceNumber = new InsuranceNumber();
+            eInsuranceNumber.setBookTypeId(bookTypeId);
+            eInsuranceNumber.setLocationId(locationId);
+            eInsuranceNumber.setServiceId(serviceId);
+            eInsuranceNumber.setSequanceNumber(incrementNumber);
+            insuranceNumberService.save(eInsuranceNumber);
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public SectorPagingDTO getAllSector(PagingRequest pagingRequest) {
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
-				Integer.valueOf(pagingRequest.getPageSize()));
+    @Override
+    public SectorPagingDTO getAllSector(PagingRequest pagingRequest) {
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
+                Integer.valueOf(pagingRequest.getPageSize()));
 
-		Page<Sector> pageResult = sectorService.findAll(pageable);
+        Page<Sector> pageResult = sectorService.findAll(pageable);
 
-		SectorPagingDTO sectorPagingDTO = new SectorPagingDTO();
-		sectorPagingDTO.setCount(pageResult.getTotalElements());
-		sectorPagingDTO.setTotalPages(pageResult.getTotalPages());
-		sectorPagingDTO.setSectors(sectorMapper.sectorsToSectorDTOs(pageResult.getContent()));
+        SectorPagingDTO sectorPagingDTO = new SectorPagingDTO();
+        sectorPagingDTO.setCount(pageResult.getTotalElements());
+        sectorPagingDTO.setTotalPages(pageResult.getTotalPages());
+        sectorPagingDTO.setSectors(sectorMapper.sectorsToSectorDTOs(pageResult.getContent()));
 
-		return sectorPagingDTO;
+        return sectorPagingDTO;
 
-	}
+    }
 
-	@Override
-	public List<SectorDTO> getAllSector() {
-		// TODO Auto-generated method stub
-		return sectorMapper.sectorsToSectorDTOs(sectorService.findAll());
-	}
+    @Override
+    public List<SectorDTO> getAllSector() {
+        // TODO Auto-generated method stub
+        return sectorMapper.sectorsToSectorDTOs(sectorService.findAll());
+    }
 
-	@Override
-	public SectorDTO getSectorById(long id) {
-		// TODO Auto-generated method stub
-		return sectorMapper.sectorToSectorDTO(sectorService.findById(id).get());
-	}
+    @Override
+    public SectorDTO getSectorById(long id) {
+        // TODO Auto-generated method stub
+        return sectorMapper.sectorToSectorDTO(sectorService.findById(id).get());
+    }
 
-	@Override
-	public SectorDTO getSectorByName(String name) {
-		// TODO Auto-generated method stub
-		return sectorMapper.sectorToSectorDTO(sectorService.findByName(name));
-	}
+    @Override
+    public SectorDTO getSectorByName(String name) {
+        // TODO Auto-generated method stub
+        return sectorMapper.sectorToSectorDTO(sectorService.findByName(name));
+    }
 
-	@Override
-	public SectorDTO addSector(String createdBy, AddEditSectorRequest addEditSectorRequest) {
-		Date createdAt = Date.from(Instant.now());
+    @Override
+    public SectorDTO addSector(String createdBy, AddEditSectorRequest addEditSectorRequest) {
+        Date createdAt = Date.from(Instant.now());
 
-		Sector sector = new Sector();
-		sector.setCreatedAt(createdAt);
-		sector.setCreatedBy(createdBy);
-		sector.setLocationFk(locationService.findById(Long.valueOf(addEditSectorRequest.getLocationId())).get());
-		sector.setName(addEditSectorRequest.getName());
-		sector.setStatusFk(addEditSectorRequest.getStatus());
-		sector.setSupplyOrderSeqRef((long) 0);
-		// Get the current year
+        Sector sector = new Sector();
+        sector.setCreatedAt(createdAt);
+        sector.setCreatedBy(createdBy);
+        sector.setLocationFk(locationService.findById(Long.valueOf(addEditSectorRequest.getLocationId())).get());
+        sector.setName(addEditSectorRequest.getName());
+        sector.setStatusFk(addEditSectorRequest.getStatus());
+        sector.setSupplyOrderSeqRef((long) 0);
+        // Get the current year
         long currentYear = LocalDate.now().getYear();
         // Extract the last two digits
         long lastTwoDigits = currentYear % 100;
-		sector.setSupplyOrderYearRef(lastTwoDigits);
+        sector.setSupplyOrderYearRef(lastTwoDigits);
 
-		return sectorMapper.sectorToSectorDTO(sectorService.save(sector));
-	}
+        return sectorMapper.sectorToSectorDTO(sectorService.save(sector));
+    }
 
-	@Override
-	public SectorDTO editSector(String updatedBy, AddEditSectorRequest addEditSectorRequest) {
-		Date updatedAt = Date.from(Instant.now());
+    @Override
+    public SectorDTO editSector(String updatedBy, AddEditSectorRequest addEditSectorRequest) {
+        Date updatedAt = Date.from(Instant.now());
 
-		Sector sector = sectorService.findById(Long.valueOf(addEditSectorRequest.getId())).get();
-		sector.setUpdatedAt(updatedAt);
-		sector.setUpdatedBy(updatedBy);
-		sector.setLocationFk(locationService.findById(Long.valueOf(addEditSectorRequest.getLocationId())).get());
-		sector.setName(addEditSectorRequest.getName());
-		sector.setStatusFk(addEditSectorRequest.getStatus());
+        Sector sector = sectorService.findById(Long.valueOf(addEditSectorRequest.getId())).get();
+        sector.setUpdatedAt(updatedAt);
+        sector.setUpdatedBy(updatedBy);
+        sector.setLocationFk(locationService.findById(Long.valueOf(addEditSectorRequest.getLocationId())).get());
+        sector.setName(addEditSectorRequest.getName());
+        sector.setStatusFk(addEditSectorRequest.getStatus());
 
-		return sectorMapper.sectorToSectorDTO(sectorService.save(sector));
-	}
+        return sectorMapper.sectorToSectorDTO(sectorService.save(sector));
+    }
 
-	@Override
-	public List<JwtAuthSectorDTO> getAllAuthSector(long locationId) {
-		// TODO Auto-generated method stub
-		return sectorMapper
-				.sectorsToJwtAuthSectorDTOs(sectorService.findByLocationFk(locationService.findById(locationId).get()));
-	}
+    @Override
+    public List<JwtAuthSectorDTO> getAllAuthSector(long locationId) {
+        // TODO Auto-generated method stub
+        return sectorMapper
+                .sectorsToJwtAuthSectorDTOs(sectorService.findByLocationFk(locationService.findById(locationId).get()));
+    }
 
-	@Override
-	public List<SectorDTO> getAllSector(long locationId) {
-		// TODO Auto-generated method stub
-		return sectorMapper
-				.sectorsToSectorDTOs(sectorService.findByLocationFk(locationService.findById(locationId).get()));
-	}
+    @Override
+    public List<SectorDTO> getAllSector(long locationId) {
+        // TODO Auto-generated method stub
+        return sectorMapper
+                .sectorsToSectorDTOs(sectorService.findByLocationFk(locationService.findById(locationId).get()));
+    }
 
-	@Override
-	public SectorPagingDTO lookforSector(PagingSearchRequest pagingSearchRequest) {
+    @Override
+    public SectorPagingDTO lookforSector(PagingSearchRequest pagingSearchRequest) {
 
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
-				Integer.valueOf(pagingSearchRequest.getPageSize()));
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
+                Integer.valueOf(pagingSearchRequest.getPageSize()));
 
-		Page<Sector> pageResult = sectorService.lookforSector(pagingSearchRequest.getSearchBy(), pageable);
+        Page<Sector> pageResult = sectorService.lookforSector(pagingSearchRequest.getSearchBy(), pageable);
 
-		SectorPagingDTO sectorPagingDTO = new SectorPagingDTO();
-		sectorPagingDTO.setCount(pageResult.getTotalElements());
-		sectorPagingDTO.setTotalPages(pageResult.getTotalPages());
-		sectorPagingDTO.setSectors(sectorMapper.sectorsToSectorDTOs(pageResult.getContent()));
+        SectorPagingDTO sectorPagingDTO = new SectorPagingDTO();
+        sectorPagingDTO.setCount(pageResult.getTotalElements());
+        sectorPagingDTO.setTotalPages(pageResult.getTotalPages());
+        sectorPagingDTO.setSectors(sectorMapper.sectorsToSectorDTOs(pageResult.getContent()));
 
-		return sectorPagingDTO;
-	}
+        return sectorPagingDTO;
+    }
 
-	@Override
-	public List<SectorDTO> findAllSector() {
+    @Override
+    public List<SectorDTO> findAllSector() {
 
-		return sectorMapper.sectorsToSectorDTOs(sectorService.findAll());
-	}
+        return sectorMapper.sectorsToSectorDTOs(sectorService.findAll());
+    }
 
-	@Override
-	public List<MaazouniaChurchDTO> getAllMaazouniaChurchs() {
-		return maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(maazouniaChurchService.findAll());
-	}
+    @Override
+    public List<MaazouniaChurchDTO> getAllMaazouniaChurchs() {
+        return maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(maazouniaChurchService.findAll());
+    }
 
-	@Override
-	public MaazouniaChurchsPagingDTO maazouniaChurchsPaging(PagingSearchRequest pagingSearchRequest) {
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
-				Integer.valueOf(pagingSearchRequest.getPageSize()));
+    @Override
+    public MaazouniaChurchsPagingDTO maazouniaChurchsPaging(PagingSearchRequest pagingSearchRequest) {
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingSearchRequest.getPageNo()),
+                Integer.valueOf(pagingSearchRequest.getPageSize()));
 
-		Page<MaazouniaChurch> pageResult = maazouniaChurchService.findAll(pageable);
+        Page<MaazouniaChurch> pageResult = maazouniaChurchService.findAll(pageable);
 
-		MaazouniaChurchsPagingDTO maazouniaChurchsPagingDTO = new MaazouniaChurchsPagingDTO();
-		maazouniaChurchsPagingDTO.setCount(pageResult.getTotalElements());
-		maazouniaChurchsPagingDTO.setTotalPages(pageResult.getTotalPages());
-		maazouniaChurchsPagingDTO.setMaazouniaChurchs(
-				maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(pageResult.getContent()));
+        MaazouniaChurchsPagingDTO maazouniaChurchsPagingDTO = new MaazouniaChurchsPagingDTO();
+        maazouniaChurchsPagingDTO.setCount(pageResult.getTotalElements());
+        maazouniaChurchsPagingDTO.setTotalPages(pageResult.getTotalPages());
+        maazouniaChurchsPagingDTO.setMaazouniaChurchs(
+                maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(pageResult.getContent()));
 
-		return maazouniaChurchsPagingDTO;
-	}
+        return maazouniaChurchsPagingDTO;
+    }
 
-	@Override
-	public MaazouniaChurchDTO addMaazouniaChurch(String createdBy,
-			AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest) {
-		Date createdAt = Date.from(Instant.now());
-		MaazouniaChurch maazouniaChurch = new MaazouniaChurch();
-		maazouniaChurch.setCreatedAt(createdAt);
-		maazouniaChurch.setCreatedBy(createdBy);
-		maazouniaChurch
-				.setSectorFk(sectorService.findById(Long.valueOf(addEditMaazouniaChurchRequest.getSectorId())).get());
-		maazouniaChurch.setName(addEditMaazouniaChurchRequest.getName());
-		maazouniaChurch.setStatusFk(addEditMaazouniaChurchRequest.getStatus());
-		maazouniaChurch.setMaazouniaCreationDate(
-				UtilCore.convertStringToStartDateFormatSql(addEditMaazouniaChurchRequest.getCreatetionDate()));
-		maazouniaChurch.setMaazouniaType(addEditMaazouniaChurchRequest.getType());
+    @Override
+    public MaazouniaChurchDTO addMaazouniaChurch(String createdBy,
+                                                 AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest) {
+        Date createdAt = Date.from(Instant.now());
+        MaazouniaChurch maazouniaChurch = new MaazouniaChurch();
+        maazouniaChurch.setCreatedAt(createdAt);
+        maazouniaChurch.setCreatedBy(createdBy);
+        maazouniaChurch
+                .setSectorFk(sectorService.findById(Long.valueOf(addEditMaazouniaChurchRequest.getSectorId())).get());
+        maazouniaChurch.setName(addEditMaazouniaChurchRequest.getName());
+        maazouniaChurch.setStatusFk(addEditMaazouniaChurchRequest.getStatus());
+        maazouniaChurch.setMaazouniaCreationDate(
+                UtilCore.convertStringToStartDateFormatSql(addEditMaazouniaChurchRequest.getCreatetionDate()));
+        maazouniaChurch.setMaazouniaType(addEditMaazouniaChurchRequest.getType());
 
-		if (addEditMaazouniaChurchRequest.getCreationAttacment() != null
-				&& !addEditMaazouniaChurchRequest.getCreationAttacment().getOriginalFilename().equals("foo.txt")) {
-			try {
-				String AttUrl = saveAttFile(addEditMaazouniaChurchRequest.getCreationAttacment(), maazouniaChurchPathAtt,
-						addEditMaazouniaChurchRequest.getName());
-				maazouniaChurch.setCreationAtt(AttUrl);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return maazouniaChurchMapper.maazouniaChurchToMaazouniaChurchDTO(maazouniaChurchService.save(maazouniaChurch));
-	}
+        if (addEditMaazouniaChurchRequest.getCreationAttacment() != null
+                && !addEditMaazouniaChurchRequest.getCreationAttacment().getOriginalFilename().equals("foo.txt")) {
+            try {
+                String AttUrl = saveAttFile(addEditMaazouniaChurchRequest.getCreationAttacment(), maazouniaChurchPathAtt,
+                        addEditMaazouniaChurchRequest.getName());
+                maazouniaChurch.setCreationAtt(AttUrl);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return maazouniaChurchMapper.maazouniaChurchToMaazouniaChurchDTO(maazouniaChurchService.save(maazouniaChurch));
+    }
 
-	@Override
-	public MaazouniaChurchDTO editMaazouniaChurch(String updatedBy,
-			AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest) {
+    @Override
+    public MaazouniaChurchDTO editMaazouniaChurch(String updatedBy,
+                                                  AddEditMaazouniaChurchRequest addEditMaazouniaChurchRequest) {
 
-		Date updatedAt = Date.from(Instant.now());
+        Date updatedAt = Date.from(Instant.now());
 
-		MaazouniaChurch maazouniaChurch = maazouniaChurchService
-				.findById(Long.valueOf(addEditMaazouniaChurchRequest.getId())).get();
-		maazouniaChurch.setUpdatedAt(updatedAt);
-		maazouniaChurch.setUpdatedBy(updatedBy);
-		maazouniaChurch
-				.setSectorFk(sectorService.findById(Long.valueOf(addEditMaazouniaChurchRequest.getSectorId())).get());
-		maazouniaChurch.setName(addEditMaazouniaChurchRequest.getName());
-		maazouniaChurch.setStatusFk(addEditMaazouniaChurchRequest.getStatus());
-		maazouniaChurch.setMaazouniaCreationDate(UtilCore.convertStringToStartDateFormatSql(addEditMaazouniaChurchRequest.getCreatetionDate()));
-		maazouniaChurch.setMaazouniaType(addEditMaazouniaChurchRequest.getType());
+        MaazouniaChurch maazouniaChurch = maazouniaChurchService
+                .findById(Long.valueOf(addEditMaazouniaChurchRequest.getId())).get();
+        maazouniaChurch.setUpdatedAt(updatedAt);
+        maazouniaChurch.setUpdatedBy(updatedBy);
+        maazouniaChurch
+                .setSectorFk(sectorService.findById(Long.valueOf(addEditMaazouniaChurchRequest.getSectorId())).get());
+        maazouniaChurch.setName(addEditMaazouniaChurchRequest.getName());
+        maazouniaChurch.setStatusFk(addEditMaazouniaChurchRequest.getStatus());
+        maazouniaChurch.setMaazouniaCreationDate(UtilCore.convertStringToStartDateFormatSql(addEditMaazouniaChurchRequest.getCreatetionDate()));
+        maazouniaChurch.setMaazouniaType(addEditMaazouniaChurchRequest.getType());
 
-		return maazouniaChurchMapper.maazouniaChurchToMaazouniaChurchDTO(maazouniaChurchService.save(maazouniaChurch));
-	}
+        return maazouniaChurchMapper.maazouniaChurchToMaazouniaChurchDTO(maazouniaChurchService.save(maazouniaChurch));
+    }
 
-	@Override
-	public List<MaazouniaChurchDTO> lookForMaazounizChruch(PagingSearchRequest pagingSearchRequest) {
-		List<MaazouniaChurch> list = maazouniaChurchService.lookforMaazouniaChurch(pagingSearchRequest.getSearchBy());
-		return maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(list);
+    @Override
+    public List<MaazouniaChurchDTO> lookForMaazounizChruch(PagingSearchRequest pagingSearchRequest) {
+        List<MaazouniaChurch> list = maazouniaChurchService.lookforMaazouniaChurch(pagingSearchRequest.getSearchBy());
+        return maazouniaChurchMapper.maazouniaChurchsToMaazouniaChurchDTOs(list);
 
-	}
+    }
 
-	@Override
-	public SettingPagingDTO getAllSetting(PagingRequest pagingRequest) {
-		Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
-				Integer.valueOf(pagingRequest.getPageSize()));
+    @Override
+    public SettingPagingDTO getAllSetting(PagingRequest pagingRequest) {
+        Pageable pageable = PageRequest.of(Integer.valueOf(pagingRequest.getPageNo()),
+                Integer.valueOf(pagingRequest.getPageSize()));
 
-		Page<Setting> pageResult = settingService.findAll(pageable);
+        Page<Setting> pageResult = settingService.findAll(pageable);
 
-		SettingPagingDTO settingPagingDTO = new SettingPagingDTO();
-		settingPagingDTO.setCount(pageResult.getTotalElements());
-		settingPagingDTO.setTotalPages(pageResult.getTotalPages());
-		settingPagingDTO.setSettings((settingMapper.settingsToSettingDTOs(pageResult.getContent())));
+        SettingPagingDTO settingPagingDTO = new SettingPagingDTO();
+        settingPagingDTO.setCount(pageResult.getTotalElements());
+        settingPagingDTO.setTotalPages(pageResult.getTotalPages());
+        settingPagingDTO.setSettings((settingMapper.settingsToSettingDTOs(pageResult.getContent())));
 
-		return settingPagingDTO;
+        return settingPagingDTO;
 
-	}
+    }
 
-	@Override
-	public SettingDTO editSetting(AddEditSettingRequest addEditSettingRequest) {
-		Setting eSetting = settingService.findById(Long.valueOf(addEditSettingRequest.getId())).get();
+    @Override
+    public SettingDTO editSetting(AddEditSettingRequest addEditSettingRequest) {
+        Setting eSetting = settingService.findById(Long.valueOf(addEditSettingRequest.getId())).get();
 
-		eSetting.setValueOps(addEditSettingRequest.getValueOps());
-		SettingDTO settingDTO = settingMapper.settingToSettingDTO(settingService.save(eSetting));
+        eSetting.setValueOps(addEditSettingRequest.getValueOps());
+        SettingDTO settingDTO = settingMapper.settingToSettingDTO(settingService.save(eSetting));
 
-		return settingDTO;
-	}
+        return settingDTO;
+    }
 
-	public String saveAttFile(MultipartFile att, String url, String fileName) throws Exception {
-		Path fileStorageLocation = null;
-		fileName = fileName + "_" + Date.from(Instant.now()).getTime();
-		if (att != null && !att.getOriginalFilename().equals("foo.txt")) {
-			try {
-				fileStorageLocation = Paths.get(url + "/" + Util.dateFormat() + "/" + fileName + "." + "png")
-						.toAbsolutePath().normalize();
+    public String saveAttFile(MultipartFile att, String url, String fileName) throws Exception {
+        Path fileStorageLocation = null;
+        fileName = fileName + "_" + Date.from(Instant.now()).getTime();
+        if (att != null && !att.getOriginalFilename().equals("foo.txt")) {
+            try {
+                fileStorageLocation = Paths.get(url + "/" + Util.dateFormat() + "/" + fileName + "." + "png")
+                        .toAbsolutePath().normalize();
 
-				Path path = Paths.get(fileStorageLocation.toString());
-				// System.gc();
-				File f = new File(fileStorageLocation.toString());
-				if (f.exists()) {
-					FileUtils.forceDelete(new File(fileStorageLocation.toString()));
+                Path path = Paths.get(fileStorageLocation.toString());
+                // System.gc();
+                File f = new File(fileStorageLocation.toString());
+                if (f.exists()) {
+                    FileUtils.forceDelete(new File(fileStorageLocation.toString()));
 
-				}
+                }
 //				Files.deleteIfExists(Paths.get(fileStorageLocation.toUri()));
-				Files.createDirectories(path);
-				Files.copy(att.getInputStream(), Paths.get(fileStorageLocation.toUri()),
-						StandardCopyOption.REPLACE_EXISTING);
+                Files.createDirectories(path);
+                Files.copy(att.getInputStream(), Paths.get(fileStorageLocation.toUri()),
+                        StandardCopyOption.REPLACE_EXISTING);
 
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				logger.error("saveAttFile An exception when saveAttachedFile! ", ex);
-				throw new TransactionException("saveAttFile An exception when saveAttachedFile with! " + url);
-			}
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                logger.error("saveAttFile An exception when saveAttachedFile! ", ex);
+                throw new TransactionException("saveAttFile An exception when saveAttachedFile with! " + url);
+            }
 
-		}
-		return fileStorageLocation.toString();
+        }
+        return fileStorageLocation.toString();
 
-	}
+    }
 
-	@Override
-	public List<SubServiceQuotaDTO> getAllSubServiceQuota() {
-		return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTOs(
-				subServiceQuotaService.findAll());
-	}
+    @Override
+    public List<SubServiceQuotaDTO> getAllSubServiceQuota() {
+        return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTOs(
+                subServiceQuotaService.findAll());
+    }
 
-	@Override
-	public SubServiceQuotaDTO addSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest) {
-		 
-		SubServiceQuota entity = new SubServiceQuota();
-		entity.setBeneficiary(addEditSubServiceQuotaRequest.getMidBenficiary());
-		entity.setMidBank(addEditSubServiceQuotaRequest.getMidBank());
-		entity.setFees(Double.valueOf(addEditSubServiceQuotaRequest.getFees()));
-		entity.setDescription(addEditSubServiceQuotaRequest.getDescription());
-		entity.setFeesType(addEditSubServiceQuotaRequest.getFeesType());
-		entity.setMidAccount(addEditSubServiceQuotaRequest.getMidAccount());
-		entity.setName(addEditSubServiceQuotaRequest.getName());
-		entity.setStatusFk(addEditSubServiceQuotaRequest.getStatusFk());
-		entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
-		 
-		
-		return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTO(subServiceQuotaService.save(entity));
-	}
+    @Override
+    public SubServicePriceTierDTO addSubServiceTier(String createdBy, AddEditSubServiceTierRequest addEditSubServiceTierRequest) {
+        SubServicePriceTier entity = SubServicePriceTier.builder()
+                .name(addEditSubServiceTierRequest.getName())
+                .fees(Double.valueOf(addEditSubServiceTierRequest.getFees()))
+                .subServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceTierRequest.getSubServiceFk())).get())
+                .build();
+        entity.setCreatedBy(createdBy);
+        entity.setCreatedAt(Date.from(Instant.now()));
+        return serviceMapper.subServicePriceTierToDto(subServicePriceTierService.save(entity), "");
+    }
 
-	@Override
-	public SubServiceQuotaDTO editSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest) {
-		
-		SubServiceQuota entity = subServiceQuotaService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getId())).get();
-		
-		entity.setBeneficiary(addEditSubServiceQuotaRequest.getMidBenficiary());
-		entity.setMidBank(addEditSubServiceQuotaRequest.getMidBank());
-		entity.setFees(Double.valueOf(addEditSubServiceQuotaRequest.getFees()));
-		entity.setDescription(addEditSubServiceQuotaRequest.getDescription());
-		entity.setFeesType(addEditSubServiceQuotaRequest.getFeesType());
-		entity.setMidAccount(addEditSubServiceQuotaRequest.getMidAccount());
-		entity.setName(addEditSubServiceQuotaRequest.getName());
-		entity.setStatusFk(addEditSubServiceQuotaRequest.getStatusFk());
-	//	entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
-		 
-		
-		return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTO(subServiceQuotaService.save(entity));
-	}
+    @Override
+    public SubServiceQuotaDTO addSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest) {
 
-	@Override
-	public String getSupplyReferenceNumber(SupplyOrderReferenceNumberRequest supplyOrderReferenceNumberRequest) {
-		Sector sector = sectorService.findById(
-				Long.valueOf(supplyOrderReferenceNumberRequest.getSectorId())).orElse(null);
-		
-		long sequance = sector.getSupplyOrderSeqRef()+1;
-		String currentYearTwoDigits = Util.getCurrentYearTwoDigits();
-		if(!currentYearTwoDigits.equals(String.valueOf(sector.getSupplyOrderYearRef()))) {
-			sequance = 1;
-		}
-		
+        SubServiceQuota entity = new SubServiceQuota();
+        entity.setBeneficiary(addEditSubServiceQuotaRequest.getMidBenficiary());
+        entity.setMidBank(addEditSubServiceQuotaRequest.getMidBank());
+        entity.setFees(Double.valueOf(addEditSubServiceQuotaRequest.getFees()));
+        entity.setDescription(addEditSubServiceQuotaRequest.getDescription());
+        entity.setFeesType(addEditSubServiceQuotaRequest.getFeesType());
+        entity.setMidAccount(addEditSubServiceQuotaRequest.getMidAccount());
+        entity.setName(addEditSubServiceQuotaRequest.getName());
+        entity.setStatusFk(addEditSubServiceQuotaRequest.getStatusFk());
+        entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
+        if (addEditSubServiceQuotaRequest.getSubServiceTierFk() != null) {
+            entity.setSubServicePriceTierFk(subServicePriceTierService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceTierFk())).get());
+        }
+
+        return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTO(subServiceQuotaService.save(entity));
+    }
+
+    @Override
+    public SubServiceQuotaDTO editSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest) {
+
+        SubServiceQuota entity = subServiceQuotaService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getId())).get();
+
+        entity.setBeneficiary(addEditSubServiceQuotaRequest.getMidBenficiary());
+        entity.setMidBank(addEditSubServiceQuotaRequest.getMidBank());
+        entity.setFees(Double.valueOf(addEditSubServiceQuotaRequest.getFees()));
+        entity.setDescription(addEditSubServiceQuotaRequest.getDescription());
+        entity.setFeesType(addEditSubServiceQuotaRequest.getFeesType());
+        entity.setMidAccount(addEditSubServiceQuotaRequest.getMidAccount());
+        entity.setName(addEditSubServiceQuotaRequest.getName());
+        entity.setStatusFk(addEditSubServiceQuotaRequest.getStatusFk());
+        //	entity.setSubServiceFk(subServiceService.findById(Long.valueOf(addEditSubServiceQuotaRequest.getSubServiceFk())).get());
+
+
+        return subServiceQuotaMapper.subServiceQuotaTosubServiceQuotaDTO(subServiceQuotaService.save(entity));
+    }
+
+    @Override
+    public String getSupplyReferenceNumber(SupplyOrderReferenceNumberRequest supplyOrderReferenceNumberRequest) {
+        Sector sector = sectorService.findById(
+                Long.valueOf(supplyOrderReferenceNumberRequest.getSectorId())).orElse(null);
+
+        long sequance = sector.getSupplyOrderSeqRef() + 1;
+        String currentYearTwoDigits = Util.getCurrentYearTwoDigits();
+        if (!currentYearTwoDigits.equals(String.valueOf(sector.getSupplyOrderYearRef()))) {
+            sequance = 1;
+        }
+
 //		sector.setSupplyOrderSeqRef(sequance);
 //		sector.setSupplyOrderYearRef(Long.valueOf(currentYearTwoDigits));
 //		sectorService.save(sector);
-		
-		String supplyOrderReferenceNumber = String.format("%03d", sector.getId())+"-"+ 
-				currentYearTwoDigits + String.format("%03d", sequance);
-		
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("sequance", String.valueOf(sequance));
-		jsonObject.put("currentYearTwoDigits", currentYearTwoDigits);
-		jsonObject.put("supplyOrderReferenceNumber", supplyOrderReferenceNumber);
-		
-		return jsonObject.toString();
-	}
-	
-	
+
+        String supplyOrderReferenceNumber = String.format("%03d", sector.getId()) + "-" +
+                currentYearTwoDigits + String.format("%03d", sequance);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sequance", String.valueOf(sequance));
+        jsonObject.put("currentYearTwoDigits", currentYearTwoDigits);
+        jsonObject.put("supplyOrderReferenceNumber", supplyOrderReferenceNumber);
+
+        return jsonObject.toString();
+    }
+
+
 }

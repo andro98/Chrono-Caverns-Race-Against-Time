@@ -2,146 +2,152 @@ package com.aman.payment.auth.model.payload;
 
 import com.aman.payment.auth.service.CryptoMngrAuthService;
 
-public class AddEditSubServiceQuotaRequest implements AuthBasePayload<AddEditSubServiceQuotaRequest>  {
+public class AddEditSubServiceQuotaRequest implements AuthBasePayload<AddEditSubServiceQuotaRequest> {
 
-	private String id;
-	private String name;
-	private String fees;
-	private String description;
-	private String statusFk;
-	private String feesType;
-	private String midAccount;
-	private String midBank;
-	private String midBenficiary;
-	private String subServiceFk;
-	
-	
-
-	public AddEditSubServiceQuotaRequest() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	
-
-	public AddEditSubServiceQuotaRequest(String id, String name, String fees, String description, String statusFk,
-			String feesType, String midAccount, String midBank, String midBenficiary, String subServiceFk) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.fees = fees;
-		this.description = description;
-		this.statusFk = statusFk;
-		this.feesType = feesType;
-		this.midAccount = midAccount;
-		this.midBank = midBank;
-		this.midBenficiary = midBenficiary;
-		this.subServiceFk = subServiceFk;
-	}
+    private String id;
+    private String name;
+    private String fees;
+    private String description;
+    private String statusFk;
+    private String feesType;
+    private String midAccount;
+    private String midBank;
+    private String midBenficiary;
+    private String subServiceFk;
+    private String subServiceTierFk;
 
 
+    public AddEditSubServiceQuotaRequest() {
+        // TODO Auto-generated constructor stub
+    }
 
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public AddEditSubServiceQuotaRequest(String id, String name, String fees, String description, String statusFk,
+                                         String feesType, String midAccount, String midBank, String midBenficiary, String subServiceFk, String subServiceTierFk) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.fees = fees;
+        this.description = description;
+        this.statusFk = statusFk;
+        this.feesType = feesType;
+        this.midAccount = midAccount;
+        this.midBank = midBank;
+        this.midBenficiary = midBenficiary;
+        this.subServiceFk = subServiceFk;
+        this.subServiceTierFk = subServiceTierFk;
+    }
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getId() {
+        return id;
+    }
 
- 
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getFees() {
-		return fees;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getFees() {
+        return fees;
+    }
+
     public void setFees(String fees) {
-		this.fees = fees;
-	}
- 
-	public String getDescription() {
-		return description;
-	}
+        this.fees = fees;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getStatusFk() {
-		return statusFk;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setStatusFk(String statusFk) {
-		this.statusFk = statusFk;
-	}
+    public String getStatusFk() {
+        return statusFk;
+    }
 
-	public String getFeesType() {
-		return feesType;
-	}
+    public void setStatusFk(String statusFk) {
+        this.statusFk = statusFk;
+    }
 
-	public void setFeesType(String feesType) {
-		this.feesType = feesType;
-	}
+    public String getFeesType() {
+        return feesType;
+    }
 
-	public String getMidAccount() {
-		return midAccount;
-	}
+    public void setFeesType(String feesType) {
+        this.feesType = feesType;
+    }
 
-	public void setMidAccount(String midAccount) {
-		this.midAccount = midAccount;
-	}
+    public String getMidAccount() {
+        return midAccount;
+    }
 
-	public String getMidBank() {
-		return midBank;
-	}
+    public void setMidAccount(String midAccount) {
+        this.midAccount = midAccount;
+    }
 
-	public void setMidBank(String midBank) {
-		this.midBank = midBank;
-	}
- 
+    public String getMidBank() {
+        return midBank;
+    }
 
-	public String getMidBenficiary() {
-		return midBenficiary;
-	}
+    public void setMidBank(String midBank) {
+        this.midBank = midBank;
+    }
 
 
-
-	public void setMidBenficiary(String midBenficiary) {
-		this.midBenficiary = midBenficiary;
-	}
-
+    public String getMidBenficiary() {
+        return midBenficiary;
+    }
 
 
-	public String getSubServiceFk() {
-		return subServiceFk;
-	}
+    public void setMidBenficiary(String midBenficiary) {
+        this.midBenficiary = midBenficiary;
+    }
 
-	public void setSubServiceFk(String subServiceFk) {
-		this.subServiceFk = subServiceFk;
-	}
 
-	@Override
-	public AddEditSubServiceQuotaRequest decrypt(CryptoMngrAuthService cryptoMngrAuthService) {
-		// TODO Auto-generated method stub
-		return  new AddEditSubServiceQuotaRequest(
-				cryptoMngrAuthService.decrypt(id), 
-				cryptoMngrAuthService.decrypt(name), 
-				cryptoMngrAuthService.decrypt(fees), 
-				cryptoMngrAuthService.decrypt(description), 
-				cryptoMngrAuthService.decrypt(statusFk),
-				cryptoMngrAuthService.decrypt(feesType),
-				cryptoMngrAuthService.decrypt(midAccount),
-				cryptoMngrAuthService.decrypt(midBank),
-				cryptoMngrAuthService.decrypt(midBenficiary),
-				cryptoMngrAuthService.decrypt(subServiceFk)) ;
-	}
-	
-	 
+    public String getSubServiceFk() {
+        return subServiceFk;
+    }
+
+    public void setSubServiceFk(String subServiceFk) {
+        this.subServiceFk = subServiceFk;
+    }
+
+    public String getSubServiceTierFk() {
+        return subServiceTierFk;
+    }
+
+    public void setSubServiceTierFk(String subServiceTierFk) {
+        this.subServiceTierFk = subServiceTierFk;
+    }
+
+    @Override
+    public AddEditSubServiceQuotaRequest decrypt(CryptoMngrAuthService cryptoMngrAuthService) {
+        // TODO Auto-generated method stub
+        return new AddEditSubServiceQuotaRequest(
+                cryptoMngrAuthService.decrypt(id),
+                cryptoMngrAuthService.decrypt(name),
+                cryptoMngrAuthService.decrypt(fees),
+                cryptoMngrAuthService.decrypt(description),
+                cryptoMngrAuthService.decrypt(statusFk),
+                cryptoMngrAuthService.decrypt(feesType),
+                cryptoMngrAuthService.decrypt(midAccount),
+                cryptoMngrAuthService.decrypt(midBank),
+                cryptoMngrAuthService.decrypt(midBenficiary),
+                cryptoMngrAuthService.decrypt(subServiceFk),
+                cryptoMngrAuthService.decrypt(subServiceTierFk)
+        );
+    }
+
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONObject;
 
 
 @Getter
@@ -18,6 +19,8 @@ public class SubServicePriceTierDTO implements AuthBaseDTO<SubServicePriceTierDT
     private String fees;
     private String description;
     private String subServiceId;
+    private String subServiceName;
+    private String currentQuotaFees;
 
     @Override
     public SubServicePriceTierDTO encrypt(CryptoMngrAuthService cryptoMngrAuthService) {
@@ -26,7 +29,14 @@ public class SubServicePriceTierDTO implements AuthBaseDTO<SubServicePriceTierDT
                 cryptoMngrAuthService.encrypt(name),
                 cryptoMngrAuthService.encrypt(fees),
                 cryptoMngrAuthService.encrypt(description),
-                cryptoMngrAuthService.encrypt(subServiceId)
+                cryptoMngrAuthService.encrypt(subServiceId),
+                cryptoMngrAuthService.encrypt(subServiceName),
+                cryptoMngrAuthService.encrypt(currentQuotaFees)
         );
+    }
+
+    @Override
+    public String toString() {
+        return new JSONObject(this).toString();
     }
 }

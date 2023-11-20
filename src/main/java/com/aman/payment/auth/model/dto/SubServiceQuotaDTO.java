@@ -9,6 +9,7 @@ public class SubServiceQuotaDTO{
     private String fees;
     private String status;
     private String subServiceId;
+	private String subServiceTierId;
     private String subServiceName;
     private String feesType;
     private String midAccount;
@@ -115,4 +116,11 @@ public class SubServiceQuotaDTO{
 
 	}
 
+	public String getSubServiceTierId() {
+		return subServiceTierId;
+	}
+
+	public void setSubServiceTierId(String subServiceTierId) {
+		this.subServiceTierId = subServiceTierId;
+	}
 }

@@ -5,25 +5,7 @@ import java.util.Set;
 
 import com.aman.payment.auth.model.Role;
 import com.aman.payment.auth.model.dto.*;
-import com.aman.payment.auth.model.payload.AddEditLocationRequest;
-import com.aman.payment.auth.model.payload.AddEditMaazouniaChurchRequest;
-import com.aman.payment.auth.model.payload.AddEditMerchantRequest;
-import com.aman.payment.auth.model.payload.AddEditPosRequest;
-import com.aman.payment.auth.model.payload.AddEditRoleRequest;
-import com.aman.payment.auth.model.payload.AddEditSectorRequest;
-import com.aman.payment.auth.model.payload.AddEditServiceRequest;
-import com.aman.payment.auth.model.payload.AddEditSettingRequest;
-import com.aman.payment.auth.model.payload.AddEditSubServiceQuotaRequest;
-import com.aman.payment.auth.model.payload.MerchantByIdRequest;
-import com.aman.payment.auth.model.payload.PagingRequest;
-import com.aman.payment.auth.model.payload.PagingSearchRequest;
-import com.aman.payment.auth.model.payload.PosByIDRequest;
-import com.aman.payment.auth.model.payload.PosByLocationRequest;
-import com.aman.payment.auth.model.payload.PosByUserRequest;
-import com.aman.payment.auth.model.payload.ServiceMenuRequest;
-import com.aman.payment.auth.model.payload.SubServiceByIDRequest;
-import com.aman.payment.auth.model.payload.SubServiceByServiceIDRequest;
-import com.aman.payment.auth.model.payload.SupplyOrderReferenceNumberRequest;
+import com.aman.payment.auth.model.payload.*;
 
 public interface LookupManagement {
 	
@@ -185,5 +167,8 @@ public interface LookupManagement {
 	
 	public SubServiceQuotaDTO editSubServiceQuota(AddEditSubServiceQuotaRequest addEditSubServiceQuotaRequest);
 
-	
+
+//	List<SubServicePriceTierDTO> getAllSubServicesPriceTier();
+
+	public SubServicePriceTierDTO addSubServiceTier(String createdBy, AddEditSubServiceTierRequest addEditSubServiceTierRequest);
 }
