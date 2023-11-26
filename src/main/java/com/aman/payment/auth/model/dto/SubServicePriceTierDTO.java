@@ -21,6 +21,7 @@ public class SubServicePriceTierDTO implements AuthBaseDTO<SubServicePriceTierDT
     private String subServiceId;
     private String subServiceName;
     private String currentQuotaFees;
+    private String subServiceContractCount;
 
     @Override
     public SubServicePriceTierDTO encrypt(CryptoMngrAuthService cryptoMngrAuthService) {
@@ -31,7 +32,8 @@ public class SubServicePriceTierDTO implements AuthBaseDTO<SubServicePriceTierDT
                 cryptoMngrAuthService.encrypt(description),
                 cryptoMngrAuthService.encrypt(subServiceId),
                 cryptoMngrAuthService.encrypt(subServiceName),
-                cryptoMngrAuthService.encrypt(currentQuotaFees)
+                cryptoMngrAuthService.encrypt(currentQuotaFees),
+                cryptoMngrAuthService.encrypt(subServiceContractCount)
         );
     }
 

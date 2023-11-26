@@ -173,6 +173,7 @@ public class ServiceMapper {
         subServicePriceTierDTO.setSubServiceId(String.valueOf(subServicePriceTier.getSubServiceFk().getId()));
         subServicePriceTierDTO.setSubServiceName(subServicePriceTier.getSubServiceFk().getName());
         subServicePriceTierDTO.setCurrentQuotaFees(currentQuotaFees);
+        subServicePriceTierDTO.setSubServiceContractCount(String.valueOf(subServicePriceTier.getSubServiceFk().getContractsCount()));
         return subServicePriceTierDTO;
     }
 }

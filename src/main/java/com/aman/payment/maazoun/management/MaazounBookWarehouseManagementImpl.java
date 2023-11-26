@@ -173,6 +173,8 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
         Date createdAt = Date.from(Instant.now());
         Pos pos = getAssignedPOS(customUserDetails.getPosSet(), addBookSupplyOrder.getSectorId());
         Sector sector = getSectorById(pos.getSectors(), addBookSupplyOrder.getSectorId());
+        String locationCode = sector.getLocationFk().getId().toString();
+
 
         MaazounBookSupplyOrder maazounBookSupplyOrderFk = populateMaazounBookSupplyOrder(pos,
                 customUserDetails.getUsername(), createdAt, addBookSupplyOrder.getImageUrl(),
@@ -195,10 +197,11 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
          */
         try {
             batchBooks = populateAndValidateBatchMaazounWarehouseWithStockLabel(pos, customUserDetails.getUsername(),
-                    createdAt, addBookSupplyOrder.getBookList(), maazounBookSupplyOrderFk);
+                    createdAt, addBookSupplyOrder.getBookList(), maazounBookSupplyOrderFk, locationCode);
         } catch (Exception e) {
-            throw new ResourceAlreadyInUseException("addBookSupplyOrder exception when adding new maazoun books", "",
-                    "no serial number found");
+            throw new RuntimeException(e);
+//            throw new ResourceAlreadyInUseException("addBookSupplyOrder exception when adding new maazoun books", "",
+//                    "no serial number found");
         }
 
         maazounBookWarehouseService.save(batchBooks);
@@ -1320,6 +1323,12 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
             bookWarehouse.setBookTypeId(Long.valueOf(editBookFinancialNumberRequest.getBookTypeId()));
             bookWarehouse.setBookTypeName(editBookFinancialNumberRequest.getBookType());
+            bookWarehouse.setBookTierId(Long.parseLong(editBookFinancialNumberRequest.getBookTier()));
+
+            maazounBookStockLabelService.findByLabelCode(bookWarehouse.getSerialNumber()).ifPresent(s -> {
+                s.setBookTierId(Long.parseLong(editBookFinancialNumberRequest.getBookTier()));
+                maazounBookStockLabelService.save(s);
+            });
 //				  
             if (bookWarehouse.getMaazounBookRequestInfoFk() != null) {
                 bookWarehouse.getMaazounBookRequestInfoFk()

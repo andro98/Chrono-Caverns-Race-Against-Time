@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import com.aman.payment.core.exception.BadRequestException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,7 +332,7 @@ public abstract class ValidationAndPopulateManagement {
     }
 
     public List<MaazounBookWarehouse> populateAndValidateBatchMaazounWarehouseWithStockLabel(Pos pos, String username,
-                                                                                             Date updatedAt, List<BookListRequest> books, MaazounBookSupplyOrder maazounBookSupplyOrderFk)
+                                                                                             Date updatedAt, List<BookListRequest> books, MaazounBookSupplyOrder maazounBookSupplyOrderFk, String locationId)
             throws Exception {
 
         List<MaazounBookWarehouse> batchBooks = new ArrayList<MaazounBookWarehouse>();
@@ -346,6 +347,14 @@ public abstract class ValidationAndPopulateManagement {
             Optional<MaazounBookStockLabel> bookLabelCodeOptional = maazounBookStockLabelService
                     .findByLabelCode(book.getSerialNumber());
             if (bookLabelCodeOptional.isPresent()) {
+
+                if (!bookLabelCodeOptional.get().getStatusFk().equals(StatusConstant.STATUS_PRINTED)) {
+                    throw new BadRequestException("Maazoun book serial number status is not Printed");
+                }
+
+                if (!bookLabelCodeOptional.get().getLabelCode().substring(0, 3).equals(locationId)) {
+                    throw new BadRequestException("This Book Serial Number " + book.getSerialNumber() + " is not applicable with the selected sector");
+                }
 
                 MaazounBookStockLabel bookLabelCode = bookLabelCodeOptional.get();
                 bookLabelCode.setStatusFk(StatusConstant.STATUS_PRINT_OUT);
@@ -363,6 +372,14 @@ public abstract class ValidationAndPopulateManagement {
                     Optional<MaazounBookStockLabel> contractLabelCodeOptional = maazounBookStockLabelService
                             .findByLabelCode(contract.getContractSerialNumber());
                     if (contractLabelCodeOptional.isPresent()) {
+
+                        if (!contractLabelCodeOptional.get().getStatusFk().equals(StatusConstant.STATUS_PRINTED)) {
+                            throw new BadRequestException("Maazoun book serial number status is not Printed");
+                        }
+
+                        if (!contractLabelCodeOptional.get().getLabelCode().substring(0, 3).equals(locationId)) {
+                            throw new BadRequestException("This Contract Serial Number " + book.getSerialNumber() + " is not applicable with the selected sector");
+                        }
 
                         if (book.getSerialNumber() == null || book.getSerialNumber().isEmpty()
                                 || contract.getContractSerialNumber() == null
