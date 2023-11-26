@@ -349,7 +349,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
                 SubService subService = subServiceService.findById(bookWarehouseOptional.get().getBookTypeId()).get();
                 BookDTO bookDto = maazounBookWarehouseMapper.maazounBookWarehouseToBookDTO(bookWarehouseOptional.get(),
-                        subService, null);
+                        subService, bookWarehouseOptional.get().getBookTierId());
 
                 return cryptoMngrMaazounService.encrypt(bookDto.toString());
 
@@ -360,7 +360,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                     SubService subService = subServiceService.findById(bookWarehouseOptional.get().getBookTypeId())
                             .get();
                     BookDTO bookDto = maazounBookWarehouseMapper
-                            .maazounBookWarehouseToBookDTO(bookWarehouseOptional.get(), subService, null);
+                            .maazounBookWarehouseToBookDTO(bookWarehouseOptional.get(), subService, bookWarehouseOptional.get().getBookTierId());
 
                     return cryptoMngrMaazounService.encrypt(bookDto.toString());
 
@@ -403,7 +403,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                     return cryptoMngrMaazounService.encrypt(jsonObject.toString());
                 }
 
-                Long tierId = maazounBookStockLabel.get().getBookTierId();
+                Long tierId = bookWarehouseOptional.get().getBookTierId();
 
                 BookDTO bookDto = maazounBookWarehouseMapper.maazounBookWarehouseToBookDTO(bookWarehouseOptional.get(),
                         subService, tierId);
@@ -857,13 +857,13 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                     + "/" + eMaazounBookSupplyOrder.getUpdatedBy());
             eMaazounBookHistoryDTO.setCustody(String.valueOf(eMaazounBookSupplyOrder.getIsCustody()));
 
-            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(eMaazounBookWarehouse.getSerialNumber());
-            if (stockLabel.isPresent()) {
-                Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(stockLabel.get().getBookTierId());
-                if (subServicePriceTier.isPresent()) {
-                    eMaazounBookHistoryDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
-                }
+//            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(eMaazounBookWarehouse.getSerialNumber());
+//            if (stockLabel.isPresent()) {
+            Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(eMaazounBookWarehouse.getBookTierId());
+            if (subServicePriceTier.isPresent()) {
+                eMaazounBookHistoryDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
             }
+//            }
 
             // 3- Maazoun book sold info
             MaazounBookRequestInfo eMaazounBookRequestInfo = eMaazounBookWarehouse.getMaazounBookRequestInfoFk();
@@ -1193,11 +1193,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
             List<Long> sectorIds = getSectorIds(customUserDetails.getPosSet());
 
-            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(bookWarehouseOptional.getSerialNumber());
-            Long tierId = null;
-            if (stockLabel.isPresent()) {
-                tierId = stockLabel.get().getBookTierId();
-            }
+            Long tierId = bookWarehouseOptional.getBookTierId();
 
             if (customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_SUPPORT)
                     || customUserDetails.getRoleFk().getName().equals(StatusConstant.ROLE_ADMIN)) {
@@ -1325,10 +1321,10 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
             bookWarehouse.setBookTypeName(editBookFinancialNumberRequest.getBookType());
             bookWarehouse.setBookTierId(Long.parseLong(editBookFinancialNumberRequest.getBookTier()));
 
-            maazounBookStockLabelService.findByLabelCode(bookWarehouse.getSerialNumber()).ifPresent(s -> {
-                s.setBookTierId(Long.parseLong(editBookFinancialNumberRequest.getBookTier()));
-                maazounBookStockLabelService.save(s);
-            });
+//            maazounBookStockLabelService.findByLabelCode(bookWarehouse.getSerialNumber()).ifPresent(s -> {
+//                s.setBookTierId(Long.parseLong(editBookFinancialNumberRequest.getBookTier()));
+//                maazounBookStockLabelService.save(s);
+//            });
 //				  
             if (bookWarehouse.getMaazounBookRequestInfoFk() != null) {
                 bookWarehouse.getMaazounBookRequestInfoFk()
@@ -1563,7 +1559,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                 Map<String, String> tierMap = new HashMap<String, String>();
                 for (MaazounBookWarehouse obj : eMaazounBookSupplyOrder.getMaazounBookWarehouseSet()) {
                     if (tierMap.get(obj.getSerialNumber()) == null) {
-                        tierMap.put(obj.getSerialNumber(), String.valueOf(maazounBookStockLabelService.findByLabelCode(obj.getSerialNumber()).get().getBookTierId()));
+                        tierMap.put(obj.getSerialNumber(), String.valueOf(obj.getBookTierId()));
                     }
 
                     if (supplyOrderDetailsFk.getBookTypeFK().equals(String.valueOf(obj.getBookTypeId())) && supplyOrderDetailsFk.getBootTierId().equals(tierMap.get(obj.getSerialNumber()))) {

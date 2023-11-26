@@ -93,6 +93,7 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setContractCount(maazounBookWarehouse.getContractCount());
         bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
+        bookDTO.setBookTierPrice(String.valueOf(maazounBookWarehouse.getBookTierId()));
         if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
             bookDTO.setMaazounNationalId(String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getNationalId()));
             bookDTO.setMaazounId(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk() != null ? String.valueOf(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getId()) : null);
@@ -134,16 +135,16 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
         bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
 
-        Optional<MaazounBookStockLabel> label = maazounBookStockLabelService
-                .findByLabelCode(maazounBookWarehouse.getSerialNumber());
-        if (label.isPresent()) {
-            Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(label.get().getBookTierId());
-            if (subServicePriceTier.isPresent()) {
-                bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
-                bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
-                bookDTO.setBookTierName(subServicePriceTier.get().getName());
-            }
+//        Optional<MaazounBookStockLabel> label = maazounBookStockLabelService
+//                .findByLabelCode(maazounBookWarehouse.getSerialNumber());
+//        if (label.isPresent()) {
+        Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(maazounBookWarehouse.getBookTierId());
+        if (subServicePriceTier.isPresent()) {
+            bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
+            bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
+            bookDTO.setBookTierName(subServicePriceTier.get().getName());
         }
+//        }
 
         if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
             bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
