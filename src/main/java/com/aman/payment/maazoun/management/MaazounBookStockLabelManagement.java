@@ -4,10 +4,7 @@ import java.util.List;
 
 import com.aman.payment.auth.model.CustomUserDetails;
 import com.aman.payment.maazoun.model.dto.PagingDTO;
-import com.aman.payment.maazoun.model.payload.EditStockLabelRequest;
-import com.aman.payment.maazoun.model.payload.EditStockLabelStatusRequest;
-import com.aman.payment.maazoun.model.payload.SearchStockLabelRequest;
-import com.aman.payment.maazoun.model.payload.StockLabelRequest;
+import com.aman.payment.maazoun.model.payload.*;
 
 public interface MaazounBookStockLabelManagement {
 	
@@ -23,5 +20,5 @@ public interface MaazounBookStockLabelManagement {
 
 	public String editStockLabelStatus(EditStockLabelRequest editStockLabelRequest);
 
-	
+    String feesBySerialNumber( StockLabelBySerialRequest decryptStockLabelRequest);
 }

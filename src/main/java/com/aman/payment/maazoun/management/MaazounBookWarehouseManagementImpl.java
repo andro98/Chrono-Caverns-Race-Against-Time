@@ -130,7 +130,6 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
 
     @Override
     public BooksPagingDTO getAllBooks(BooksRequest booksRequest, CustomUserDetails customUserDetails) {
-
         Pageable pageable = PageRequest.of(Integer.valueOf(booksRequest.getPageNo()),
                 Integer.valueOf(booksRequest.getPageSize()));
 

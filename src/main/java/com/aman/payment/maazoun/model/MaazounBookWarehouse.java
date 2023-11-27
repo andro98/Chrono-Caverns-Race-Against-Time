@@ -36,7 +36,7 @@ public class MaazounBookWarehouse implements Serializable {
 	private long bookTypeId;
 
 	@Column(name = "bookTierId")
-	private long bookTierId;
+	private Long bookTierId;
 	
 	@Column(name = "bookTypeName")
 	private String bookTypeName;

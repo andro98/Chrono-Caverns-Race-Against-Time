@@ -15,6 +15,7 @@ package com.aman.payment.maazoun.controller;
 
 import javax.validation.Valid;
 
+import com.aman.payment.maazoun.model.payload.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,6 @@ import com.aman.payment.auth.model.CustomUserDetails;
 import com.aman.payment.maazoun.management.MaazounBookStockLabelManagement;
 import com.aman.payment.maazoun.management.MaazounJsonObjectFactoryImpl;
 import com.aman.payment.maazoun.model.dto.PagingDTO;
-import com.aman.payment.maazoun.model.payload.EditStockLabelRequest;
-import com.aman.payment.maazoun.model.payload.EditStockLabelStatusRequest;
-import com.aman.payment.maazoun.model.payload.SearchStockLabelRequest;
-import com.aman.payment.maazoun.model.payload.StockLabelRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,74 +40,85 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "Maazoun Book Stock Label Rest API", description = "Defines endpoints for the Maazoun Stock Label. It's secured by default")
 public class MaazounStockLabelController extends MaazounJsonObjectFactoryImpl {
 
-	final static Logger logger = Logger.getLogger("maazoun");
+    final static Logger logger = Logger.getLogger("maazoun");
 
-	private final MaazounBookStockLabelManagement maazounBookStockLabelManagement;
+    private final MaazounBookStockLabelManagement maazounBookStockLabelManagement;
 
-	@Autowired
-	public MaazounStockLabelController(MaazounBookStockLabelManagement maazounBookStockLabelManagement) {
-		this.maazounBookStockLabelManagement = maazounBookStockLabelManagement;
-	}
+    @Autowired
+    public MaazounStockLabelController(MaazounBookStockLabelManagement maazounBookStockLabelManagement) {
+        this.maazounBookStockLabelManagement = maazounBookStockLabelManagement;
+    }
 
-
-	@PostMapping("/generateSerialNumber")
+    @PostMapping("/feesBySerialNumber")
 //    @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
-	public ResponseEntity<String> generateSerialNumber(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
-		
-		StockLabelRequest decryptStockLabelRequest = 
-				convertJsonStringToObject(jsonString, StockLabelRequest.class);
-		
-		return ResponseEntity.ok(maazounBookStockLabelManagement.generateSerialNumber(customUserDetails, decryptStockLabelRequest));
-	}
+    @ApiOperation(value = "Returns fees by serial number. Requires ADMIN Access")
+    public ResponseEntity<String> feesBySerialNumber(
+            @Valid @RequestBody String jsonString) {
 
-	@PostMapping("/editSerialNumberStatus")
-//  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Update the list of configured stock labels Status to be printed. Requires ADMIN Access")
-	public ResponseEntity<String> editSerialNumberStatus(@CurrentUser  CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
-		
-		EditStockLabelStatusRequest decryptEditStockLabelStatusRequest = 
-				convertJsonStringToObject(jsonString, EditStockLabelStatusRequest.class);
-		
-		return ResponseEntity.ok(maazounBookStockLabelManagement.editSerialNumberStatus(decryptEditStockLabelStatusRequest));
-	}
-	
-	@PostMapping("/searchStockLabel")
-//  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
-	public ResponseEntity<PagingDTO> searchStockLabel(@CurrentUser CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
-		
-		SearchStockLabelRequest decryptSearchStockLabelRequest = 
-				convertJsonStringToObject(jsonString, SearchStockLabelRequest.class);
-		
-		return ResponseEntity.ok(maazounBookStockLabelManagement.searchStockLabel(decryptSearchStockLabelRequest, customUserDetails));
-	}
-	
+        StockLabelBySerialRequest decryptStockLabelRequest =
+                convertJsonStringToObject(jsonString, StockLabelBySerialRequest.class);
 
-	@PostMapping("/stockLabelByStatus")
+        return ResponseEntity.ok(maazounBookStockLabelManagement.feesBySerialNumber(decryptStockLabelRequest));
+    }
+
+    @PostMapping("/generateSerialNumber")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
+    public ResponseEntity<String> generateSerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                       @Valid @RequestBody String jsonString) {
+
+        StockLabelRequest decryptStockLabelRequest =
+                convertJsonStringToObject(jsonString, StockLabelRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.generateSerialNumber(customUserDetails, decryptStockLabelRequest));
+    }
+
+    @PostMapping("/editSerialNumberStatus")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
-	public ResponseEntity<String> stockLabelByStatus(@Valid @RequestBody String jsonString,@CurrentUser CustomUserDetails customUserDetails) {
-		
-		SearchStockLabelRequest decryptSearchStockLabelRequest = 
-				convertJsonStringToObject(jsonString, SearchStockLabelRequest.class);
-		
-		return ResponseEntity.ok(maazounBookStockLabelManagement.
-				findByStatusFkByLocations(decryptSearchStockLabelRequest.getStatus(), customUserDetails));
-	}
-	
-	@PostMapping("/editStockLabelStatus")
+    @ApiOperation(value = "Update the list of configured stock labels Status to be printed. Requires ADMIN Access")
+    public ResponseEntity<String> editSerialNumberStatus(@CurrentUser CustomUserDetails customUserDetails,
+                                                         @Valid @RequestBody String jsonString) {
+
+        EditStockLabelStatusRequest decryptEditStockLabelStatusRequest =
+                convertJsonStringToObject(jsonString, EditStockLabelStatusRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.editSerialNumberStatus(decryptEditStockLabelStatusRequest));
+    }
+
+    @PostMapping("/searchStockLabel")
 //  @PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Update the list of configured stock labels Status to be printed. Requires ADMIN Access")
-	public ResponseEntity<String> editStockLabelStatus(@CurrentUser  CustomUserDetails customUserDetails,
-			@Valid @RequestBody String jsonString) {
-		
-		EditStockLabelRequest decryptEditStockLabelStatusRequest = 
-				convertJsonStringToObject(jsonString, EditStockLabelRequest.class);
-		
-		return ResponseEntity.ok(maazounBookStockLabelManagement.editStockLabelStatus(decryptEditStockLabelStatusRequest));
-	}
+    @ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
+    public ResponseEntity<PagingDTO> searchStockLabel(@CurrentUser CustomUserDetails customUserDetails,
+                                                      @Valid @RequestBody String jsonString) {
+
+        SearchStockLabelRequest decryptSearchStockLabelRequest =
+                convertJsonStringToObject(jsonString, SearchStockLabelRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.searchStockLabel(decryptSearchStockLabelRequest, customUserDetails));
+    }
+
+
+    @PostMapping("/stockLabelByStatus")
+//  @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
+    public ResponseEntity<String> stockLabelByStatus(@Valid @RequestBody String jsonString, @CurrentUser CustomUserDetails customUserDetails) {
+
+        SearchStockLabelRequest decryptSearchStockLabelRequest =
+                convertJsonStringToObject(jsonString, SearchStockLabelRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.
+                findByStatusFkByLocations(decryptSearchStockLabelRequest.getStatus(), customUserDetails));
+    }
+
+    @PostMapping("/editStockLabelStatus")
+//  @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Update the list of configured stock labels Status to be printed. Requires ADMIN Access")
+    public ResponseEntity<String> editStockLabelStatus(@CurrentUser CustomUserDetails customUserDetails,
+                                                       @Valid @RequestBody String jsonString) {
+
+        EditStockLabelRequest decryptEditStockLabelStatusRequest =
+                convertJsonStringToObject(jsonString, EditStockLabelRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.editStockLabelStatus(decryptEditStockLabelStatusRequest));
+    }
 }
