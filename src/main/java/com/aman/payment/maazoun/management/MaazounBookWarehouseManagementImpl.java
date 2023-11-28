@@ -79,7 +79,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
     private final MaazounProfileService maazounProfileService;
     private final SupplyOrderDetailsService supplyOrderDetailsService;
     private final SupplyOrderDetailsMapper supplyOrderDetailsMapper;
-    private final SubServicePriceTierService subServicePriceTierService;
+    private final SubServicePriceTierManagement subServicePriceTierManagement;
 
     @Value("${attachment.maazoun.supply.orders}")
     private String supplyOrderPathAtt;
@@ -100,7 +100,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                                               MaazounBookStockLabelService maazounBookStockLabelService,
                                               MaazounRequestInfoService maazounRequestInfoService, MaazounProfileService maazounProfileService,
                                               SupplyOrderDetailsService supplyOrderDetailsService, SupplyOrderService supplyOrderService,
-                                              SupplyOrderDetailsMapper supplyOrderDetailsMapper, SubServicePriceTierService subServicePriceTierService) {
+                                              SupplyOrderDetailsMapper supplyOrderDetailsMapper, SubServicePriceTierManagement subServicePriceTierService) {
         super();
         this.maazounBookWarehouseService = maazounBookWarehouseService;
         this.cryptoMngrMaazounService = cryptoMngrMaazounService;
@@ -115,7 +115,7 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
         this.supplyOrderDetailsService = supplyOrderDetailsService;
         this.supplyOrderService = supplyOrderService;
         this.supplyOrderDetailsMapper = supplyOrderDetailsMapper;
-        this.subServicePriceTierService = subServicePriceTierService;
+        this.subServicePriceTierManagement = subServicePriceTierService;
     }
 
     @Override
@@ -279,14 +279,14 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
             for (AddContractListRequest contract : book.getContracts()) {
 
                 MaazounBookWarehouse obj = new MaazounBookWarehouse();
-                obj.setBookTypeId(Long.valueOf(book.getTypeId()));
+                obj.setBookTypeId(book.getTypeId());
                 obj.setBookTypeName(book.getType());
                 obj.setMaazounBookSupplyOrderFk(maazounBookSupplyOrderFk);
                 obj.setStatusFk(StatusConstant.STATUS_PENDING);
                 obj.setContractCount(book.getContractCount());
                 obj.setBookFinancialNumber(book.getBookFinancialNumber());
                 obj.setContractFinancialNumber(contract.getContractFinancialNumber());
-
+                obj.setBookTierId(subServicePriceTierManagement.getFirstTierId(book.getTypeId()));
                 batchBooks.add(obj);
 
             }
@@ -856,13 +856,9 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
                     + "/" + eMaazounBookSupplyOrder.getUpdatedBy());
             eMaazounBookHistoryDTO.setCustody(String.valueOf(eMaazounBookSupplyOrder.getIsCustody()));
 
-//            Optional<MaazounBookStockLabel> stockLabel = maazounBookStockLabelService.findByLabelCode(eMaazounBookWarehouse.getSerialNumber());
-//            if (stockLabel.isPresent()) {
-            Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(eMaazounBookWarehouse.getBookTierId());
-            if (subServicePriceTier.isPresent()) {
-                eMaazounBookHistoryDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
-            }
-//            }
+            SubServicePriceTier subServicePriceTier = subServicePriceTierManagement.findByID(eMaazounBookWarehouse.getBookTierId());
+
+            eMaazounBookHistoryDTO.setBookTierPrice(eMaazounBookHistoryDTO.getCustody().equals("true") ? "0" : String.valueOf(subServicePriceTier.getFees()));
 
             // 3- Maazoun book sold info
             MaazounBookRequestInfo eMaazounBookRequestInfo = eMaazounBookWarehouse.getMaazounBookRequestInfoFk();

@@ -11,4 +11,5 @@ import java.util.List;
 public interface SubServicePriceTierRepository extends PagingAndSortingRepository<SubServicePriceTier, Long> {
 
     public List<SubServicePriceTier> getSubServiceBySubServiceFk(SubService subService);
+
 }

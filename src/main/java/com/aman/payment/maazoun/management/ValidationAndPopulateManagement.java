@@ -320,13 +320,13 @@ public abstract class ValidationAndPopulateManagement {
         maazounBookSupplyOrder.setIsCustody(custody);
         maazounBookSupplyOrder.setRefSupplyOrderNumber(refSupplyOrderNumber);
 
-//		try {
-//			String imageUrl = saveBrowseAttFile(attachedFile, supplyOrderPathAtt, refSupplyOrderNumber);
-//			maazounBookSupplyOrder.setImageUrl(imageUrl);
-//		} catch (Exception e) {
-//			throw new NullPointerException("imge must not be null");
-//			//e.printStackTrace();
-//		}
+		try {
+			String imageUrl = saveBrowseAttFile(attachedFile, supplyOrderPathAtt, refSupplyOrderNumber);
+			maazounBookSupplyOrder.setImageUrl(imageUrl);
+		} catch (Exception e) {
+			throw new NullPointerException("imge must not be null");
+			//e.printStackTrace();
+		}
 
         return maazounBookSupplyOrder;
     }

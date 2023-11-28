@@ -7,5 +7,5 @@ import com.aman.payment.core.service.GenericService;
 import java.util.List;
 
 public interface SubServicePriceTierService extends GenericService<SubServicePriceTier, Long> {
-
+    List<SubServicePriceTier> getSubServiceBySubServiceFk(SubService subService);
 }

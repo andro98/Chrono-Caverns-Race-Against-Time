@@ -134,17 +134,13 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
         bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
-
-//        Optional<MaazounBookStockLabel> label = maazounBookStockLabelService
-//                .findByLabelCode(maazounBookWarehouse.getSerialNumber());
-//        if (label.isPresent()) {
+        // TODO : get fees from subServiceQuota with sub service and tier type
         Optional<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findById(maazounBookWarehouse.getBookTierId());
         if (subServicePriceTier.isPresent()) {
-            bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
+            bookDTO.setBookTierPrice(bookDTO.getCustody().equals("true") ? "0" : String.valueOf(subServicePriceTier.get().getFees()));
             bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
             bookDTO.setBookTierName(subServicePriceTier.get().getName());
         }
-//        }
 
         if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
             bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());
@@ -199,12 +195,13 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         bookDTO.setContractNumber(maazounBookWarehouse.getContractNumber());
         bookDTO.setBookFinancialNumber(maazounBookWarehouse.getBookFinancialNumber());
         bookDTO.setContractFinancialNumber(maazounBookWarehouse.getContractFinancialNumber());
+        bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
         // TODO : get fees from subServiceQuota with sub service and tier type
         Optional<SubServicePriceTier> subServicePriceTier = tierId == null ? Optional.empty() : subServicePriceTierService.findById(tierId);
         List<SubServiceQuota> subServiceQuota = new ArrayList<>();
         if (subServicePriceTier.isPresent()) {
             subServiceQuota = subServiceQuotaService.findBySubServiceFkAndSubServicePriceTierFK(subService, subServicePriceTier.get());
-            bookDTO.setBookTierPrice(String.valueOf(subServicePriceTier.get().getFees()));
+            bookDTO.setBookTierPrice(bookDTO.getCustody().equals("true") ? "0" : String.valueOf(subServicePriceTier.get().getFees()));
             bookDTO.setBookTierId(String.valueOf(subServicePriceTier.get().getId()));
             bookDTO.setBookTierName(subServicePriceTier.get().getName());
         } else {
@@ -212,12 +209,13 @@ public class MaazounBookWarehouseMapper extends MaazounBookQuota {
         }
 
         double fees = (double) 0;
-        for (SubServiceQuota quota : subServiceQuota) {
-            if (quota.getStatusFk().equals(StatusConstant.STATUS_ACTIVE) && quota.getFeesType().equals("n"))
-                fees = fees + quota.getFees();
+        if (bookDTO.getCustody().equals("false")) {
+            for (SubServiceQuota quota : subServiceQuota) {
+                if (quota.getStatusFk().equals(StatusConstant.STATUS_ACTIVE) && quota.getFeesType().equals("n"))
+                    fees = fees + quota.getFees();
+            }
         }
         bookDTO.setFees(fees);
-        bookDTO.setCustody(String.valueOf(maazounBookWarehouse.getMaazounBookSupplyOrderFk().getIsCustody()));
 
         if (maazounBookWarehouse.getMaazounBookRequestInfoFk() != null) {
             bookDTO.setMaazounname(maazounBookWarehouse.getMaazounBookRequestInfoFk().getMaazounProfileFk().getName());

@@ -75,4 +75,9 @@ public class SubServicePriceTierServiceImpl implements SubServicePriceTierServic
         }
         return null;
     }
+
+    @Override
+    public List<SubServicePriceTier> getSubServiceBySubServiceFk(SubService subService) {
+        return repository.getSubServiceBySubServiceFk(subService);
+    }
 }
