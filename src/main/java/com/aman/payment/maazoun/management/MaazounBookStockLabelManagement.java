@@ -16,9 +16,11 @@ public interface MaazounBookStockLabelManagement {
 	
 	public PagingDTO searchStockLabel(SearchStockLabelRequest searchStockLabelRequest, CustomUserDetails customUserDetails);
 	
-	public String findByStatusFkByLocations(String statusFk, CustomUserDetails customUserDetails);
+	public String findByStatusFkByLocations(SearchStockLabelRequest searchStockLabelRequest, CustomUserDetails customUserDetails);
 
 	public String editStockLabelStatus(EditStockLabelRequest editStockLabelRequest);
 
     String feesBySerialNumber( StockLabelBySerialRequest decryptStockLabelRequest);
+
+	String searchStockLabelBySerialNumber(StockLabelBySerialRequest decryptSearchStockLabelRequest, CustomUserDetails customUserDetails);
 }

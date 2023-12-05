@@ -85,6 +85,19 @@ public class MaazounStockLabelController extends MaazounJsonObjectFactoryImpl {
         return ResponseEntity.ok(maazounBookStockLabelManagement.editSerialNumberStatus(decryptEditStockLabelStatusRequest));
     }
 
+
+    @PostMapping("/searchStockLabelBySerialNumber")
+//  @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
+    public ResponseEntity<String> searchStockLabelBySerialNumber(@CurrentUser CustomUserDetails customUserDetails,
+                                                      @Valid @RequestBody String jsonString) {
+
+        StockLabelBySerialRequest decryptSearchStockLabelRequest =
+                convertJsonStringToObject(jsonString, StockLabelBySerialRequest.class);
+
+        return ResponseEntity.ok(maazounBookStockLabelManagement.searchStockLabelBySerialNumber(decryptSearchStockLabelRequest, customUserDetails));
+    }
+
     @PostMapping("/searchStockLabel")
 //  @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Returns the list of configured stock labels. Requires ADMIN Access")
@@ -107,7 +120,7 @@ public class MaazounStockLabelController extends MaazounJsonObjectFactoryImpl {
                 convertJsonStringToObject(jsonString, SearchStockLabelRequest.class);
 
         return ResponseEntity.ok(maazounBookStockLabelManagement.
-                findByStatusFkByLocations(decryptSearchStockLabelRequest.getStatus(), customUserDetails));
+                findByStatusFkByLocations(decryptSearchStockLabelRequest, customUserDetails));
     }
 
     @PostMapping("/editStockLabelStatus")

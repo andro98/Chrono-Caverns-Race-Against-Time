@@ -3,6 +3,7 @@ package com.aman.payment.auth.model;
 import com.aman.payment.core.model.audit.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -29,6 +30,8 @@ public class SubServicePriceTier  extends DateAudit implements Serializable {
     private Double fees;
 
     private String description;
+
+    private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "subServiceFk", referencedColumnName = "id", nullable = true)

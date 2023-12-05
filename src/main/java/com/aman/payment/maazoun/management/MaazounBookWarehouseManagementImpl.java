@@ -1298,6 +1298,20 @@ public class MaazounBookWarehouseManagementImpl extends ValidationAndPopulateMan
             maazounBookStockLabelService.updateStatusByLabelCode(StatusConstant.STATUS_PRINTED, labelCodes);
         }
 
+//        Optional<SupplyOrder> supplyOrder = supplyOrderService
+//                .findByRefSupplyOrderNumber(contractsBookInWarehouse.get(0).getMaazounBookSupplyOrderFk().getRefSupplyOrderNumber());
+//        if (supplyOrder.isPresent()) {
+//            for (SupplyOrderDetails details : supplyOrder.get().getSupplyOrderDetailsSet()) {
+//                if (details.getBootTierId().equals(String.valueOf(contractsBookInWarehouse.get(0).getBookTierId())) &&
+//                        String.valueOf(contractsBookInWarehouse.get(0).getBookTypeId()).equals(details.getBookTypeFK())) {
+//                    details.setRemainingBookTypeCount(details.getRemainingBookTypeCount() + 1);
+//                    supplyOrderDetailsService.save(details);
+//                    break;
+//                }
+//            }
+//
+//        }
+
         jsonObject.put("response", "Delete Operation Succeed");
 
         return jsonObject.toString();

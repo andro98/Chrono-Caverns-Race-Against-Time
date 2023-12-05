@@ -122,30 +122,39 @@ public class MaazounBookStockLabelManagementImpl extends ValidationAndPopulateMa
         PagingDTO obj = new PagingDTO();
 
         try {
-            if (searchStockLabelRequest.getBookTypeId() != null && searchStockLabelRequest.getLocationId() != null &&
-                    searchStockLabelRequest.getStatus() != null) {
-                pageResult = maazounBookStockLabelService.findByStatusFkAndBookTypeIdAndLocationId(searchStockLabelRequest.getStatus(),
-                        searchStockLabelRequest.getBookTypeId(), searchStockLabelRequest.getLocationId(), pageable);
-
-            } else if (searchStockLabelRequest.getBookTypeId() != null && searchStockLabelRequest.getLocationId() != null) {
-                pageResult = maazounBookStockLabelService.findByBookTypeIdAndLocationId(searchStockLabelRequest.getBookTypeId(),
-                        searchStockLabelRequest.getLocationId(), pageable);
-            } else if (searchStockLabelRequest.getStatus() != null && searchStockLabelRequest.getLocationId() != null) {
-                pageResult = maazounBookStockLabelService.findByStatusFkAndLocationId(searchStockLabelRequest.getStatus(),
-                        searchStockLabelRequest.getLocationId(), pageable);
-            } else if (searchStockLabelRequest.getStatus() != null && searchStockLabelRequest.getBookTypeId() != null) {
-                pageResult = maazounBookStockLabelService.findByStatusFkAndBookTypeIdAndLocationIdIn(searchStockLabelRequest.getStatus(),
-                        searchStockLabelRequest.getBookTypeId(), locationIds, pageable);
-
-            } else if (searchStockLabelRequest.getStatus() != null) {
-                pageResult = maazounBookStockLabelService.findByStatusFkAndLocationIdIn(searchStockLabelRequest.getStatus(), locationIds,
-                        pageable);
-            } else if (searchStockLabelRequest.getLocationId() != null) {
-                pageResult = maazounBookStockLabelService.findByLocationId(searchStockLabelRequest.getLocationId(), pageable);
-            } else if (searchStockLabelRequest.getBookTypeId() != null) {
-                pageResult = maazounBookStockLabelService.findByBookTypeIdAndLocationIdIn(searchStockLabelRequest.getBookTypeId(), locationIds,
-                        pageable);
+            if(searchStockLabelRequest.getLocationId() != null) {
+                locationIds = new HashSet<Long>();
+                locationIds.add(searchStockLabelRequest.getLocationId());
             }
+            pageResult = maazounBookStockLabelService.findBy(
+                    searchStockLabelRequest,
+                    locationIds,
+                    pageable);
+
+//            if (searchStockLabelRequest.getBookTypeId() != null && searchStockLabelRequest.getLocationId() != null &&
+//                    searchStockLabelRequest.getStatus() != null) {
+//                pageResult = maazounBookStockLabelService.findByStatusFkAndBookTypeIdAndLocationId(searchStockLabelRequest.getStatus(),
+//                        searchStockLabelRequest.getBookTypeId(), searchStockLabelRequest.getLocationId(), pageable);
+//
+//            } else if (searchStockLabelRequest.getBookTypeId() != null && searchStockLabelRequest.getLocationId() != null) {
+//                pageResult = maazounBookStockLabelService.findByBookTypeIdAndLocationId(searchStockLabelRequest.getBookTypeId(),
+//                        searchStockLabelRequest.getLocationId(), pageable);
+//            } else if (searchStockLabelRequest.getStatus() != null && searchStockLabelRequest.getLocationId() != null) {
+//                pageResult = maazounBookStockLabelService.findByStatusFkAndLocationId(searchStockLabelRequest.getStatus(),
+//                        searchStockLabelRequest.getLocationId(), pageable);
+//            } else if (searchStockLabelRequest.getStatus() != null && searchStockLabelRequest.getBookTypeId() != null) {
+//                pageResult = maazounBookStockLabelService.findByStatusFkAndBookTypeIdAndLocationIdIn(searchStockLabelRequest.getStatus(),
+//                        searchStockLabelRequest.getBookTypeId(), locationIds, pageable);
+//
+//            } else if (searchStockLabelRequest.getStatus() != null) {
+//                pageResult = maazounBookStockLabelService.findByStatusFkAndLocationIdIn(searchStockLabelRequest.getStatus(), locationIds,
+//                        pageable);
+//            } else if (searchStockLabelRequest.getLocationId() != null) {
+//                pageResult = maazounBookStockLabelService.findByLocationId(searchStockLabelRequest.getLocationId(), pageable);
+//            } else if (searchStockLabelRequest.getBookTypeId() != null) {
+//                pageResult = maazounBookStockLabelService.findByBookTypeIdAndLocationIdIn(searchStockLabelRequest.getBookTypeId(), locationIds,
+//                        pageable);
+//            }
 
 
             obj.setCount(pageResult.getTotalElements());
@@ -170,12 +179,12 @@ public class MaazounBookStockLabelManagementImpl extends ValidationAndPopulateMa
 
 
     @Override
-    public String findByStatusFkByLocations(String statusFk, CustomUserDetails customUserDetails) {
+    public String findByStatusFkByLocations(SearchStockLabelRequest searchStockLabelRequest, CustomUserDetails customUserDetails) {
 
         Set<Long> locationIds = getLocationsFromPos(customUserDetails.getPosSet());
 
         List<MaazounBookStockLabel> labels = new ArrayList<MaazounBookStockLabel>();
-        labels = maazounBookStockLabelService.findByStatusFkAndLocationIdInOrderByIdAsc(statusFk, locationIds);
+        labels = maazounBookStockLabelService.findBy(searchStockLabelRequest, locationIds);
 
         return cryptoMngrMaazounService.encrypt(
                 stockLabelMapper.maazounBookStockLabelsToStockLabelDTOs(labels).toString());
@@ -207,6 +216,20 @@ public class MaazounBookStockLabelManagementImpl extends ValidationAndPopulateMa
             jsonObject.put("response", "fail");
         }
 
+        return cryptoMngrMaazounService.encrypt(jsonObject.toString());
+    }
+
+    @Override
+    public String searchStockLabelBySerialNumber(StockLabelBySerialRequest decryptSearchStockLabelRequest, CustomUserDetails customUserDetails) {
+        Set<Long> locationIds = getLocationsFromPos(customUserDetails.getPosSet());
+        Optional<MaazounBookStockLabel> result = maazounBookStockLabelService.findByLabelCodeAndLocationId(decryptSearchStockLabelRequest.getSerialNumber(), locationIds);
+        JSONObject jsonObject = new JSONObject();
+        if (result.isPresent()) {
+            jsonObject.put("response", cryptoMngrMaazounService.encrypt(
+                    stockLabelMapper.maazounBookStockLabelToStockLabelDTO(result.get()).toString()));
+        } else {
+            jsonObject.put("response", "fail");
+        }
         return cryptoMngrMaazounService.encrypt(jsonObject.toString());
     }
 }

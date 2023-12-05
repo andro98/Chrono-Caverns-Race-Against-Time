@@ -21,6 +21,7 @@ import com.aman.payment.auth.model.payload.*;
 import com.aman.payment.auth.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.apache.xpath.operations.Bool;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -164,6 +165,12 @@ public class LookupManagementImpl implements LookupManagement {
     @Override
     public List<SubServicePriceTierDTO> getAllSubServicesPriceTier() {
         List<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.findAll();
+        return subServicePriceTier.stream().map(s -> serviceMapper.subServicePriceTierToDto(s, getPriceTierCurrentQuota(s))).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubServicePriceTierDTO> getAllSubServicesPriceTierAndIsActive(Boolean isActive) {
+        List<SubServicePriceTier> subServicePriceTier = subServicePriceTierService.getSubServiceByIsActive(isActive);
         return subServicePriceTier.stream().map(s -> serviceMapper.subServicePriceTierToDto(s, getPriceTierCurrentQuota(s))).collect(Collectors.toList());
     }
 
@@ -987,6 +994,22 @@ public class LookupManagementImpl implements LookupManagement {
         entity.setCreatedBy(createdBy);
         entity.setCreatedAt(Date.from(Instant.now()));
         return serviceMapper.subServicePriceTierToDto(subServicePriceTierService.save(entity), "");
+    }
+
+    @Override
+    public String togglePriceTier(TogglePriceTierRequest decryptTogglePriceTierRequest) {
+        Optional<SubServicePriceTier> entity = subServicePriceTierService.findById(Long.valueOf(decryptTogglePriceTierRequest.getId()));
+        JSONObject jsonObject = new JSONObject();
+        if (entity.isPresent()) {
+            entity.get().setIsActive(!entity.get().getIsActive());
+            subServicePriceTierService.save(entity.get());
+            jsonObject.put("status", "success");
+            jsonObject.put("message", "تم تعديل الحالة بنجاح");
+        } else {
+            jsonObject.put("status", "error");
+            jsonObject.put("message", "لم يتم العثور على السجل");
+        }
+        return jsonObject.toString();
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.aman.payment.maazoun.model.payload.SearchStockLabelRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -33,6 +34,8 @@ public interface MaazounBookStockLabelService extends MaazounGenericService<Maaz
 	public Optional<MaazounBookStockLabel> findByLabelCode(String labelCode);
 	
 	public Optional<MaazounBookStockLabel> findByLabelCodeAndStatusFk(String labelCode, String statusFk);
+
+	Optional<MaazounBookStockLabel> findByLabelCodeAndLocationId(String labelCode, Set<Long> locationIds);
 	
 	public List<MaazounBookStockLabel> findByStatusFkAndLocationIdInOrderByIdAsc(String statusFk, Set<Long> locationIds);
 	
@@ -40,5 +43,7 @@ public interface MaazounBookStockLabelService extends MaazounGenericService<Maaz
 	
 	public void updateStatusById(String statusFk, Long  id);
 
-	
+	Page<MaazounBookStockLabel> findBy(SearchStockLabelRequest searchStockLabelRequest, Set<Long> locationIds, Pageable pageable);
+
+	List<MaazounBookStockLabel> findBy(SearchStockLabelRequest searchStockLabelRequest, Set<Long> locationIds);
 }

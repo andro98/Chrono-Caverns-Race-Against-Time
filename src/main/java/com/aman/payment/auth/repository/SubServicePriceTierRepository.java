@@ -12,4 +12,5 @@ public interface SubServicePriceTierRepository extends PagingAndSortingRepositor
 
     public List<SubServicePriceTier> getSubServiceBySubServiceFk(SubService subService);
 
+    public List<SubServicePriceTier> getSubServiceByIsActive(Boolean isActive);
 }

@@ -789,6 +789,28 @@ public class LookupController {
         return ResponseEntity.ok(eSubServicePriceTierDTO);
     }
 
+    @GetMapping("/getDropDownPriceTiers")
+//	@PreAuthorize("hasRole('SUPERADMIN')")
+    @ApiOperation(value = "Returns the list of configured price tier. Requires SUPERADMIN Access")
+    public ResponseEntity<Set<String>> getDropDownPriceTiers() {
+        Set<String> eSubServicePriceTierDTO = new HashSet<>();
+        lookupManagement.getAllSubServicesPriceTierAndIsActive(true).forEach(s -> {
+            eSubServicePriceTierDTO.add(cryptoMngrAuthService.encrypt(s.toString()));
+        });
+        return ResponseEntity.ok(eSubServicePriceTierDTO);
+    }
+
+    @PostMapping("/togglePriceTier")
+//	@PreAuthorize("hasRole('SUPERADMIN')")
+    @ApiOperation(value = "Returns the list of configured price tier. Requires SUPERADMIN Access")
+    public ResponseEntity<String> togglePriceTier(@Valid @RequestBody TogglePriceTierRequest togglePriceTierRequest) {
+        TogglePriceTierRequest decryptTogglePriceTierRequest = togglePriceTierRequest.decrypt(cryptoMngrAuthService);
+
+        return ResponseEntity.ok(
+                cryptoMngrAuthService.encrypt(lookupManagement.togglePriceTier(decryptTogglePriceTierRequest))
+        );
+    }
+
     @PostMapping("/addSubServiceTier")
 //  @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "add Sub Service Quota. Requires ADMIN Access")

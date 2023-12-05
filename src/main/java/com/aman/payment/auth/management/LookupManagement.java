@@ -21,6 +21,8 @@ public interface LookupManagement {
 	public List<ServiceDTO> getSubServicesByParent(SubServiceByServiceIDRequest subServiceByServiceIDRequest);
 
 	List<SubServicePriceTierDTO> getAllSubServicesPriceTier();
+
+	List<SubServicePriceTierDTO> getAllSubServicesPriceTierAndIsActive(Boolean isActive);
 	
 	public ServiceDTO addService(String username, AddEditServiceRequest addEditServiceRequest);
 	
@@ -171,4 +173,6 @@ public interface LookupManagement {
 //	List<SubServicePriceTierDTO> getAllSubServicesPriceTier();
 
 	public SubServicePriceTierDTO addSubServiceTier(String createdBy, AddEditSubServiceTierRequest addEditSubServiceTierRequest);
+
+	String togglePriceTier(TogglePriceTierRequest decryptTogglePriceTierRequest);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.aman.payment.maazoun.model.payload.SearchStockLabelRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -50,4 +51,6 @@ public interface MaazounBookStockLabelRepository extends JpaRepository<MaazounBo
 	@Query("update MaazounBookStockLabel u set u.statusFk = :statusFk where u.id = :id")
 	public void updateStatusById(@Param("statusFk") String statusFk, @Param("id") Long id);
 
+	@Query("select u from MaazounBookStockLabel u where u.labelCode = :labelCode and u.locationId IN :locationIds")
+    Optional<MaazounBookStockLabel> findByLabelCodeAndLocationId(String labelCode, Set<Long> locationIds);
 }

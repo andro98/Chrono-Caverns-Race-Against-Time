@@ -80,4 +80,9 @@ public class SubServicePriceTierServiceImpl implements SubServicePriceTierServic
     public List<SubServicePriceTier> getSubServiceBySubServiceFk(SubService subService) {
         return repository.getSubServiceBySubServiceFk(subService);
     }
+
+    @Override
+    public List<SubServicePriceTier> getSubServiceByIsActive(Boolean isActive) {
+        return repository.getSubServiceByIsActive(isActive);
+    }
 }
