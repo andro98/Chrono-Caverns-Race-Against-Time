@@ -175,12 +175,28 @@ public class LookupManagementImpl implements LookupManagement {
     }
 
     private String getPriceTierCurrentQuota(SubServicePriceTier subServicePriceTier) {
-        return subServiceQuotaService
-                .findBySubServiceFkAndSubServicePriceTierFK(subServicePriceTier.getSubServiceFk(), subServicePriceTier)
+        List<SubServiceQuota> quotas = subServiceQuotaService
+                .findBySubServiceFkAndSubServicePriceTierFK(subServicePriceTier.getSubServiceFk(), subServicePriceTier);
+        double totalFees = quotas
                 .stream()
+                .filter(s -> s.getStatusFk().equals("Active"))
+                .filter(s -> s.getFeesType().equals("n"))
                 .map(SubServiceQuota::getFees)
-                .reduce(0D, Double::sum)
-                .toString();
+                .reduce(0D, Double::sum);
+
+        List<SubServiceQuota> percentageQuota = quotas
+                .stream()
+                .filter(s -> s.getStatusFk().equals("Active"))
+                .filter(s -> s.getFeesType().equals("%"))
+                .filter(s -> s.getBeneficiary().equals("امان"))
+                .collect(Collectors.toList());
+
+        double totalPercentage = 0;
+        for (SubServiceQuota s : percentageQuota) {
+            totalPercentage += (s.getFees() * totalFees) / 100;
+        }
+
+        return String.valueOf(totalFees + totalPercentage);
     }
 
     @Override
